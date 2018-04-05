@@ -1,0 +1,22 @@
+{
+    "name": "robinjimenez/pwbox",
+    "authors": [
+        {
+            "name": "Robin Jimenez",
+            "email": "robin.jimenez.2015@salleurl.edu"
+        },
+        {
+            "name": "Jordi Alonso",
+            "email": "jordi.alonso.2015@salleurl.edu"
+        }
+    ],
+    "require": {
+        "slim/slim": "^3.0",
+        "slim/twig-view": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "PWBox\\": "src/"
+        }
+    }
+}
