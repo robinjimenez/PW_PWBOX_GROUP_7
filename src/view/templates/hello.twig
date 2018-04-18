@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>My Webpage</title>
-        <link rel="stylesheet" href="{{ base_url() }}/assets/css/styles.css">
-    </head>
-    <body>
-    <p> Hello {{ name }} </p>
-    </body>
-</html>
+{% extends "base.twig" %}
+{% block title %}Hello page{% endblock %}
+{% block content %}
+    {{ parent() }}
+    child
+{% endblock %}
