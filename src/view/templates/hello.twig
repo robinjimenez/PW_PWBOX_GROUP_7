@@ -3,15 +3,19 @@
 {% block content %}
     <!-- {{ parent() }} -->
     <!-- child -->
-    <!-- <section class="hero is-primary is-medium">
+    <section class="hero is-primary is-medium">
         <div class="hero-body">
             <div class="container">
                 <div class="columns">
                     <div class="column">
-                        <img class="title" src="{{ base_url() }}/assets/img/logo_white.png" alt="PWBox: your files online" width="100px">
+                        <p class="title">Hello {{ name }} you've visited this page {{ counter }} times.</p>
+                        {% if not advice %}
+                            <p class="subtitle">Cookies message</p>
+                        {% endif %}
+                        <!-- <img class="title" src="{{ base_url() }}/assets/img/logo_white.png" alt="PWBox: your files online" width="100px">
                         <h2 class="subtitle">
                             Your files, online.
-                        </h2>
+                        </h2> -->
                     </div>
                     <div class="column">
                         <a class="button is-large is-primary is-outlined is-inverted">Get started!</a>
@@ -19,5 +23,5 @@
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
 {% endblock %}
