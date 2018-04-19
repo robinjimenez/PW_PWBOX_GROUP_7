@@ -17,7 +17,6 @@ La màquina virtual s'instala en un **Provider**, en aquest cas *VirtualBox*.
 Fitxer on podem configurar coses de la màquina virtual. Es poden posar les **carpetes que volem compartir** entre el meu ordinador real i la màquina virtual. *També configuració de sites de Nginx i BBDD.*
 
 
-
 ### Terminal
 
 Per utilitzar la màquina virtual:
@@ -28,9 +27,6 @@ Per utilitzar la màquina virtual:
 - `Accedir VM: vagrant ssh`
 - `Sortir VM: exit`
 - `Apagar VM: vagrant halt`
-
-
-
 
 ### Git
 

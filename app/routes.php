@@ -3,10 +3,15 @@
 $app->add('PWBox\Controller\Middleware\SessionMiddleware');
 
 $app->get('/hello/{name}',
-    'PWBox\Controller\HelloController')
-    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
+    'PWBox\Controller\HelloController');
+    //->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->post(
     '/user',
-    'PWBox\Controller\PostUserController'
+    'PWBox\Controller\PostUserController:registerAction'
+);
+
+$app->get(
+  '/user',
+  'PWBox\Controller\PostUserController:indexAction'
 );
