@@ -194,6 +194,8 @@ echo $jordi->getName();
 
 ### Files
 
+https://www.youtube.com/watch?v=sLLZU38Okgo&index=19&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn
+
 Amb PHP podem accedir i fer determinades accions amb els fitxers del nostre ordinador (màquina virtual).
 
 Funcions per a tractar fitxers:
