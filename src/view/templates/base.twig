@@ -2,9 +2,31 @@
 <html>
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <!-- <link rel="stylesheet" href="{{ base_url() }}/assets/css/styles.css"> -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.min.css">
     </head>
     <body>
-        {% block content %} parent {% endblock %}
+    <header>
+        <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="#">
+                    <img src="{{ base_url() }}/assets/img/logo.png" alt="PWBox: your files online">
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>PWBox</strong> by Jordi Alonso & Robin Jiménez
+                </p>
+            </div>
+        </div>
+    </footer>
     </body>
 </html>
