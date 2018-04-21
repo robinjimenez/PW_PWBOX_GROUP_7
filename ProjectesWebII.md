@@ -2,6 +2,8 @@
 
 
 
+## Introducció
+
 ### Vagrant
 
 *Vagrant* és un **gestor** de màquines virtuals. Permet fer accions relacionades amb màquines virtuals a través del Terminal (instalar-les, gestionar-les…).
@@ -17,6 +19,7 @@ La màquina virtual s'instala en un **Provider**, en aquest cas *VirtualBox*.
 Fitxer on podem configurar coses de la màquina virtual. Es poden posar les **carpetes que volem compartir** entre el meu ordinador real i la màquina virtual. *També configuració de sites de Nginx i BBDD.*
 
 
+
 ### Terminal
 
 Per utilitzar la màquina virtual:
@@ -27,6 +30,8 @@ Per utilitzar la màquina virtual:
 - `Accedir VM: vagrant ssh`
 - `Sortir VM: exit`
 - `Apagar VM: vagrant halt`
+
+
 
 ### Git
 
@@ -124,19 +129,23 @@ El codi va entre tags  `<?php       -codi-         ?>`
 
 
 
-#### Variables
+### Variables
 
 - Tipus bàsics: **boolean, integer, float, string, array, object, null**
-- S'escriuen amb un dollar davant**. Per exemple: `$message = "Hello world";`
-- Hi ha variables predefinides, les Superglobals.
+- S'escriuen amb un dollar davant. Per exemple: `$message = "Hello world";`
+- Hi ha variables predefinides, les Superglobals `($_SERVER, $_POST, $_GET, …)`
 - Constants en majúscules i desfinició per clau-valor: `define('NAME', 'Jordi');`
-- En les funcions podem **declarar** el pas dels paràmetres per valor **o per referència**, com en C: `public function changeName(&$name){...}` 
+- En les funcions podem **declarar** el pas dels paràmetres per valor **o per referència**, com en C: `public function changeName(&$name){...}`  
 
 Printar text: `echo "Hello world";`
 
 Printar variables: `var_dump($message);`
 
+Printar arrays: `print_r();`
+
 Per reconéixer variables en un text escrit calen doble cometes. `echo "Vull printar $message";`
+
+Per concatenar text amb variables s'uutilitza un punt: `$dsn = 'mysql:host='. $host;`
 
 
 
@@ -173,7 +182,7 @@ Per crear la classe:
 class User {
     private $name;
     
-    public function __construct($name) {
+    public function __construct($name) {//Mètode constructor
         $this->name = $name;
     }
     
@@ -237,4 +246,253 @@ $txt = 'Jordi Alonso';
 fwrite($handle, $txt);
 fclose($handle);
 ```
+
+
+
+### Forms
+
+S'utilitzen les variables superglobal `$_GET o $_POST` per accedir al contingut del formulari. Aquestes variables **són Arrays** que contenen la informació dels camps dels formularis.
+
+
+
+###### $_GET: La info del formulari s'envia a través de la URL
+
+*Exemple: Printar nom d'un formulari*:
+
+En la part del HTML, en l'etiqueta del formulari s'indica el mètode PHP a cridar:
+
+```html
+<form method="GET" action="get_post.php"><!-- En el methos posem GET o POST-->
+    <input type="text" name="name"><!-- L'etiqueta name per accedir des del PHP-->
+</form>
+```
+
+Part PHP:
+
+```php
+<?php
+    if (isset($_GET['name'])) {//Comprova si el camp està buit o no (set)
+        $name = $_GET['name'];
+        echo $name;
+        /*
+        $name = htmlentities($_GET['name']);//Més segur, evita injection
+        echo $name;
+        */
+    }
+?>
+```
+
+
+
+###### $_POST: Enviament segur de les dades (no URL)
+
+*Exemple: Printar nom d'un formulari*:
+
+En la part del HTML, en l'etiqueta del formulari s'indica el mètode PHP a cridar:
+
+```html
+<form method="POST" action="get_post.php"><!-- En el methos posem GET o POST-->
+    <input type="text" name="name"><!-- L'etiqueta name per accedir des del PHP-->
+</form>
+```
+
+Part PHP:
+
+```php
+<?php
+    if (isset($_POST['name'])) {//Comprova si el camp està buit o no (set)
+        $name = $_POST['name'];
+        echo $name;
+        /*
+        $name = htmlentities($_GET['name']);//Més segur, evita injection
+        echo $name;
+        */
+    }
+?>
+```
+
+*També existeix la superglobal $_REQUEST (funciona tant per GET o POST en el HTML).*
+
+https://www.youtube.com/watch?v=cIFUH3Qnd6s&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn&index=11
+
+
+
+### Forms with Files
+
+Per a combinar Files amb Formularis (Files que s'envien al servidor a través d'un Formulari): cal ajustar el HTML del formulari i la variable superglobal (array amb la informació) que utilitza PHP (Abans  `$_GET o $_POST` ), ara és `$_FILES`.
+
+
+
+###### $_FILES: Enviar files a través d'un formulari
+
+Part HTML:
+
+```html
+<form method="post" enctype="multipart/form-data" action="upload.php"><!--és post-->
+	<input type="file" name="myFile"><!-- input del tipus file-->
+ 	<input type="submit" value="Upload">
+</form>
+```
+
+
+
+Cada Array $_FILES del fitxer "myFile" enviat, conté els següents camps:
+
+```
+$_FILES["myFile"]["name"] stores the original filename from the client
+$_FILES["myFile"]["type"] stores the file’s mime-type
+$_FILES["myFile"]["size"] stores the file’s size (in bytes)
+$_FILES["myFile"]["tmp_name"] stores the name of the temporary file
+$_FILES[“myFile”][“error”] stores any error code resulting from the transfer
+```
+
+Més info: https://www.sitepoint.com/file-uploads-with-php/
+
+
+
+### Bases de Dades: PDO
+
+https://www.youtube.com/watch?v=kEW6f7Pilc4
+
+https://gist.github.com/bradtraversy/147443539b7e1afafa17e6392f072720
+
+PDO (PHP Data Objects) és una extensió de PHP per a treballar amb Bases de Dades (Alternativa: MySQLi).  
+
+Classes de la extensió: PDO (per la connexió PHP amb BBDD), PDOStatement (representa un prepared statement i el seu resultat), PDOException.
+
+
+
+Accedir a MySQL de HomeStead des del terminal:
+
+```
+vagrant up
+vagrant ssh
+mysql -u homestead -p
+	[password = secret]
+
+//Altres funcions (ja són funcions MySQL)
+show databases;
+use <nomDB>;
+show tables;
+exit;
+```
+
+
+
+Accedir a MySQL de HomeStead des d'aplicacions externes (de de ordinador local):
+
+![Captura de pantalla 2018-04-21 a las 16.27.28](/Users/jordi/Documents/Treballs laSalle/Projectes Web 2/rec/Captura de pantalla 2018-04-21 a las 16.27.28.png)
+
+*Utilitzant Sequel Pro: https://www.youtube.com/watch?v=dkpIDRX916M*
+
+
+
+##### Connexió BBDD des de PHP
+
+1) Definir variables amb dades de la BBDD:
+
+```php
+$host = '127.0.0.1';
+$user = 'homestead';
+$password = 'secret';
+$dbname = 'pdoposts';
+```
+
+2) Definir DSN i crear instància de pdo per connectar-nos a BBDD amb PDO:
+
+```php
+//Set DSN
+$dsn = 'mysql:host='. $host. ';dbname=' .$dbname;
+
+//Create a PDO instance (és la Base de dades)
+$db = new PDO($dsn, $user, $password);
+```
+
+
+
+##### Querys
+
+Utilitzant la funció *query* de PDO. Retorna un objecte de la classe PDOStatement.
+
+```php
+$rows = $db->query('SELECT * FROM taula1');//Retorna les files
+
+//Recorrem totes les files i printem concatenades 2 columnes
+
+//Opció 1: foreach de rows
+foreach ($rows as $row) {
+    echo $row['column1']. '<br>'. $row['column2']. '<br>';
+}
+
+//Opció 2: utilitzant funció fetch. Fetch indica com la següent row serà retornada, en quin format (com array, com objecte, etc).
+while ($row = $rows->fetch(PDO::FETCH_ASSOC)) {//FETCH_ASSOC retorna la row com array
+   	echo $row['column1']. '<br>'. $row['column2']. '<br>';
+}
+
+while ($row = $rows->fetch(PDO::FETCH_OBJ)) {//FETCH_OBJ retorna la row com a object. Cal modificar echo.
+    echo $row->column1 . '<br>';
+}
+```
+
+Es pot definir el tipus de Fetch que s'utilitza sempre a l'inici (per l'opció 2 de querys):
+
+```php
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+//Ara podem recorrer les rows sense especificar el tipus de fetch
+while ($row = $rows->fetch()) {
+   	echo $row['column1']. '<br>'. $row['column2']. '<br>';
+}
+```
+
+
+
+##### Prepared Statements
+
+- Guardem querys per executar-les múltiples vegades (com si fossin una funció). Podem passar-lis paràmetres diferents cada cop.
+- 2 mètodes principals: prepare i execute.
+- Als paràmetres de la query **no li passem les variables directament**. Es fa a través de *bindParam* (evitar SQL Injection).
+
+```php
+$name = 'jordi';//Obtenim paràmetres abans del statement
+$email = 'whatever@mail.com';
+
+$stmt = $db->prepare("SELECT * FROM taula1 WHERE name = ? AND email = ?");//interrogants representen les variables
+
+$stmt->bindParam(1, $name, PDO::PARAM_STR);//introdueix variables en ordre
+$stmt->bindParam(2, $email, PDO::PARAM_STR);
+
+$stmt->execute();//executa statement
+
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);//Recuperem tots els resultats de cop (fetchAll) com a array
+```
+
+
+
+##### Filtres
+
+Funcions per a comprovar i filtres formats que rebem de l'usuari: *filter_var* i *filter_input*.
+
+```php
+filter_var($email, FILTER_VALIDATE_EMAIL);//retorna email o false
+filter_var($email, FILTER_SANITIZE_EMAIL);//elimina caracters incorrectes
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
