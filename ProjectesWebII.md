@@ -117,7 +117,11 @@ https://gitlab.com/salle-projectes-web/git-basics
 
 
 
-## PHP
+------
+
+
+
+# PHP
 
 Llenguatge per a gestionar servidors. **S'executa a través del terminal:** 
 
@@ -129,7 +133,9 @@ El codi va entre tags  `<?php       -codi-         ?>`
 
 
 
-### Variables
+## Basics
+
+#### Variables
 
 - Tipus bàsics: **boolean, integer, float, string, array, object, null**
 - S'escriuen amb un dollar davant. Per exemple: `$message = "Hello world";`
@@ -149,7 +155,7 @@ Per concatenar text amb variables s'uutilitza un punt: `$dsn = 'mysql:host='. $h
 
 
 
-<u>Arrays</u>
+#### Arrays
 
 Són sempre en **format clau-valor**.
 
@@ -170,9 +176,9 @@ Altres funcions de Array: implode, explode, unset, … (http://php.net/manual/en
 
 
 
-<u>Object</u>
+#### Class and Objects
 
-Instàncies d'una classe.
+Els objectes són instàncies d'una classe.
 
 Per accedir a mètodes de la classe no s'utilitza el punt. **S'utilitza la fletxa**.
 
@@ -195,9 +201,63 @@ $jordi = new User("Jordi");
 echo $jordi->getName();
 ```
 
+Els atributs de les classes poden ser *private, protected o public*.
 
 
-### Files
+
+###### Herència
+
+Quan una classe hereda d'una altre, **reb tots els mètodes i atributs public o protected** (no private). Els **pot sobreescriure**.
+
+
+
+###### Classes abstractes
+
+Les classes abstractes no es poden instanciar (tenen mètodes normals o abstractes -> no implementats). Només serveixen per a definir subclasses que heretin d'aquesta. Les subclasses hauran d'implementar els mètodes abstractes de la classe abstracta.
+
+
+
+###### Interfícies
+
+Són contractes, de manera que les classes que la implementin han de implementar TOTS els mètodes que defineix la interfície.
+
+
+
+#### Namespaces
+
+Agrupació de classes que tenen relació entre elles. Permeten tenir classes que es puguin dir igual en el mateix projecte, ja que cadascuna estarà en un namespace diferent. Només 1 namespace per fitxer.
+
+Si els creem en el menú de l'esquerra de fitxers, només cal indicar el namespace a l'inici del tag php:
+
+```php
+namespace Connections;
+```
+
+Podem incloure altres fitxers al namespace en el codi:
+
+```php
+namespace Connections;
+include 'Databases.php';
+use Connections\Databases as db;
+
+$db = new db();
+```
+
+
+
+#### Magic Methods
+
+http://php.net/manual/en/language.oop5.magic.php
+
+Mètodes que es criden automàticament en determinats casos:
+
+```php
+__construct(), __destruct(), __call(), __callStatic(), __get(), __set(), __isset(), __unset(), __sleep(), __wakeup(), __toString(), __invoke(), __set_state(), __clone(), __debugInfo()
+```
+
+
+
+## Files
 
 https://www.youtube.com/watch?v=sLLZU38Okgo&index=19&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn
 
@@ -249,7 +309,7 @@ fclose($handle);
 
 
 
-### Forms
+## Forms
 
 S'utilitzen les variables superglobal `$_GET o $_POST` per accedir al contingut del formulari. Aquestes variables **són Arrays** que contenen la informació dels camps dels formularis.
 
@@ -275,7 +335,7 @@ Part PHP:
         $name = $_GET['name'];
         echo $name;
         /*
-        $name = htmlentities($_GET['name']);//Més segur, evita injection
+        $name = htmlentities($_GET['name']);//Més segur, evita PHP injection
         echo $name;
         */
     }
@@ -304,7 +364,7 @@ Part PHP:
         $name = $_POST['name'];
         echo $name;
         /*
-        $name = htmlentities($_GET['name']);//Més segur, evita injection
+        $name = htmlentities($_GET['name']);//Més segur, evita PHP injection
         echo $name;
         */
     }
@@ -317,7 +377,7 @@ https://www.youtube.com/watch?v=cIFUH3Qnd6s&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAj
 
 
 
-### Forms with Files
+## Forms with Files
 
 Per a combinar Files amb Formularis (Files que s'envien al servidor a través d'un Formulari): cal ajustar el HTML del formulari i la variable superglobal (array amb la informació) que utilitza PHP (Abans  `$_GET o $_POST` ), ara és `$_FILES`.
 
@@ -350,7 +410,7 @@ Més info: https://www.sitepoint.com/file-uploads-with-php/
 
 
 
-### Bases de Dades: PDO
+## Bases de Dades: PDO
 
 https://www.youtube.com/watch?v=kEW6f7Pilc4
 
@@ -480,19 +540,99 @@ filter_var($email, FILTER_SANITIZE_EMAIL);//elimina caracters incorrectes
 
 
 
+## Sessions
+
+https://www.youtube.com/watch?v=W4rSS4-LdIE&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn&index=16
+
+Manera de mantenir informació **entre** diverses pàgines (diversos .php) d'una mateixa web (una web pot tenir diversos .php).
+
+Informació emmagatzemada en el servidor, no en el navegador del client. S'eliminen quan s'apaga el navegador (s'acaba la sessió).
 
 
 
+1) Cal iniciar sessió **en cada pàgina** on utilitzem informació de sessió: 
+
+```php
+session_start();
+```
+
+2) Guardem la informació en variables de sessió. Accedim a elles amb la variable superglobal *(recordar: les variables superglobal són arrays!).*
+
+```php
+if (!isset($_SESSION['name'])) {//Si no està iniciada variable 'name'
+    $_SESSION['name'] = 'Jordi';//Guardem la variable de sessió 'name'
+}else {
+    $_SESSION['name'] = 'Anna';
+}
+```
+
+3) En una altre pàgina, podem accedir a la variable de sessió:
+
+```php
+$name = $_SESSION['name'];
+```
+
+4) Per eliminar una variable de sessió o la sessió completa:
+
+```php
+unset($_SESSION['name']);
+session_destroy();//elimina totes les variables de la sessió
+```
 
 
 
+*Per a navegar a diferents pàgines d'una mateixa web:
+
+```php
+header('Location: page2.php');
+```
 
 
 
+## Cookies
+
+https://www.youtube.com/watch?v=RzMjwICWKr4&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn&index=17
+
+Manera de guardar informació **en el navegador** del client, també per a poder accedir a aquesta des de les diferents pàgines d'una web.
+
+Menys segur que les variables de Sessions. No s'eliminen tot i que l'usuari tanqui el navegador (acabi la sessió).
+
+Les cookies es guarden a la variable superglobal `$_COOKIE` (array de cookies).
 
 
 
+1) Crear cookie:
+
+```php
+$name = 'Jordi';
+
+setcookie('name', $name, time()+3600);//temps d'expiració en 1 hora (3600 segons)
+```
+
+2) Per eliminar cookie posem un temps d'expiració que ja ha passat:
+
+```php
+setcookie('name', $name, time()-3600);
+```
+
+3) Podem accedir a les cookies (des de la mateixa o des d'una altre pàgina):
+
+```php
+$name = $_COOKIE["name"];
+```
 
 
 
+*Podem emmagatzemar més d'una dada en una cookie utilitzant un Array, que cal serialitzar:
+
+```php
+$user = ['name' => 'Jordi', 'surname' => 'Alonso', 'email' => 'j@j.com'];//array amb les dades
+
+$user = serialize($user);//converteix array en format string per poder-ho emmagatzemar com a cookie
+
+setcookie('user', $user, time()+3600);//creem la cookie amb l'array serialitzat
+
+//Per accedir a l'array guardat a la cookie cal deserialitzar l'array
+$user = unserialize($_COOKIE['user']);
+```
 
