@@ -16,7 +16,11 @@ La màquina virtual s'instala en un **Provider**, en aquest cas *VirtualBox*.
 
 ### Homestead.yaml
 
-Fitxer on podem configurar coses de la màquina virtual. Es poden posar les **carpetes que volem compartir** entre el meu ordinador real i la màquina virtual. *També configuració de sites de Nginx i BBDD.*
+Fitxer on podem configurar coses de la màquina virtual. Es poden posar les **carpetes que volem compartir** entre el meu ordinador real i la màquina virtual. També es configuren els sites: són les adreces de virtual host que tenim disponibles.
+
+https://scotch.io/tutorials/getting-started-with-laravel-homestead
+
+https://abbasharoon.me/homestead-yaml-explained-a-z/
 
 
 
@@ -25,11 +29,34 @@ Fitxer on podem configurar coses de la màquina virtual. Es poden posar les **ca
 Per utilitzar la màquina virtual:
 
 - `cd /Users/jordi/HomeStead`
+
 - `Encendre VM: vagrant up`
+
 - `Estat VM: vagrant status`
+
 - `Accedir VM: vagrant ssh`
+
 - `Sortir VM: exit`
+
 - `Apagar VM: vagrant halt`
+
+  ​
+
+
+```
+ALTRES FUNCIONS TERMINAL
+touch <file.html> //Crear un arxiu a la carpeta actual
+clear //netejar terminal
+cd
+cd ..
+open
+rm <file>//eliminar fitxer
+rm -f <file>//forçar eliminar fitxer
+mkdir//crear carpeta
+rm -rf <carpeta>//eliminar carpeta
+vim <fitxer>//obrir amb editor vim
+```
+
 
 
 
@@ -78,13 +105,6 @@ ALTRES FUNCIONS GIT
 git --version //comprovació que està instalat
 git config --global user.name 'Jordi' //Per registar nom
 git config --global user.email 'j@j.com' //Per registar email
-
-FUNCIONS TERMINAL
-touch <file.html> //Crear un arxiu a la carpeta actual
-clear //netejar terminal
-cd
-cd ..
-open
 ```
 
 ```
@@ -114,6 +134,30 @@ El **punter** **Head** apunta a la branca actual (pot  ser la master o una altre
 Podem crear-nos una altre branca on fer els canvis futurs. Quan hem acabat els canvis, fem **merge** de la branca actual a la branca Master.
 
 https://gitlab.com/salle-projectes-web/git-basics
+
+
+
+### Composer
+
+https://desarrolloweb.com/manuales/tutorial-composer.html#capitulos187
+
+http://weaintplastic.github.io/web-development-field-guide/Development/Frontend_Development/Setting_up_your_project/Setup_Dependency_Managers/Composer/Initialize_Composer_on_a_new_Project.html
+
+https://gitlab.com/salle-projectes-web/composer-basics
+
+És un gestor de dependències PHP, és a dir, permet instalar i actualitzar llibreries , frameworks i altres tipus de fitxers PHP ja creats per altres persones per a utilitzar-los en el nostre projecte. Ens estalvia haver de instalar i actualitzar manualment cada llibreria o framework que utilitzem en el nostre projecte. (Seguint les diapositives de la Salle ho he instalat de manera global: puc accedir a composer des de qualsevol lloc/projecte).
+
+<u>Funcionament</u>: 
+
+1) Tenim un fitxer *composer.json* on escrivim tots els paquets que utilitzarem en el projecte. Cridem a `composer init` per a crear el json (ens va preguntant coses que aniran dins del json: https://goo.gl/BTs2mu). 
+
+2) Un cop escrits tots els paquets (llibreries, etc.) en el camp require del json, haurem d'utilitzar `composer install` i ell sol instalarà tots els paquets (Alternativa: es pot instalar automàticament la llibreria si tenim la comanda de terminal d'aquesta, per exemple: `composer require --dev phpunit/phpunit`.) 
+
+3) Totes les llibreries s'instalaran en una carpeta en el nostre projecte anomenada *vendor.* Per incloure totes les llibreries instalades de cop al nostre projecte només caldrà escriure en el codi PHP `require 'vendor/autoload.php'`. El fitxer composer.lock indica la versió instalada de totes les llibreries.
+
+4) Si afegim més paquets o volem actualitzar els que tenim, fer `composer update`.
+
+*Tots els paquets que podem instalar per composer es troben a <https://packagist.org/>.
 
 
 
@@ -636,3 +680,279 @@ setcookie('user', $user, time()+3600);//creem la cookie amb l'array serialitzat
 $user = unserialize($_COOKIE['user']);
 ```
 
+
+
+# Slim
+
+https://www.slimframework.com/docs/v3/tutorial/first-app.html
+
+És un framework de PHP. Permet fer funcions i **organitzar el codi** de manera més eficient. Obliga a treballar amb MVC.
+
+
+
+## Inici
+
+1) Instalar slim amb composer en la carpeta del nostre projecte:
+
+```
+composer init
+composer require slim/slim “^3.0”
+```
+
+
+
+2) Crear fitxer d'inici *index.php* al directori *public* (dins de public posem el index.php que executa el virtual host pel navegador). Plantilla fitxer inici:
+
+```php
+<?php
+//Importem classes de php per a la comunicació de missatges amb html (estandart)
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+
+//Importar vendor (carpeta amb els recursos instalats per composer -slim-). El path pot ser diferent per mi!
+require '../vendor/autoload.php';
+
+//Creem l'objecte app, la base d'un projecte amb slim
+$app = new \Slim\App;
+
+//Mètode d'exemple que mostra un missatge quan realitzem una crida per url (get) amb el format "/hello/nom".
+$app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
+    $name = $args['name'];
+    $response->getBody()->write("Hello, $name");
+
+    return $response;
+});
+
+//Iniciem slim i el projecte en si.
+$app->run();
+```
+
+Provar exemple anant a `http://tests.dev/hello/jordi`.
+
+
+
+3) Afegir fitxer de configuració del nostre projecte. Permet afegir dades per al projecte de forma general.
+
+Crear-lo a una carpeta separada: `/app/settings.php`
+
+Per exemple, settings.php pot ser així (inclou dades de connexions amb BBDD, etc.):
+
+```php
+return [
+    'settings' => [
+        'displayErrorDetails' => true,
+        'database' => [
+            'dbname' => 'PWbox',
+            'user' => 'web2',
+            'password' => 'web2',
+            'host' => 'localhost',
+            'driver' => 'pdo_mysql'
+        ]
+    ]
+];
+```
+
+En el index.php cal canviar al fer new de la app de Slim. Ara:
+
+```php
+$settings = require_once __DIR__ . '/../app/settings.php';
+$app = new \Slim\App($settings);//nova app amb els settings indicats
+```
+
+We’ll be able to access any settings we put into that `$settings` array from our application later on.
+
+
+
+4) Editar composer.json i posar l'apartat autoload perquè es carreguin correctament les meves pròpies classes a part de les que hi ha a la carpeta vendor. Posem path d'on tenim tots els fitxers amb classes (en aquest cas, projecte pràctica de web, el codi està dins de src).
+
+```php
+"autoload": {
+    "psr-4": {
+    	"PWBox\\": "src/"
+    }
+ }
+```
+
+Executar llavors `composer dumpa`.
+
+Comprovació a `/vendor/composer/autoload_psr4.php`. Ha d'aparéixer `'PWBox\\' => array($baseDir . '/src')` en aquest cas.
+
+
+
+5) Afegir dependències (llibreries externes). Es posen en un fitxer a part, a `/app/dependencies.php`. Mirar a la web l'explicació completa: https://www.slimframework.com/docs/v3/tutorial/first-app.html
+
+Cal afegir `require_once __DIR__ . '/../app/dependencies.php';` al index.php.
+
+
+
+6) Afegir rutes en un fitxer a `/app/routes.php`. (Després de les dependències!)
+
+Les rutes són totes les url per cada pàgina que tindrà la nostre web.
+
+En el fitxer index.html, hem d'incloure també el fitxer: `require_once __DIR__ . '/../app/routes.php';`
+
+Mirar explicació completa a https://www.slimframework.com/docs/v3/tutorial/first-app.html
+
+
+
+*Finalment, el fitxer index.php ha de quedar d'aquesta manera (només crea app Slim i importa fitxers):
+
+```php
+<?php
+
+require '../vendor/autoload.php';
+
+$settings = require_once __DIR__ . '/../app/settings.php';
+
+$app = new \Slim\App($settings);
+
+require_once __DIR__ . '/../app/dependencies.php';
+require_once __DIR__ . '/../app/routes.php';
+
+$app->run();
+```
+
+
+
+## Vistes: Twig
+
+Template Engine: Eina o llibreria que **permet separar el codi** **php de les vistes html** (templates). Les templates només contenen html. Twig és un engine template.
+
+Per exemple, per a printar text en un .php hauriem de fer `<p><?php echo $name; ?></p>`. Si utilitzem Twig, només posem `<p> {{ name }} <p>`.
+
+Per integrar Twig a Slim:
+
+1) Instalar Twig amb Composer: `composer require slim/twig-view`
+
+2) Afegim Twig com a dependència de Slim en el fitxer dependencies.php
+
+Els fitxers html (templates) són amb extensió .twig ara.
+
+En el fitxer de routes.php cridarem a un controlador de la ruta que retornarà la vista (template .twig) que toqui.
+
+Podem carregar assets (css, imatges, etc. que tindrem en una carpeta a /public/assets ) en el template .twig utilitzant la funció base_url de twig en el head de la pàgina:
+
+ `<link rel="stylesheet" href="{{ base_url() }}/assets/css/style.min.css">`
+
+Podem fer herència de templates: A partir d'una template base.twig, podem crear altres que heredin de la primera (compartiran elements bàsics).
+
+Sintaxi de Twig: https://twig.symfony.com/doc/2.x/templates.html#template-inheritance
+
+https://twig.symfony.com/doc/2.x/api.html
+
+
+
+## Controladors slim
+
+Encarregat de controlar les accions de les rutes. No executen lògica de la aplicació (això ho fa el Model).
+
+#### Rutes
+
+Dins del fitxer routes.php.
+
+Podem fer rutes que s'encarreguen de les peticions HTTP get, post, etc. S'utilitzen els mètodes get o post a partir de la instància $app de la classe \Slim\App. 
+
+**De forma bàsica, el mètode té 2 paràmetres**: el route pattern (url) i el mètode callback a executar quan es crida a la funció (es reb la url que toca). *Podem assignar nom a les rutes per accedir més endavant.*
+
+```php
+$app = new \Slim\App();
+$app->get('/books/{id}', function ($request, $response, $args) {
+    // Show book identified by $args['id']
+});
+```
+
+El mètode callback reb `$request, $response, $args`, i sempre ha de retornar la response.
+
+- `$args` permet recuperar les "variables" que hem rebut en la url. Per exemple: `$args['id']`.
+
+#### Controladors
+
+https://www.slimframework.com/docs/v3/objects/router.html
+
+Dins de la carpeta src/controller.
+
+Cada controlador controla 1 ruta (relació 1:1).
+
+**No estem limiatats a cridar a una funció callback** en el tractament d'una ruta, podem utilitzar **altres accions:**
+
+- Class:method
+- Invokable class
+
+
+
+*(Aquestes classes estaran dins de la carpeta Controller)*
+
+1) <u>Class:method</u>
+
+En el segon paràmetre de la funció de la ruta (get, post, etc) indiquem el path fins arribar a la classe on tenim el mètode a cridar, dos punts i el mètode.
+
+```php
+$app->get('/user','PWBox\Controller\PostUserController:indexAction');
+//alternativa per si tenim més classes en el fitxer del path
+$app->get('/user','PWBox\Controller\PostUserController::class:indexAction');
+```
+
+2) <u>I</u><u>nvokable class</u>
+
+En comptes de cridar a un mètode concret, fem la crida a una classe sencera, que s'encarregarà de fer la gestió de la ruta (per casos més complexes).
+
+En el segon paràmetre de la funció de la ruta (get, post, etc) indiquem el path fins al fitxer de la classe (posem ::class per si tenim més d'una classe en el fitxer php). 
+
+```php
+$app->get('/hello/{name}','PWBox\Controller\HelloController::class');
+```
+
+Dins de la classe invokable tindrem un constructor que li permetrà accedir a dependencies.php:
+
+```php
+protected $container;
+
+public function __construct(ContainerInterface $container) {
+	$this->container = $container;//container permet accedir a dependecies.php
+}
+```
+
+La classe té un mètode de gestió quan es crida a la classe invokable:
+
+```php
+public function __invoke($request, $response, $args) {
+    // your code
+    // to access items in the container... $this->container->get('');
+    return $response;
+}
+```
+
+
+
+#### Middleware
+
+https://www.slimframework.com/docs/v3/concepts/middleware.html
+
+Funcions que ens permeten fer accions abans o després d'executar la ruta (comprovacions, etc.).
+
+Creem una classe pel middleware amb el mètode invoke, dins de /controller/middleware. També serà una invokable class.
+
+```php
+class ExampleMiddleware{
+    public function __invoke($request, $response, $next) {
+        $response->getBody()->write('BEFORE');
+        $response = $next($request, $response);
+        $response->getBody()->write('AFTER');
+
+        return $response;//sempre fem return de response
+    }
+}
+```
+
+Afegim el middleware al fitxer de rutes, a la ruta que toqui:
+
+```php
+$app->get('/hello/{name}','PWBox\Controller\HelloController::class')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
+```
+
+
+
+## Model slim
+
+Conté tota la lògica de la aplicació (entitats, interfícies, serveis, etc.).
