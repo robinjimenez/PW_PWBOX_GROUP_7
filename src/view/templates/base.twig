@@ -1,25 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html >
     <head>
         <title>{% block title %}{% endblock %}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.min.css">
+        <script defer src="{{ base_url() }}/assets/js/fontawesome-all.js"></script>
     </head>
-    <body>
+    <body class="has-fixed-navbar-top">
     <header>
-        <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item" href="#">
-                    <img src="{{ base_url() }}/assets/img/logo.png" alt="PWBox: your files online">
+            <nav class="level navbar is-fixed-top" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <a class="navbar-item" href="#">
+                        <img src="{{ base_url() }}/assets/img/logo.png" alt="PWBox: your files online">
+                    </a>
+                </div>
+                <div class="navbar-menu">
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <a class="button is-primary is-outlined">
+                                Log in
+                            </a>
+                        </div>
+                        <div class="navbar-item">
+                            <a class="button is-primary">
+                                Sign up
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
                 </a>
-            </div>
-        </nav>
+            </nav>
     </header>
-    <main>
+    <section>
         {% block content %}{% endblock %}
-    </main>
-    <footer>
+    </section>
+    <footer class="footer">
         <div class="container">
             <div class="content has-text-centered">
                 <p>

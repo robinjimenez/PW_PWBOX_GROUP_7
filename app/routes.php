@@ -15,3 +15,8 @@ $app->get(
   '/user',
   'PWBox\Controller\PostUserController:indexAction'
 );
+
+$app->get(
+    '/register',
+    'PWBox\Controller\RegisterController'
+);

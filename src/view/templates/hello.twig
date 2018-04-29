@@ -3,25 +3,122 @@
 {% block content %}
     <!-- {{ parent() }} -->
     <!-- child -->
-    <section class="hero is-primary is-medium">
+    <div class="hero is-primary is-medium is-bold">
         <div class="hero-body">
             <div class="container">
                 <div class="columns">
                     <div class="column">
-                        <p class="title">Hello {{ name }} you've visited this page {{ counter }} times.</p>
-                        {% if not advice %}
-                            <p class="subtitle">Cookies message</p>
-                        {% endif %}
-                        <!-- <img class="title" src="{{ base_url() }}/assets/img/logo_white.png" alt="PWBox: your files online" width="100px">
-                        <h2 class="subtitle">
+                        <img class="title" src="{{ base_url() }}/assets/img/logo_white.png" alt="PWBox: your files online" width="200px">
+                        <h2 class="subtitle is-size-2">
                             Your files, online.
-                        </h2> -->
+                        </h2>
                     </div>
                     <div class="column">
+                        <p class="is-size-4">
+                            Store your files in the cloud, <br>
+                            access them from anywhere at any time.
+                        </p> <br>
                         <a class="button is-large is-primary is-outlined is-inverted">Get started!</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="container is-fullhd has-background-light">
+        <br>
+            <h1 class="title is-size-1 has-text-centered">
+                our plans
+            </h1>
+        <div class="columns is-centered">
+            <div class="column is-one-quarter">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title is-centered is-size-3">
+                            basic
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <span class="has-text-weight-bold is-size-1">
+                                0€
+                            </span>forever <br>
+                            who doesn't want free online storage?
+                        </div>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> 10GB of storage <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Data encryption <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Sharing features <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> User authentication <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> SmartSync <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Group folders <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Online chat support <br>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-item">
+                            <a class="button is-large is-primary">
+                                Sign me up!
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-one-quarter">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title is-centered is-size-3">
+                            standard
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <span class="has-text-weight-bold is-size-1">
+                                10€
+                            </span>/month <br>
+                            all the space in the world.
+                        </div>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> <span class="has-text-weight-bold"> Includes all basic features</span> <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Unlimited storage <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Advanced admin tools <br>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-item">
+                            <a class="button is-large is-primary">
+                                Sign me up!
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-one-quarter">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title is-centered is-size-3">
+                            premium
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <span class="has-text-weight-bold is-size-1">
+                                20€
+                            </span>/month <br>
+                            premium features, affordable price
+                        </div>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> <span class="has-text-weight-bold"> Includes all standard features</span> <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Network control <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> Insights <br>
+                        <span class="icon has-text-primary"><i class="fas fa-check"></i></span> 24/7 support <br>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-item">
+                            <a class="button is-large is-primary">
+                                Sign me up!
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
 {% endblock %}
