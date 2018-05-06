@@ -8,9 +8,9 @@ use \Psr\Http\Message\ResponseInterface as Response;
 class UserLoggedMiddleware
 {
     public function __invoke(Request $request, Response $response, callable $next) {
-        if (!isset($_SESSION['user_id'])) {
-            return $response->withStatus(302)->withHeader('Location','/');
-        }
+        //if (!isset($_SESSION['user_id'])) {
+        //    return $response->withStatus(302)->withHeader('Location','/');
+        //}
         return $next($request, $response);
     }
 }

@@ -366,8 +366,8 @@ S'utilitzen les variables superglobal `$_GET o $_POST` per accedir al contingut 
 En la part del HTML, en l'etiqueta del formulari s'indica el mètode PHP a cridar:
 
 ```html
-<form method="GET" action="get_post.php"><!-- En el methos posem GET o POST-->
-    <input type="text" name="name"><!-- L'etiqueta name per accedir des del PHP-->
+<form method="GET" action="get_post.php"><!-- En el method posem GET o POST-->
+    <input type="text"name="name"><!-- L'etiqueta name per accedir des del PHP-->
 </form>
 ```
 
@@ -418,6 +418,10 @@ Part PHP:
 *També existeix la superglobal $_REQUEST (funciona tant per GET o POST en el HTML).*
 
 https://www.youtube.com/watch?v=cIFUH3Qnd6s&list=PLillGF-Rfqbap2IB6ZS4BBBcYPagAjpjn&index=11
+
+
+
+*Utilitzant Slim és una mica diferent la sintaxi!
 
 
 

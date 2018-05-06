@@ -17,7 +17,6 @@ class HelloController {
         $this->container = $container;
     }
 
-
     //Opció 2
     /*public function indexAction(Request $request, Response $response, array $args) {
         $name = $args['name'];
@@ -25,8 +24,9 @@ class HelloController {
     }*/
 
     //Opció 1 -- recommended
-    public function __invoke(Request $request, Response $response, array $args)
-    {
+    public function __invoke(Request $request, Response $response, array $args) {
+
+        /*
         if(isset($_SESSION['counter'])) {
             $_SESSION['counter']+= 1;
         } else {
@@ -41,11 +41,15 @@ class HelloController {
             );
         }
         $name = $args['name'];
+
        return $this->container->get('view')
            ->render($response, 'hello.twig', [
                'name' => $name,
                'counter' => $_SESSION['counter'],
                'advice' => $cookie->getValue(),
-        ]);
+        ]);*/
+
+        return $this->container->get('view')
+            ->render($response, 'hello.twig', []);
     }
 }

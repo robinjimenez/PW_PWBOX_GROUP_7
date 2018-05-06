@@ -2,21 +2,42 @@
 
 $app->add('PWBox\Controller\Middleware\SessionMiddleware');
 
-$app->get('/hello/{name}',
+//Ruta per accedir a la Landing page
+$app->get('/',
     'PWBox\Controller\HelloController');
-    //->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
-$app->post(
-    '/user',
-    'PWBox\Controller\PostUserController:registerAction'
-);
-
-$app->get(
-  '/user',
-  'PWBox\Controller\PostUserController:indexAction'
-);
-
+//Ruta per accedir a la pàgina de registre
 $app->get(
     '/register',
     'PWBox\Controller\RegisterController'
 );
+
+//Ruta per accedir a la pàgina de login
+$app->get(
+    '/login',
+    'PWBox\Controller\LoginController'
+);
+
+//Ruta per quan l'usuari s'ha registrat -> Accedeix a login
+$app->post(
+    '/login',
+    'PWBox\Controller\PostUserController:registerAction'
+);
+
+//Ruta per quan l'usuari ha fet login -> Accedeix a dashboard (user)
+$app->post(
+    '/user',
+    'PWBox\Controller\PostUserController:loginAction'
+);
+
+/*
+$app->get(
+  '/user',
+  'PWBox\Controller\PostUserController:indexAction'
+);*/
+
+/*$app->get('/hello/{name}',
+    'PWBox\Controller\HelloController');
+    //->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
+*/
+

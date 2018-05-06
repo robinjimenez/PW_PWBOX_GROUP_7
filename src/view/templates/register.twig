@@ -6,11 +6,11 @@
         <div class="columns">
             <div class="column">
                 <h2 class="title is-centered">Register</h2>
-                <form action="/register" method="POST">
+                <form action="/login" method="POST">
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="text" placeholder="Username" value="">
+                            <input class="input {% if error %} is-error {% endif %}" type="text" name="username" placeholder="Username">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
@@ -19,16 +19,25 @@
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="email" placeholder="Email">
+                            <input class="input {% if error %} is-error {% endif %}" type="email" name="email" placeholder="Email">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
                         </div>
                     </div>
                     <div class="field">
+                        <label class="label">Birthdate</label>
+                        <div class="control has-icons-left">
+                            <input class="input {% if error %} is-error {% endif %}" type="date" name="birthdate" placeholder="dd/mm/yyyy">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="password" placeholder="Password">
+                            <input class="input {% if error %} is-error {% endif %}" type="password" name="password" placeholder="Password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
@@ -37,7 +46,7 @@
                     <div class="field">
                         <label class="label">Confirm password</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="password" placeholder="Confirm password">
+                            <input class="input {% if error %} is-error {% endif %}" type="password" name="confirm-password" placeholder="Confirm password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
@@ -45,7 +54,7 @@
                     </div>
                     <div class="field">
                         <div class="control">
-                            <button class="button is-primary is-medium" type="submit" name="button">Submit</button>
+                            <button class="button is-primary is-medium" type="submit">Submit</button>
                         </div>
                     </div>
                 </form>
