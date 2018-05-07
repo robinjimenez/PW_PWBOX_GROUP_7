@@ -1,7 +1,9 @@
 <?php
 namespace PWBox\Controller;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Dflydev\FigCookies\FigRequestCookies;
@@ -18,9 +20,13 @@ class RegisterController {
     }
 
     //Opció 1 -- recommended
-    public function __invoke(Request $request, Response $response, array $args)
-    {
-       return $this->container->get('view')
-           ->render($response, 'register.twig', []);
+    public function __invoke(Request $request, Response $response, array $args) {
+        try {
+            return $this->container->get('view')
+                ->render($response, 'register.twig', ['error' => false]);
+
+        } catch (NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface $e) {
+        }
     }
 }

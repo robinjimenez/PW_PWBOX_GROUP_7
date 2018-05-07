@@ -21,8 +21,8 @@ $app->get(
 //Ruta per quan l'usuari s'ha registrat -> Accedeix a login
 $app->post(
     '/login',
-    'PWBox\Controller\PostUserController:registerAction'
-);
+    'PWBox\Controller\PostUserController:registerAction');
+    //->add('PWBox\Controller\Middleware\RegisterValidationsMiddleware');
 
 //Ruta per quan l'usuari ha fet login -> Accedeix a dashboard (user)
 $app->post(

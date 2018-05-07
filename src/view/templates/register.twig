@@ -10,47 +10,62 @@
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="text" name="username" placeholder="Username">
+                            <input class="input {% if error %} is-danger {% endif %}" type="text" name="username" placeholder="Username">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
                         </div>
+                        {% if error %}
+                            <p class="help is-danger">Invalid username</p>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="email" name="email" placeholder="Email">
+                            <input class="input {% if error %} is-danger {% endif %}" type="email" name="email" placeholder="Email">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
                         </div>
+                        {% if error %}
+                            <p class="help is-danger">Invalid email</p>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Birthdate</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="date" name="birthdate" placeholder="dd/mm/yyyy">
+                            <input class="input {% if error %} is-danger {% endif %}" type="date" name="birthdate" placeholder="dd/mm/yyyy">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-calendar-alt"></i>
                             </span>
                         </div>
+                        {% if error %}
+                            <p class="help is-danger">Invalid date</p>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="password" name="password" placeholder="Password">
+                            <input class="input {% if error %} is-danger {% endif %}" type="password" name="password" placeholder="Password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                         </div>
+                        {% if error %}
+                            <p class="help is-danger">Invalid password</p>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Confirm password</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-error {% endif %}" type="password" name="confirm-password" placeholder="Confirm password">
+                            <input class="input {% if error %} is-danger {% endif %}" type="password" name="confirm-password" placeholder="Confirm password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                         </div>
+                        {% if error %}
+                            <p class="help is-danger">Invalid password</p>
+                        {% endif %}
                     </div>
                     <div class="field">
                         <div class="control">
