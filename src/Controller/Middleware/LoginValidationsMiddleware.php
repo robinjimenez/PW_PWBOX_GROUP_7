@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 use Respect\Validation\Validator as v;
 
 
-class RegisterValidationsMiddleware {
+class LoginValidationsMiddleware {
 
     protected $container;
 
@@ -19,41 +19,29 @@ class RegisterValidationsMiddleware {
 
     public function __invoke(Request $request, Response $response, $next) {
         $data = $request->getParsedBody();
-        $validData = $this->checkRegisterData($data);//Validació dades formulari
+        $validData = $this->checkLoginData($data);
 
         if ($validData != 1) {
             try {
-                //En cas d'error, el middleware atura la ruta i retorna per renderitzar la pàgina de registre amb error
+                //En cas d'error, el middleware atura la ruta i retorna per renderitzar la pàgina de login amb error
                 return $this->container->get('view')
-                    ->render($response, 'register.twig', ['error' => true]);
+                    ->render($response, 'login.twig', ['error' => true]);
             } catch (NotFoundExceptionInterface $e) {
             } catch (ContainerExceptionInterface $e) {
             }
         }
 
         //Si no hi ha error es passa al següent middleware
-        //o si no hi ha més es passa a registerAction de PostUserController
+        //o si no hi ha més es passa a loginAction de PostUserController
         return $next($request, $response);
     }
 
-    public function checkRegisterData(Array $data) {
+    public function checkLoginData(Array $data) {
         $validData = 1;//1 is OK
-        //var_dump($data);
-
-        //Check username
-        if (v::alnum()->noWhitespace()->validate($data["username"]) == false ||
-            v::stringType()->length(1, 20)->validate($data["username"]) == false) {
-            $validData = -1;
-        }
 
         //Check email
         if (v::email()->validate($data["email"]) == false) {
-            $validData = -2;
-        }
-
-        //Check birthdate
-        if (v::date()->validate($data["birthdate"]) == false) {
-            $validData = -3;
+            $validData = -1;
         }
 
         //Check password
@@ -61,12 +49,7 @@ class RegisterValidationsMiddleware {
             v::alnum()->validate($data["password"]) == false ||
             preg_match("#[A-Z]+#", $data["password"]) == false ||
             preg_match("#[a-z]+#", $data["password"]) == false) {
-            $validData = -4;
-        }
-
-        //Check same password
-        if ($data["password"] != $data["confirm-password"]) {
-            $validData = -5;
+            $validData = -2;
         }
 
         return $validData;

@@ -11,26 +11,20 @@
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control has-icons-left">
-                                <input class="input {% if error %} is-danger {% endif %}" type="email" name="email" placeholder="Email">
+                                <input class="input" type="email" name="email" placeholder="Email">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
                             </div>
-                            {% if error %}
-                                <p class="help is-danger">Invalid username</p>
-                            {% endif %}
                         </div>
                         <div class="field">
                             <label class="label">Password</label>
                             <div class="control has-icons-left">
-                                <input class="input {% if error %} is-danger {% endif %}" type="password" name= "password" placeholder="Password">
+                                <input class="input" type="password" name= "password" placeholder="Password">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                             </div>
-                            {% if error %}
-                                <p class="help is-danger">Invalid username</p>
-                            {% endif %}
                         </div>
 
                         <div class="field">
@@ -42,17 +36,16 @@
                                     <a class="button is-primary is-outlined is-medium" href="/register">Sign Up</a>
                                 </div>
                             </div>
-
                         </div>
+
+                        {% if error %}
+                            <div class="field">
+                                <label class="label">Your email or password are not valid</label>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
-            {% if error %}
-                {{ error }}
-            {% endif %}
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
         </div>
     </div>
 {% endblock %}
