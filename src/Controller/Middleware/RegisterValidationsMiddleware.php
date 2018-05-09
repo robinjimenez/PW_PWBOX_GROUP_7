@@ -25,7 +25,7 @@ class RegisterValidationsMiddleware {
             try {
                 //En cas d'error, el middleware atura la ruta i retorna per renderitzar la pàgina de registre amb error
                 return $this->container->get('view')
-                    ->render($response, 'register.twig', ['error' => true]);
+                    ->render($response, 'register.twig', ['error' => $validData]);
             } catch (NotFoundExceptionInterface $e) {
             } catch (ContainerExceptionInterface $e) {
             }

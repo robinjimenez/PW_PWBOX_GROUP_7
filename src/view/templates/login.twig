@@ -11,36 +11,38 @@
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control has-icons-left">
-                                <input class="input" type="email" name="email" placeholder="Email">
+                                <input class="input" type="email" name="email" id="login-email" onblur="checkEmail(2);" placeholder="Email">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
                             </div>
+                            <p class="help is-danger" id="l-email-inv" style="display: none;">Invalid email</p>
                         </div>
                         <div class="field">
                             <label class="label">Password</label>
                             <div class="control has-icons-left">
-                                <input class="input" type="password" name= "password" placeholder="Password">
+                                <input class="input" type="password" name= "password" id="login-password" onblur="checkPassword(2);" placeholder="Password">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                             </div>
+                            <p class="help is-danger" id="l-password-inv" style="display: none;">Invalid password</p>
                         </div>
 
                         <div class="field">
                             <div class="columns">
                                 <div class="column control">
-                                    <button class="button is-primary is-medium" type="submit">Submit</button>
+                                    <button class="button is-primary is-medium" type="submit" id="login-button" onclick="return checkLoginFrontEnd();">Submit</button>
                                 </div>
                                 <div class="column control">
                                     <a class="button is-primary is-outlined is-medium" href="/register">Sign Up</a>
                                 </div>
                             </div>
                         </div>
-
+                        <label class="help is-info" id="l-message-inv" style="display: none;">Your email or password are not valid</label>
                         {% if error %}
                             <div class="field">
-                                <label class="label">Your email or password are not valid</label>
+                                <label class="help is-info">Your email or password are not valid</label>
                             </div>
                         {% endif %}
                     </form>

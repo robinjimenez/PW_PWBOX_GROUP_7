@@ -7,68 +7,69 @@
             <div class="column">
                 <h2 class="title is-centered">Register</h2>
                 <form action="/login" method="POST">
+
                     <div class="field">
                         <label class="label">Username</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-danger {% endif %}" type="text" name="username" id="register-username" onblur="checkUsername()" placeholder="Username">
+                            <input class="input {% if error == -1 %} is-danger {% endif %}" type="text" name="username" id="register-username" onblur="checkUsername()" placeholder="Username">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                             </span>
                         </div>
                         <p class="help is-danger" id="r-username-inv" style="display: none;">Invalid username</p>
-                        {% if error %}
+                        {% if error == -1%}
                             <p class="help is-danger">Invalid username</p>
                         {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-danger {% endif %}" type="email" name="email" id="register-email" onblur="checkEmail()" placeholder="Email">
+                            <input class="input {% if error == -2 %} is-danger {% endif %}" type="email" name="email" id="register-email" onblur="checkEmail(1);" placeholder="Email">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
                         </div>
                         <p class="help is-danger" id="r-email-inv" style="display: none;">Invalid email</p>
-                        {% if error %}
+                        {% if error == -2 %}
                             <p class="help is-danger">Invalid email</p>
                         {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Birthdate</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-danger {% endif %}" type="date" name="birthdate" id="register-date" onblur="checkDate()" placeholder="dd/mm/yyyy">
+                            <input class="input {% if error == -3%} is-danger {% endif %}" type="date" name="birthdate" id="register-date" onblur="checkDate()" placeholder="dd/mm/yyyy">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-calendar-alt"></i>
                             </span>
                         </div>
                         <p class="help is-danger" id="r-date-inv" style="display: none;">Invalid date</p>
-                        {% if error %}
+                        {% if error == -3%}
                             <p class="help is-danger">Invalid date</p>
                         {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-danger {% endif %}" type="password" name="password" id="register-password" onblur="checkPassword()" placeholder="Password">
+                            <input class="input {% if error == -4%} is-danger {% endif %}" type="password" name="password" id="register-password" onblur="checkPassword(1)" placeholder="Password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                         </div>
                         <p class="help is-danger" id="r-password-inv" style="display: none;">Invalid password</p>
-                        {% if error %}
+                        {% if error == -4%}
                             <p class="help is-danger">Invalid password</p>
                         {% endif %}
                     </div>
                     <div class="field">
                         <label class="label">Confirm password</label>
                         <div class="control has-icons-left">
-                            <input class="input {% if error %} is-danger {% endif %}" type="password" name="confirm-password" id="register-conf-password" onblur="checkConfPassword()" placeholder="Confirm password">
+                            <input class="input {% if error == -5%} is-danger {% endif %}" type="password" name="confirm-password" id="register-conf-password" onblur="checkConfPassword()" placeholder="Confirm password">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                         </div>
                         <p class="help is-danger" id="r-confpass-inv" style="display: none;">Invalid password confirmation</p>
-                        {% if error %}
+                        {% if error == -5%}
                             <p class="help is-danger">Invalid password confirmation</p>
                         {% endif %}
                     </div>
@@ -77,15 +78,16 @@
                             <button class="button is-primary is-medium" id="register-button" type="submit" onclick="return checkRegisterFrontEnd();">Submit</button>
                         </div>
                     </div>
-                    <p class="help is-info" id="r-button-inv" style="display: none;">Check Invalid Fields</p>
+                    <p class="help is-info" id="r-message-inv" style="display: none;">Check Invalid Fields</p>
                 </form>
             </div>
             <div class="column">
 
             </div>
         </div>
+
         {% if error %}
-            {{ error }}
+            {# {{ error }} #}
         {% endif %}
         {% for message in messages %}
             {{ message }}
