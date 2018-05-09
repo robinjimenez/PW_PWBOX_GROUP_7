@@ -9,7 +9,7 @@ use PWBox\Model\UserRepository;
 class DoctrineUserRepository implements UserRepository
 {
 
-    private const DATE_FORMAT = 'Y-m-d H:i:s';
+    private const DATE_FORMAT = 'Y-m-d';
 
     private $database;
 
@@ -20,13 +20,13 @@ class DoctrineUserRepository implements UserRepository
 
     public function save(User $user)
     {
-        $sql = "INSERT INTO user(username, email, password, created_at, updated_at) VALUES(:username, :email, :password, :created_at, :updated_at)";
+        $sql = "INSERT INTO users(username, email, password, birthdate) VALUES(:username, :email, :password, :birthdate)";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->bindValue("email", $user->getEmail(), 'string');
         $stmt->bindValue("password", $user->getPassword(), 'string');
-        $stmt->bindValue("created_at", $user->getCreatedAt()->format(self::DATE_FORMAT));
-        $stmt->bindValue("updated_at", $user->getUpdatedAt()->format(self::DATE_FORMAT));
+        //$stmt->bindValue("birthdate", $user->getBirthdate()->format(self::DATE_FORMAT));
+        $stmt->bindValue("birthdate", $user->getBirthdate(), 'string');
         $stmt->execute();
     }
 }

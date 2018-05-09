@@ -6,43 +6,16 @@ use \DateTime;
 
 class User {
 
-    private $id;
     private $username;
     private $email;
     private $password;
-    private $createdAt;
-    private $updatedAt;
+    private $birthdate;
 
-    public function __construct(
-        $id,
-        $username,
-        $email,
-        $password,
-        $createdAt,
-        $updatedAt)
-    {
-        $this->id = $id;
+    public function __construct($username, $email, $password, $birthdate) {
         $this->username = $username;
         $this->email = $email;
         $this->password = $password;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
+        $this->birthdate = $birthdate;
     }
 
     /**
@@ -94,34 +67,19 @@ class User {
     }
 
     /**
-     * @return DateTime
+     * @return String
      */
-    public function getCreatedAt(): DateTime
+    public function getBirthdate(): string
     {
-        return $this->createdAt;
+        return $this->birthdate;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param String $birthdate
      */
-    public function setCreatedAt($createdAt): void
+    public function setBirthdate($birthdate): void
     {
-        $this->createdAt = $createdAt;
+        $this->birthdate = $birthdate;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getUpdatedAt(): DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param DateTime $updatedAt
-     */
-    public function setUpdatedAt($updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
 }

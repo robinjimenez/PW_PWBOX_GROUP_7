@@ -29,7 +29,6 @@ $app->post(
     '/user',
     'PWBox\Controller\PostUserController:loginAction')
     ->add('PWBox\Controller\Middleware\LoginValidationsMiddleware');
-
 /*
 $app->get(
   '/user',

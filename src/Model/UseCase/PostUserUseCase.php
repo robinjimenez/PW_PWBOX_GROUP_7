@@ -18,14 +18,11 @@ class PostUserUseCase {
 
     public function __invoke(array $rawData)
     {
-        $now = new \DateTime('now');
         $user = new User(
-            null,
             $rawData['username'],
             $rawData['email'],
             $rawData['password'],
-            $now,
-            $now
+            $rawData['birthdate']
         );
         $this->repo->save($user);
     }

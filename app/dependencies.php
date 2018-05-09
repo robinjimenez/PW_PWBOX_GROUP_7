@@ -12,6 +12,10 @@ $container['view'] = function($container) {
     return $view;
 };
 
+$container['flash'] = function($container) {
+    return new \Slim\Flash\Messages();
+};
+
 $container['doctrine'] = function($container) {
 
   $config = new \Doctrine\DBAL\Configuration();
@@ -20,6 +24,7 @@ $container['doctrine'] = function($container) {
   return $conn;
 };
 
+//Registre de la implementació de la BBDD
 $container['user_repository'] = function($container) {
   $repository = new PWBox\Model\Implementation\DoctrineUserRepository(
       $container->get('doctrine')
@@ -27,6 +32,7 @@ $container['user_repository'] = function($container) {
   return $repository;
 };
 
+//Register post user service
 $container['post_user_use_case'] = function($container) {
   $useCase = new PWBox\Model\UseCase\PostUserUseCase(
       $container->get('user_repository')
@@ -34,6 +40,4 @@ $container['post_user_use_case'] = function($container) {
   return $useCase;
 };
 
-$container['flash'] = function($container) {
-  return new \Slim\Flash\Messages();
-};
+

@@ -25,23 +25,22 @@ class PostUserController {
     public function registerAction(Request $request, Response $response) {
         //Si s'arriba aqui és perquè els middlewares no han aturat l'execució de la ruta abans
 
-        try {
-            // TODO: Register User To Database:
+        //Password encryption:
+        $data = $request->getParsedBody();
+        $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
+        $data['password'] = $hashed_password;
 
-            /*
+        try {
+            //Register User To Database:
             $service = $this->container->get('post_user_use_case');
             $service($data);
 
-            $this->container->get('flash')->addMessage('register','User registered');
-            return $response->withStatus(302)->withHeader('Location','/user');
-            */
         } catch (\Exception $e) {
-            /*
-            echo $e->getMessage();
-            die();
-            return $this->container->get('view')
-                ->render($response, 'register.twig', []);
-            */
+            $response = $response
+                -> withStatus(500)
+                -> withHeader('Content-Type', 'text/html')
+                -> write("Something went wrong");
+            return $response;
         }
 
         try {
@@ -56,7 +55,17 @@ class PostUserController {
     public function loginAction(Request $request, Response $response) {
         //Si s'arriba aqui és perquè els middlewares no han aturat l'execució de la ruta abans
 
-        // TODO: Check if user exist in database and redirect to dashboard
+        // TODO: Check if user exists in database and redirect to dashboard
+        // Query the database for username and password
+        // ...
+
+        //if(password_verify($password, $hashed_password)) {
+            // If the password inputs matched the hashed password in the database
+            // Do something, you know... log them in.
+        //}
+
+        // Else, Redirect them back to the login page.
+
 
         try {
             //Un cop executades totes les accions de registre sense errors es renderitza la pàgina de dashboard TODO: De moment es la de login
