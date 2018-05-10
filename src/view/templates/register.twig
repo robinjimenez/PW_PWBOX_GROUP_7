@@ -79,6 +79,9 @@
                         </div>
                     </div>
                     <p class="help is-info" id="r-message-inv" style="display: none;">Check Invalid Fields</p>
+                    {% if error == -6%}
+                        <p class="help is-danger">Error: This user already exists</p>
+                    {% endif %}
                 </form>
             </div>
             <div class="column">
@@ -87,7 +90,7 @@
         </div>
 
         {% if error %}
-            {# {{ error }} #}
+            {#{{ error }}#}
         {% endif %}
         {% for message in messages %}
             {{ message }}

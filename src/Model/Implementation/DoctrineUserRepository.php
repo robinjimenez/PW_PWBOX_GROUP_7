@@ -8,9 +8,6 @@ use PWBox\Model\UserRepository;
 
 class DoctrineUserRepository implements UserRepository
 {
-
-    private const DATE_FORMAT = 'Y-m-d';
-
     private $database;
 
     public function __construct(Connection $database)
@@ -25,8 +22,18 @@ class DoctrineUserRepository implements UserRepository
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->bindValue("email", $user->getEmail(), 'string');
         $stmt->bindValue("password", $user->getPassword(), 'string');
-        //$stmt->bindValue("birthdate", $user->getBirthdate()->format(self::DATE_FORMAT));
         $stmt->bindValue("birthdate", $user->getBirthdate(), 'string');
         $stmt->execute();
+    }
+
+    public function login(User $user) {
+        $sql = "SELECT * FROM users WHERE email = :email";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("email", $user->getEmail(), 'string');
+        $stmt->execute();
+
+        $result = $stmt->fetchAll();
+
+        return $result;//7)Retornem resultat de la query
     }
 }

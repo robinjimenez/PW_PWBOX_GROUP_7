@@ -24,9 +24,11 @@
                             </a>
                         </div>
                         <div class="navbar-item">
+                            {% if logged != 1 %}
                             <a class="button is-primary" href="/register">
                                 Sign up
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

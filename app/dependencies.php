@@ -25,19 +25,23 @@ $container['doctrine'] = function($container) {
 };
 
 //Registre de la implementació de la BBDD
-$container['user_repository'] = function($container) {
+$container['user_repository'] = function($container) {//Taula de users
   $repository = new PWBox\Model\Implementation\DoctrineUserRepository(
       $container->get('doctrine')
   );
   return $repository;
 };
 
-//Register post user service
+//Register user post service
 $container['post_user_use_case'] = function($container) {
-  $useCase = new PWBox\Model\UseCase\PostUserUseCase(
-      $container->get('user_repository')
-  );
+  $useCase = new PWBox\Model\UseCase\PostUserUseCase($container->get('user_repository'));
   return $useCase;
+};
+
+//login user post service
+$container['login_user_use_case'] = function($container) {
+    $useCase = new PWBox\Model\UseCase\LoginPostUserUseCase($container->get('user_repository'));//3)Es crea una nova instància de la classe LoginPostUserUseCase. És invokable.
+    return $useCase;
 };
 
 

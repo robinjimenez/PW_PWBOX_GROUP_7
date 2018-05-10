@@ -50,6 +50,6 @@ class HelloController {
         ]);*/
 
         return $this->container->get('view')
-            ->render($response, 'hello.twig', []);
+            ->render($response, 'hello.twig', ['logged' => isset($_SESSION)]);
     }
 }
