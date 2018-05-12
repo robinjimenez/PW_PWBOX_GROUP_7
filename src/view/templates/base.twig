@@ -7,36 +7,40 @@
         <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.min.css">
         <script defer src="{{ base_url() }}/assets/js/fontawesome-all.js"></script>
         <script defer src="{{ base_url() }}/assets/js/validations.js"></script>
+        <script defer src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
+        <script defer src="{{ base_url() }}/assets/js/scripts.js"></script>
     </head>
-    <body class="has-fixed-navbar-top">
+    <body>
     <header>
-            <nav class="level navbar is-fixed-top" role="navigation" aria-label="main navigation">
-                <div class="navbar-brand">
-                    <a class="navbar-item" href="/">
-                        <img src="{{ base_url() }}/assets/img/logo.png" alt="PWBox: your files online">
-                    </a>
-                </div>
-                <div class="navbar-menu">
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <a class="button is-primary is-outlined" href="/login">
-                                Log in
-                            </a>
-                        </div>
-                        <div class="navbar-item">
-                            {% if logged != 1 %}
-                            <a class="button is-primary" href="/register">
-                                Sign up
-                            </a>
-                            {% endif %}
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <a class="navbar-item" href="/">
+                            <img src="{{ base_url() }}/assets/img/logo.png" alt="PWBox: your files online">
+                        </a>
+                    </div>
+                    <div class="navbar-menu">
+                        <div class="navbar-end">
+                            <div class="navbar-item">
+                                <a class="button is-primary is-outlined" href="/login">
+                                    Log in
+                                </a>
+                            </div>
+                            <div class="navbar-item">
+                                {% if logged != 1 %}
+                                    <a class="button is-primary" href="/register">
+                                        Sign up
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
+                    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
                 </div>
-                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
             </nav>
     </header>
     <section>

@@ -1,5 +1,7 @@
 <?php
 
+$app->add('PWBox\Controller\Middleware\SessionMiddleware');
+
 //Ruta per accedir a la Landing page
 $app->get('/',
     'PWBox\Controller\HelloController');
@@ -28,6 +30,18 @@ $app->post(
     'PWBox\Controller\PostUserController:loginAction')
     ->add('PWBox\Controller\Middleware\LoginValidationsMiddleware');
     //->add('PWBox\Controller\Middleware\SessionMiddleware');
+
+$app->get(
+    '/dashboard',
+    'PWBox\Controller\FileController'
+);
+
+$app->post(
+    '/dashboard',
+    'PWBox\Controller\FileController:uploadFileAction'
+);
+
+
 /*
 $app->get(
   '/user',
