@@ -4,6 +4,7 @@ namespace PWBox\Controller;
 use Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
@@ -31,11 +32,9 @@ class FileController {
     }
 
     public function uploadFileAction(Request $request, Response $response) {
-        $directory = '/home/vagrant/projects/PWbox/public/uploads';
+        $directory = __DIR__ . '/public/uploads';
 
         $uploadedFiles = $request->getUploadedFiles();
-
-        sprintf($uploadedFiles['files']);
 
         $errors = [];
 
