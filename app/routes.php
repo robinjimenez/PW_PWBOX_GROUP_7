@@ -1,7 +1,5 @@
 <?php
 
-$app->add('PWBox\Controller\Middleware\SessionMiddleware');
-
 //Ruta per accedir a la Landing page
 $app->get('/',
     'PWBox\Controller\HelloController');
@@ -30,6 +28,14 @@ $app->post(
     'PWBox\Controller\PostUserController:loginAction')
     ->add('PWBox\Controller\Middleware\LoginValidationsMiddleware');
     //->add('PWBox\Controller\Middleware\SessionMiddleware');
+
+$app->get(
+    '/profile',
+    'PWBox\Controller\ProfileController');
+
+$app->post(
+    '/profile',
+    'PWBox\Controller\ProfileController:updateProfileAction');
 
 $app->get(
     '/dashboard',

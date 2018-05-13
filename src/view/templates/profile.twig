@@ -1,0 +1,96 @@
+{% extends "base.twig" %}
+{% block title %}PWbox - Profile{% endblock %}
+{% block content %}
+    <div class="hero is-medium is-light is-bold">
+        <div class="hero-body">
+
+            <h2 class="title is-centered">Profile</h2>
+
+            <table class="table is-fullwidth">
+                <tbody>
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ username }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>Birthdate</th>
+                        <td>{{ birthdate }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ email }}</td>
+                        <td>
+                            <form class="columns" action="/profile" method="POST">
+
+                                    <div class="column is-one-fifth is-1">
+                                        <label class="label">Update Email:</label>
+                                    </div>
+                                    <div class="column">
+                                        <input class="input {% if error == -2%} is-danger {% endif %}" type="email" name="email" id="email" onblur="checkUpdateEmail()" placeholder="New Email">
+                                        <p class="help is-danger" id="email-inv" style="display: none;">Invalid email</p>
+                                    </div>
+                                    <div class="column is-one-fifth">
+                                        <button class="button is-danger" type="submit" name="email-button" onclick="return updateEmail();">Update Email</button>
+                                    </div>
+
+                            </form>
+                            {% if error == -2 %}
+                                <div class="columns">
+                                    <div class="column">
+                                        <p class="help is-danger">Invalid Email</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Password</th>
+                        <td>{{ password }}</td>
+                        <td>
+                            <form class="columns" action="/profile" method="POST">
+
+                                <div class="column is-one-fifth is-1">
+                                    <label class="label">Update Password:</label>
+                                </div>
+                                <div class="column">
+                                    <input class="input {% if error == -4%} is-danger {% endif %}" type="password" name="password" id="password" onblur="checkUpdatePassword()" placeholder="New Password">
+                                    <p class="help is-danger" id="password-inv" style="display: none;">Invalid password</p>
+                                </div>
+                                <div class="column">
+                                    <input class="input {% if error == -5%} is-danger {% endif %}" type="password" name="confirm-password" id="password-conf" onblur="checkUpdatePasswordConf()" placeholder="Confirm New Password">
+                                    <p class="help is-danger" id="password-conf-inv" style="display: none;">Invalid password confirmation</p>
+                                </div>
+                                <div class="column is-one-fifth">
+                                    <button class="button is-danger" type="submit" name="password-button" onclick="return updatePassword();">Update Password</button>
+                                </div>
+
+                            </form>
+                            {% if error == -4%}
+                                <div class="columns">
+                                    <div class="column">
+                                        <p class="help is-danger">Invalid Password</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if error == -5%}
+                                <div class="columns">
+                                    <div class="column">
+                                        <p class="help is-danger">Invalid Password Confirmation</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

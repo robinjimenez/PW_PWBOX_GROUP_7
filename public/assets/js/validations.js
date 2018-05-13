@@ -10,6 +10,79 @@ var passwordInputL = document.getElementById("login-password");
 var registerError = false;
 var loginError = false;
 
+var updateEmailError = false;
+var updatePasswordError = false;
+var updatePasswordConfError = false;
+
+function updatePassword() {
+    checkUpdatePassword();
+    checkUpdatePasswordConf();
+    return !updatePasswordError && !updatePasswordConfError;
+}
+
+function updateEmail() {
+    checkUpdateEmail();
+    return !updateEmailError;
+}
+
+function checkUpdatePassword() {
+    var lowerCaseLetters = /[a-z]/g;
+    var upperCaseLetters = /[A-Z]/g;
+    var numbers = /[0-9]/g;
+    var minLength = 6;
+    var maxLength = 12;
+
+    var password = document.getElementById('password');
+
+    if(password.value.match(lowerCaseLetters) && password.value.match(upperCaseLetters) && password.value.match(numbers)
+        && password.value.length >= minLength && password.value.length <= maxLength) {
+        password.classList.remove("is-danger");
+        password.classList.add("is-success");
+        document.getElementById("password-inv").style.display="none";
+        updatePasswordError = false;
+    }else {
+        password.classList.remove("is-success");
+        password.classList.add("is-danger");
+        document.getElementById("password-inv").style.display="inline";
+        updatePasswordError = true;
+    }
+}
+
+function checkUpdatePasswordConf() {
+    var password = document.getElementById('password');
+    var passwordConf = document.getElementById('password-conf');
+
+    if (passwordConf.value !== "" && passwordConf.value === password.value) {
+        passwordConf.classList.remove("is-danger");
+        passwordConf.classList.add("is-success");
+        document.getElementById("password-conf-inv").style.display="none";
+        updatePasswordConfError = false;
+    }else {
+        passwordConf.classList.remove("is-success");
+        passwordConf.classList.add("is-danger");
+        document.getElementById("password-conf-inv").style.display="inline";
+        updatePasswordConfError = true;
+    }
+}
+
+function checkUpdateEmail() {
+    var emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    var email = document.getElementById('email');
+
+    if (emailPattern.test(email.value)) {
+        email.classList.remove("is-danger");
+        email.classList.add("is-success");
+        document.getElementById("email-inv").style.display="none";
+        updateEmailError = false;
+    }else {
+        email.classList.remove("is-success");
+        email.classList.add("is-danger");
+        document.getElementById("email-inv").style.display="inline";
+        updateEmailError = true;
+    }
+}
+
 function checkRegisterFrontEnd() {
     registerError = false;
     checkUsername();
