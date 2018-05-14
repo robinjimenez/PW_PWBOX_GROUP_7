@@ -2,6 +2,8 @@
 
 namespace PWBox\Model\UseCase;
 
+use PWBox\Model\Folder;
+use PWBox\Model\FolderRepository;
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
@@ -9,11 +11,13 @@ use PWBox\Model\User;
 class RegisterUseCase {
 
     /** UserRepository */
-    private $repo;
+    private $userRepo;
+    private $folderRepo;
 
-    public function __construct(UserRepository $repo)
+    public function __construct(UserRepository $userRepository,FolderRepository $folderRepository)
     {
-        $this->repo = $repo;
+        $this->userRepo = $userRepository;
+        $this->folderRepo = $folderRepository;
     }
 
     public function __invoke(array $rawData)
@@ -25,8 +29,14 @@ class RegisterUseCase {
             $rawData['birthdate']
         );
 
+        $root = new Folder(
+            $user->getUsername(),
+            $user->getUsername(),
+            null
+        );
         #Creem l'usuari a la BBDD i la seva carpeta
-        $this->repo->save($user);
+        $this->userRepo->save($user);
+        $this->folderRepo->add($root);
         mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername());
     }
 

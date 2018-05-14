@@ -25,16 +25,23 @@ $container['doctrine'] = function($container) {
 };
 
 //Registre de la implementació de la BBDD
-$container['user_repository'] = function($container) {//Taula de users
+$container['user_repository'] = function($container) { //Taula de users
   $repository = new PWBox\Model\Implementation\DoctrineUserRepository(
       $container->get('doctrine')
   );
   return $repository;
 };
 
+$container['folder_repository'] = function($container) {
+    $repository = new PWBox\Model\Implementation\DoctrineFolderRepository(
+        $container->get('doctrine')
+    );
+    return $repository;
+};
+
 //Register user post service
 $container['post_user_use_case'] = function($container) {
-  $useCase = new PWBox\Model\UseCase\RegisterUseCase($container->get('user_repository'));
+  $useCase = new PWBox\Model\UseCase\RegisterUseCase($container->get('user_repository'),$container->get('folder_repository'));
   return $useCase;
 };
 
@@ -56,4 +63,14 @@ $container['update_email_use_case'] = function ($container) {
     return $useCase;
 };
 
+//update email service
+$container['update_email_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\UpdateEmailUseCase($container->get('user_repository'));
+    return $useCase;
+};
 
+//update email service
+$container['add_folder_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\AddFolderUseCase($container->get('folder_repository'));
+    return $useCase;
+};
