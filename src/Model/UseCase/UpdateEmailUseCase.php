@@ -1,13 +1,18 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Jordi
+ * Date: 13/5/18
+ * Time: 23:47
+ */
 
 namespace PWBox\Model\UseCase;
-
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
 
-class PostUserUseCase {
-
+class UpdateEmailUseCase
+{
     /** UserRepository */
     private $repo;
 
@@ -19,12 +24,13 @@ class PostUserUseCase {
     public function __invoke(array $rawData)
     {
         $user = new User(
-            $rawData['username'],
-            $rawData['email'],
-            $rawData['password'],
-            $rawData['birthdate']
+            "",
+            $rawData['old-email'],
+            "",
+            ""
         );
-        $this->repo->save($user);
+        $newEmail = $rawData['new-data']['email'];
+        $this->repo->updateEmail($user, $newEmail);
     }
 
 }

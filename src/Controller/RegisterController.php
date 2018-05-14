@@ -19,12 +19,46 @@ class RegisterController {
         $this->container = $container;
     }
 
-    //Opció 1 -- recommended
+    //Per la crida get
     public function __invoke(Request $request, Response $response, array $args) {
         try {
             return $this->container->get('view')
-                ->render($response, 'register.twig', ['error' => false]);
+                ->render($response, 'register.twig', ['error' => false, 'logged' => isset($_SESSION["userID"])]);
 
+        } catch (NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface $e) {
+        }
+    }
+
+    //Per la crida post
+    public function registerAction(Request $request, Response $response) {
+        //Si s'arriba aqui és perquè els middlewares no han aturat l'execució de la ruta abans
+
+        //Password encryption:
+        $data = $request->getParsedBody();
+        $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
+        $data['password'] = $hashed_password;
+
+        try {
+            //Register User To Database:
+            $service = $this->container->get('post_user_use_case');
+            $service($data);
+
+        } catch (\Exception $e) {
+            try {
+                $response = $this->container->get('view')
+                    ->render($response, 'register.twig', ['error' => -6, 'logged' => isset($_SESSION["userID"])]);
+            } catch (NotFoundExceptionInterface $e) {
+            } catch (ContainerExceptionInterface $e) {
+            }
+
+            return $response;
+        }
+
+        try {
+            //Un cop executades totes les accions de registre sense errors es renderitza la pàgina de login
+            return $this->container->get('view')
+                ->render($response, 'login.twig', ['error' => false, 'logged' => isset($_SESSION["userID"])]);
         } catch (NotFoundExceptionInterface $e) {
         } catch (ContainerExceptionInterface $e) {
         }

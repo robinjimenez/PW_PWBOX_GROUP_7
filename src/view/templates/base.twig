@@ -26,13 +26,29 @@
                                     Log in
                                 </a>
                             </div>
-                            <div class="navbar-item">
-                                {% if logged != 1 %}
-                                    <a class="button is-primary" href="/register">
-                                        Sign up
+
+                            {% if logged != 1 %}
+                                <div class="navbar-item">
+                                        <a class="button is-primary" href="/register">
+                                            Sign up
+                                        </a>
+                                </div>
+                            {% endif %}
+
+                            {% if logged == 1 %}
+                                <div class="navbar-item">
+                                    <a class="button is-primary is-outlined" href="/profile">
+                                        Profile
                                     </a>
-                                {% endif %}
-                            </div>
+                                </div>
+
+                                <div class="navbar-item">
+                                    <a class="button is-primary" href="/dashboard">
+                                        Dashboard
+                                    </a>
+                                </div>
+                            {% endif %}
+
                         </div>
                     </div>
                     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">

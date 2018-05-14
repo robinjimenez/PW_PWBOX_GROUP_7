@@ -17,7 +17,7 @@ class DoctrineUserRepository implements UserRepository
 
     public function save(User $user)
     {
-        $sql = "INSERT INTO users(username, email, password, birthdate) VALUES(:username, :email, :password, :birthdate)";
+        $sql = "INSERT INTO user(username, email, password, birthdate) VALUES(:username, :email, :password, :birthdate)";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->bindValue("email", $user->getEmail(), 'string');
@@ -26,8 +26,8 @@ class DoctrineUserRepository implements UserRepository
         $stmt->execute();
     }
 
-    public function login(User $user) {
-        $sql = "SELECT * FROM users WHERE email = :email";
+    public function login(User $user) {//Retorna l'usuari a partir del email
+        $sql = "SELECT * FROM user WHERE email = :email";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("email", $user->getEmail(), 'string');
         $stmt->execute();
@@ -36,4 +36,25 @@ class DoctrineUserRepository implements UserRepository
 
         return $result;//7)Retornem resultat de la query
     }
+
+    public function getUser(User $user) {//Retorna l'usuari a partir del username
+        $sql = "SELECT * FROM user WHERE username = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function updateEmail(User $user, String $newEmail) {
+        $sql = "UPDATE user SET email = :newEmail WHERE email LIKE :oldEmail";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("newEmail", $newEmail, 'string');
+        $stmt->bindValue("oldEmail", $user->getEmail(), 'string');
+        $stmt->execute();
+    }
+
+
 }
