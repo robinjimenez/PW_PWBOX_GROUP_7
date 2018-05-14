@@ -2,8 +2,6 @@
 
 namespace PWBox\Model\UseCase;
 
-use PWBox\Model\Folder;
-use PWBox\Model\FolderRepository;
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 

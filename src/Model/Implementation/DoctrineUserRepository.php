@@ -56,5 +56,21 @@ class DoctrineUserRepository implements UserRepository
         $stmt->execute();
     }
 
+    public function updatePassword(User $user) {
+        $sql = "UPDATE user SET password = :newPassword WHERE username LIKE :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("newPassword", $user->getPassword(), 'string');
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+    }
+
+    public function deleteUser(User $user) {
+        $sql = "DELETE FROM user WHERE username LIKE :username;";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+    }
+
+
 
 }

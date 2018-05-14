@@ -4,8 +4,7 @@ namespace PWBox\Model\UseCase;
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
-
-class GetUserUseCase
+class UpdatePasswordUseCase
 {
     /** UserRepository */
     private $repo;
@@ -17,14 +16,13 @@ class GetUserUseCase
 
     public function __invoke(array $rawData)
     {
-        $username = $rawData['userID'];
         $user = new User(
-            $username,
+            $rawData['username'],
             "",
-            "",
+            $rawData['new-password'],
             ""
         );
-        $result = $this->repo->getUser($user);//No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
-        return($result);
+
+        $this->repo->updatePassword($user);
     }
 }

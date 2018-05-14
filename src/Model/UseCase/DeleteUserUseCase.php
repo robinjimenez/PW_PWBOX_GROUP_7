@@ -4,8 +4,7 @@ namespace PWBox\Model\UseCase;
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
-
-class GetUserUseCase
+class DeleteUserUseCase
 {
     /** UserRepository */
     private $repo;
@@ -15,16 +14,14 @@ class GetUserUseCase
         $this->repo = $repo;
     }
 
-    public function __invoke(array $rawData)
+    public function __invoke(String $rawData)//Reb username com a rawData
     {
-        $username = $rawData['userID'];
         $user = new User(
-            $username,
+            $rawData,
             "",
             "",
             ""
         );
-        $result = $this->repo->getUser($user);//No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
-        return($result);
+        $this->repo->deleteUser($user);
     }
 }
