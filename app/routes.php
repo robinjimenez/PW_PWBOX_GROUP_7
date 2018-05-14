@@ -1,8 +1,6 @@
 <?php
 $app->add('PWBox\Controller\Middleware\SessionMiddleware');
 
-//$app->add('PWBox\Controller\Middleware\SessionMiddleware');
-
 //Ruta per accedir a la Landing page
 $app->get('/',
     'PWBox\Controller\HelloController');

@@ -24,7 +24,10 @@ class RegisterUseCase {
             $rawData['password'],
             $rawData['birthdate']
         );
+
+        #Creem l'usuari a la BBDD i la seva carpeta
         $this->repo->save($user);
+        mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername());
     }
 
 }
