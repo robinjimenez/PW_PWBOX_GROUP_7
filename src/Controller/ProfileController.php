@@ -30,7 +30,7 @@ class ProfileController {
     }
 
     public function getProfileInfo() {
-        //TODO: Obtenir de BBDD dades de l'usuari de la sessió actual ($_SESSION["userID"] em dóna el seu username)
+        //Obtenir de BBDD dades de l'usuari de la sessió actual ($_SESSION["userID"] em dóna el seu username)
         $data = $_SESSION;
         $service = $this->container->get('get_user_use_case');
         $ddbbServiceResult = $service($data);//Li passo l'array de session, que conten el mail de l'usuari de la sessió com a ID
@@ -45,6 +45,7 @@ class ProfileController {
     //Mètode per la crida POST de profile
     public function updateProfileAction(Request $request, Response $response) {
         $data = $request->getParsedBody();
+        $this->getProfileInfo();//Cal tornar-ho a cridar perquè els atributs fets a la crida del invoke no es queden guardats després d'acabar el invoke
 
         if (isset($data['email-button'])) {
             //Clicat button email
@@ -52,8 +53,6 @@ class ProfileController {
                 return $this->container->get('view')
                     ->render($response, 'profile.twig', ['error' => -2, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
             }else {
-                //Obtenir email actual
-                $this->getProfileInfo();//Cal tornar-ho a cridar perquè els atributs fets a la crida del invoke no es queden guardats després d'acabar el invoke
 
                 //Actualitzar email BBDD
                 $dataPlus = array(
@@ -84,23 +83,59 @@ class ProfileController {
                 preg_match("#[a-z]+#", $data["password"]) == false) {//Comprovació password
 
                 return $this->container->get('view')
-                    ->render($response, 'profile.twig', ['error' => -4, 'username' => $this->username, 'birthdate' => $this->birthdate, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+                    ->render($response, 'profile.twig', ['error' => -4, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
 
             }else if ($data["password"] != $data["confirm-password"]) {//Comprovació confirm password
                     //Check same password
                     return $this->container->get('view')
-                        ->render($response, 'profile.twig', ['error' => -5, 'username' => $this->username, 'birthdate' => $this->birthdate, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+                        ->render($response, 'profile.twig', ['error' => -5, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
 
             }else {
+                //Actualitzar password BBDD
 
-                //TODO: Actualitzar password BBDD
+                $dataPlus = array(
+                    "new-password" => $data['password'],
+                    "username" => $this->username
+                );//Completo l'array del request de data (nomes ve el nou password), amb el usuari per poder identificarlo a la bbdd
 
+                try {
+                    $service = $this->container->get('update_password_use_case');
+                    $service($dataPlus);//s'executa servei d'actualitzar email bbdd
+
+                    //Actualitzo password pel nou
+                    $this->password = $data['password'];
+
+                } catch (\Exception $e) {
+                    return $this->container->get('view')
+                        ->render($response, 'profile.twig', ['error' => -4, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+                }
 
                 return $this->container->get('view')
-                    ->render($response, 'profile.twig', ['error' => false, 'username' => $this->username, 'birthdate' => $this->birthdate, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+                    ->render($response, 'profile.twig', ['error' => false, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
             }
         }
+    }
 
+    public function deleteProfileAction(Request $request, Response $response) {
+        $this->getProfileInfo();//Obtinc les dades del profile en els atributs de la classe, a partir de la sessió actual
+
+        //Delete account from DDBB
+        $data = $this->username;//Com a dades només necessito username
+
+        try {
+            $service = $this->container->get('delete_user_use_case');
+            $service($data);//s'executa servei d'actualitzar email bbdd
+
+        } catch (\Exception $e) {
+            return $this->container->get('view')
+                ->render($response, 'profile.twig', ['error' => -7, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+        }
+
+        //Delete session
+        $_SESSION["userID"] = null;
+
+        return $this->container->get('view')
+            ->render($response, 'hello.twig', ['logged' => isset($_SESSION["userID"])]);
     }
 
 }

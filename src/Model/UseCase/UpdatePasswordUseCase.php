@@ -1,13 +1,11 @@
 <?php
 
 namespace PWBox\Model\UseCase;
-
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
-
-class RegisterUseCase {
-
+class UpdatePasswordUseCase
+{
     /** UserRepository */
     private $repo;
 
@@ -20,15 +18,11 @@ class RegisterUseCase {
     {
         $user = new User(
             $rawData['username'],
-            $rawData['email'],
-            $rawData['password'],
-            $rawData['birthdate']
+            "",
+            $rawData['new-password'],
+            ""
         );
 
-        #Creem l'usuari a la BBDD i la seva carpeta
-        $this->repo->save($user);
-
-        mkdir(__DIR__ . '/../../../public/uploads/' . $user->getUsername());
+        $this->repo->updatePassword($user);
     }
-
 }

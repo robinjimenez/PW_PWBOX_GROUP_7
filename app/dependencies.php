@@ -56,4 +56,16 @@ $container['update_email_use_case'] = function ($container) {
     return $useCase;
 };
 
+//update password service
+$container['update_password_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\UpdatePasswordUseCase($container->get('user_repository'));
+    return $useCase;
+};
+
+//delete account service
+$container['delete_user_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\DeleteUserUseCase($container->get('user_repository'));
+    return $useCase;
+};
+
 

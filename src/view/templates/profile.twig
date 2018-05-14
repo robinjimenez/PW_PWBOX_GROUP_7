@@ -85,12 +85,12 @@
                     </tr>
                 </tbody>
             </table>
+            <form action="/" method="POST">
+                <button class="button is-danger is-outlined" type="submit" name="delete-account-button">Delete account</button>
+            </form>
+            {% if error == -7%}
+                <p class="help is-danger">An unexpected error ocurred</p>
+            {% endif %}
         </div>
     </div>
-
-
-
-
-
-
 {% endblock %}

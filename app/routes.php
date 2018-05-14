@@ -49,4 +49,7 @@ $app->post(
     'PWBox\Controller\FileController:uploadFileAction')
     ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
+$app->post('/',
+    'PWBox\Controller\ProfileController:deleteProfileAction');
+
 
