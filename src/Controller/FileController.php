@@ -21,13 +21,13 @@ class FileController {
     public function __invoke(Request $request, Response $response, array $args)
     {
        return $this->container->get('view')
-           ->render($response, 'dash.twig', []);
+           ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
     }
 
     public function showFormAction(Request $request, Response $response)
     {
         return $this->container->get('view')
-            ->render($response, 'dash.twig', []);
+            ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
     }
 
     public function uploadFileAction(Request $request, Response $response) {
@@ -67,7 +67,7 @@ class FileController {
         }
 
         return $this->container->get('view')
-            ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true]);
+            ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
     }
 
     /**

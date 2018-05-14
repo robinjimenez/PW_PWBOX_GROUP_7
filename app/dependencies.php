@@ -34,13 +34,25 @@ $container['user_repository'] = function($container) {//Taula de users
 
 //Register user post service
 $container['post_user_use_case'] = function($container) {
-  $useCase = new PWBox\Model\UseCase\PostUserUseCase($container->get('user_repository'));
+  $useCase = new PWBox\Model\UseCase\RegisterUseCase($container->get('user_repository'));
   return $useCase;
 };
 
 //login user post service
 $container['login_user_use_case'] = function($container) {
-    $useCase = new PWBox\Model\UseCase\LoginPostUserUseCase($container->get('user_repository'));//3)Es crea una nova instància de la classe LoginPostUserUseCase. És invokable.
+    $useCase = new PWBox\Model\UseCase\LoginUseCase($container->get('user_repository'));//3)Es crea una nova instància de la classe LoginUseCase. És invokable.
+    return $useCase;
+};
+
+//get user info service
+$container['get_user_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\GetUserUseCase($container->get('user_repository'));
+    return $useCase;
+};
+
+//update email service
+$container['update_email_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\UpdateEmailUseCase($container->get('user_repository'));
     return $useCase;
 };
 

@@ -1,4 +1,5 @@
 <?php
+$app->add('PWBox\Controller\Middleware\SessionMiddleware');
 
 //Ruta per accedir a la Landing page
 $app->get('/',
@@ -19,43 +20,33 @@ $app->get(
 //Ruta per quan l'usuari s'ha registrat -> Accedeix a login
 $app->post(
     '/login',
-    'PWBox\Controller\PostUserController:registerAction')
+    'PWBox\Controller\RegisterController:registerAction')
     ->add('PWBox\Controller\Middleware\RegisterValidationsMiddleware');
 
 //Ruta per quan l'usuari ha fet login -> Accedeix a dashboard (user)
 $app->post(
     '/user',
-    'PWBox\Controller\PostUserController:loginAction')
+    'PWBox\Controller\LoginController:loginAction')
     ->add('PWBox\Controller\Middleware\LoginValidationsMiddleware');
-    //->add('PWBox\Controller\Middleware\SessionMiddleware');
 
 $app->get(
     '/profile',
-    'PWBox\Controller\ProfileController');
+    'PWBox\Controller\ProfileController')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->post(
     '/profile',
-    'PWBox\Controller\ProfileController:updateProfileAction');
+    'PWBox\Controller\ProfileController:updateProfileAction')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->get(
     '/dashboard',
-    'PWBox\Controller\FileController'
-);
+    'PWBox\Controller\FileController')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->post(
     '/dashboard',
-    'PWBox\Controller\FileController:uploadFileAction'
-);
+    'PWBox\Controller\FileController:uploadFileAction')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
-
-/*
-$app->get(
-  '/user',
-  'PWBox\Controller\PostUserController:indexAction'
-);*/
-
-/*$app->get('/hello/{name}',
-    'PWBox\Controller\HelloController');
-    //->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
-*/
 

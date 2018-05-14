@@ -17,15 +17,8 @@ class HelloController {
         $this->container = $container;
     }
 
-    //Opció 2
-    /*public function indexAction(Request $request, Response $response, array $args) {
-        $name = $args['name'];
-        return $this->container->get('view')->render($response, 'hello.twig', ['name' => $name]);
-    }*/
-
-    //Opció 1 -- recommended
+    //Per la crida GET
     public function __invoke(Request $request, Response $response, array $args) {
-
         /*
         if(isset($_SESSION['counter'])) {
             $_SESSION['counter']+= 1;
@@ -48,8 +41,16 @@ class HelloController {
                'counter' => $_SESSION['counter'],
                'advice' => $cookie->getValue(),
         ]);*/
+        //return var_dump(isset($_SESSION["userID"]));
 
         return $this->container->get('view')
-            ->render($response, 'hello.twig', ['logged' => isset($_SESSION)]);
+            ->render($response, 'hello.twig', ['logged' => isset($_SESSION["userID"])]);
+
+        /*if (isset($_SESSION["userID"])) {
+            return $this->container->get('view')
+                ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
+        }else {
+
+        }*/
     }
 }

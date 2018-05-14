@@ -25,7 +25,7 @@ class LoginValidationsMiddleware {
             try {
                 //En cas d'error, el middleware atura la ruta i retorna per renderitzar la pàgina de login amb error
                 return $this->container->get('view')
-                    ->render($response, 'login.twig', ['error' => true]);
+                    ->render($response, 'login.twig', ['error' => true, 'logged' => isset($_SESSION["userID"])]);
             } catch (NotFoundExceptionInterface $e) {
             } catch (ContainerExceptionInterface $e) {
             }

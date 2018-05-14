@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jordi
- * Date: 10/5/18
- * Time: 17:56
- */
 
 namespace PWBox\Model\UseCase;
 use PWBox\Model\UserRepository;
 use PWBox\Model\User;
 
 
-class LoginPostUserUseCase
+class LoginUseCase
 {
     /** UserRepository */
     private $repo;
