@@ -51,6 +51,14 @@ class FileController {
                     continue;
                 }
 
+                if ($uploadedFile->getSize() > 2000000) {
+                    $errors[] = sprintf(
+                        'The file %s is too large! Max file size is 2Mb.',
+                        $uploadedFile->getClientFilename()
+                    );
+                    continue;
+                }
+
                 $fileName = $uploadedFile->getClientFilename();
 
                 $fileInfo = pathinfo($fileName);
@@ -82,7 +90,7 @@ class FileController {
      */
     private function isValidExtension(string $extension)
     {
-        $validExtensions = ['jpg', 'png'];
+        $validExtensions = ['pdf','gif','jpg','png','md','txt'];
 
         return in_array($extension, $validExtensions);
     }

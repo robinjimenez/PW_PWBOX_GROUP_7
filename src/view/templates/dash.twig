@@ -3,6 +3,18 @@
 {% block content %}
     <div class="container">
         <br>
+        {% if errors is empty and isPost %}
+            <div class="notification is-success">
+                <button class="delete"></button>
+                <p>All the files have been uploaded successfully!</p>
+            </div>
+        {% endif %}
+        {% for error in errors %}
+            <div class="notification is-danger">
+                <button class="delete"></button>
+                <p>{{ error }}</p>
+            </div>
+        {% endfor %}
         <div class="panel">
             <div class="panel-heading">
                 <div class="level">
@@ -25,12 +37,7 @@
                             </a>
                         </p>
                     </div>
-                    {% if errors is empty and isPost %}
-                        <p>All the files have been uploaded successfully!</p>
-                    {% endif %}
-                    {% for error in errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+
                 </div>
             </div>
 
@@ -55,9 +62,9 @@
                                                     choose a file
                                                 </span>
                                             </span>
-                                            <!-- <span id="filename" class="file-name">
+                                            <span id="filename" class="file-name">
 
-                                            </span>-->
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
@@ -78,8 +85,8 @@
                         <a class="subtitle"> file </a>
                         <div class="field is-grouped is-grouped-right is-pulled-right">
                             <p class="control">
-                                <a class="button is-primary">
-                                    <span>open</span>
+                                <a class="button is-success">
+                                    <span>download</span>
                                 </a>
                             </p>
                             <p class="control">
@@ -101,14 +108,44 @@
                         </div>
                     </div>
                 </div>
+                {% for folder in folders %}
+                    <div class="container">
+                        <div class="box">
+                            <a class="subtitle is-vcentered"> file </a>
+                            <div class="field is-grouped is-grouped-right is-pulled-right">
+                                <p class="control">
+                                    <a class="button is-success">
+                                        <span>open</span>
+                                    </a>
+                                </p>
+                                <p class="control">
+                                    <a class="button is-primary">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>rename</span>
+                                    </a>
+                                </p>
+                                <p class="control">
+                                    <a class="button is-danger">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                        <span>delete</span>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
                 {% for file in files %}
                     <div class="container">
                         <div class="box">
                             <a class="subtitle is-vcentered"> file </a>
                             <div class="field is-grouped is-grouped-right is-pulled-right">
                                 <p class="control">
-                                    <a class="button is-primary">
-                                        <span>open</span>
+                                    <a class="button is-success">
+                                        <span>download</span>
                                     </a>
                                 </p>
                                 <p class="control">
