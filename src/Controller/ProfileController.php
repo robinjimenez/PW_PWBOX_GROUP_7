@@ -37,9 +37,19 @@ class ProfileController {
         //return var_dump($ddbbServiceResult);
 
         $this->username = $ddbbServiceResult[0]['username'];
-        $this->birthdate = $ddbbServiceResult[0]['birthdate'];
         $this->email = $ddbbServiceResult[0]['email'];//Igual a $_SESSION["userID"]
-        $this->password = $ddbbServiceResult[0]['password'];
+
+        //format date
+        $temp = $ddbbServiceResult[0]['birthdate'];
+        $format = "YmdHis";
+        $date = date_parse_from_format($format, $temp);
+        $birthdate = $date['day'] . "-" . $date['month'] . "-" . $date['year'];
+        $this->birthdate = $birthdate;
+
+        //decrypt password
+        $encryptionService = $this->container->get('model_encryption_service');
+        $decryptedPassword = $encryptionService("decrypt", $ddbbServiceResult[0]['password']);
+        $this->password = $decryptedPassword;
     }
 
     //Mètode per la crida POST de profile
@@ -93,8 +103,12 @@ class ProfileController {
             }else {
                 //Actualitzar password BBDD
 
+                //encrypt password
+                $encryptionService = $this->container->get('model_encryption_service');
+                $encryptedPassword = $encryptionService("encrypt", $data['password']);
+
                 $dataPlus = array(
-                    "new-password" => $data['password'],
+                    "new-password" => $encryptedPassword,
                     "username" => $this->username
                 );//Completo l'array del request de data (nomes ve el nou password), amb el usuari per poder identificarlo a la bbdd
 

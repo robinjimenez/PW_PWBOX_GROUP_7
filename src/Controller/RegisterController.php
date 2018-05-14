@@ -36,8 +36,10 @@ class RegisterController {
 
         //Password encryption:
         $data = $request->getParsedBody();
-        $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
-        $data['password'] = $hashed_password;
+
+        $encryptionService = $this->container->get('model_encryption_service');
+        $encryptedPassword = $encryptionService("encrypt", $data['password']);
+        $data['password'] = $encryptedPassword;
 
         try {
             //Register User To Database:

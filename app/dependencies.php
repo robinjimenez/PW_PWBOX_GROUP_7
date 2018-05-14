@@ -75,15 +75,14 @@ $container['delete_user_use_case'] = function ($container) {
     return $useCase;
 };
 
-
-//update email service
-$container['update_email_use_case'] = function ($container) {
-    $useCase = new PWBox\Model\UseCase\UpdateEmailUseCase($container->get('user_repository'));
-    return $useCase;
-};
-
 //update email service
 $container['add_folder_use_case'] = function ($container) {
     $useCase = new PWBox\Model\UseCase\AddFolderUseCase($container->get('folder_repository'));
     return $useCase;
+};
+
+//encrypt service
+$container['model_encryption_service'] = function ($container) {
+    $service = new PWBox\Model\Encryption();
+    return $service;
 };

@@ -42,10 +42,13 @@ class LoginController {
         if (count($ddbbServiceResult) > 0) {//Si tenim resultats (el email existeix a la bbdd)
 
             //Comprovem contrasenyes iguals
-            $requestPassword = $data['password'];
-            $ddbbPassword = $ddbbServiceResult[0]['password'];
+            $requestPassword = $data['password'];//password form
+            $ddbbPassword = $ddbbServiceResult[0]['password'];//password bbdd
 
-            if(password_verify($requestPassword, $ddbbPassword)) {
+            $encryptionService = $this->container->get('model_encryption_service');
+            $encryptedPassword = $encryptionService("encrypt", $requestPassword);
+
+            if($ddbbPassword == $encryptedPassword) {
                 //Password correcte:
 
                 //Iniciem sessió amb el username de l'usuari
