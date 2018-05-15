@@ -3,6 +3,7 @@
 namespace PWBox\Model\Implementation;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use PWBox\Model\File;
 use PWBox\Model\Folder;
 use PWBox\Model\User;
@@ -17,13 +18,67 @@ class DoctrineFileRepository implements FileRepository
         $this->database = $database;
     }
 
-    public function add(File $file)
+    public function add(File $file, float $fileSize)
     {
-        $sql = "INSERT INTO element(name, owner, parent) VALUES(:name, :owner, :parent)";
+
+        // Afegim l'element
+        $sql = "INSERT INTO element(parent, name, owner) VALUES(:parent, :name, :owner)";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $file->getName(), 'string');
         $stmt->bindValue("owner", $file->getOwner(), 'string');
-        $stmt->bindValue("parent", $file->getParent(), 'bigint');
+        $stmt->bindValue("parent", $file->getParent(), 'string');
+        try {
+            $stmt->execute();
+        } catch (DBALException $e) {
+            return var_dump($e);
+        }
+
+        // Obtenim l'identificador
+        $sql = "SELECT id FROM element WHERE name = :name ";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("name", $file->getName(), 'string');
+        $stmt->execute();
+
+        $id_child = $stmt->fetchColumn(0);
+
+        // Actualitzem l'arbre
+        if ($file->getParent() == null) {
+            $sql = "INSERT INTO closure(parent, child, depth) VALUES (:this, :this, 0)";
+            $stmt = $this->database->prepare($sql);
+            $stmt->bindValue("this", $id_child, 'bigint');
+            $stmt->execute();
+        } else {
+            $sql = "INSERT INTO closure(parent, child, depth) SELECT (p.parent, c.child, p.depth+c.depth+1) 
+                FROM closure AS p, closure AS c WHERE p.child = :parent AND c.parent = :child;";
+            $stmt = $this->database->prepare($sql);
+            $stmt->bindValue("parent", $file->getParent(), 'bigint');
+            $stmt->bindValue("child", $id_child, 'bigint');
+            $stmt->bindValue("child", $id_child, 'bigint');
+            $stmt->execute();
+        }
+
+        // Afegim la relacio usuari-element
+        $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("user", $file->getOwner(), 'string');
+        $stmt->bindValue("element", $id_child, 'bigint');
+        $stmt->bindValue("role", "admin", 'string');
+        $stmt->execute();
+
+        //Restar espai de l'usuari
+        $sql = "SELECT space FROM user WHERE username = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $_SESSION["userID"], 'string');
+        $stmt->execute();
+
+        $userSpace = $stmt->fetchColumn(0);
+
+        $newSpace = $userSpace - $fileSize;
+
+        $sql = "UPDATE user SET space = :newSpace WHERE username = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("space", $newSpace, 'string');
+        $stmt->bindValue("username", $_SESSION["userID"], 'string');
         $stmt->execute();
     }
 

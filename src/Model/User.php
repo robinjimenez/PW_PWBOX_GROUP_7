@@ -10,12 +10,14 @@ class User {
     private $email;
     private $password;
     private $birthdate;
+    private $space;
 
-    public function __construct($username, $email, $password, $birthdate) {
+    public function __construct($username, $email, $password, $birthdate, $space) {
         $this->username = $username;
         $this->email = $email;
         $this->password = $password;
         $this->birthdate = $birthdate;
+        $this->space = $space;
     }
 
     /**
@@ -80,6 +82,16 @@ class User {
     public function setBirthdate($birthdate): void
     {
         $this->birthdate = $birthdate;
+    }
+
+    public function getSpace(): float
+    {
+        return $this->space;
+    }
+
+    public function setSpace($space): void
+    {
+        $this->space = $space;
     }
 
 }

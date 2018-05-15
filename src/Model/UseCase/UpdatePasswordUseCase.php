@@ -20,6 +20,7 @@ class UpdatePasswordUseCase
             $rawData['username'],
             "",
             $rawData['new-password'],
+            "",
             ""
         );
 

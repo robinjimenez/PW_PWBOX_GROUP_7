@@ -39,6 +39,13 @@ $container['folder_repository'] = function($container) {
     return $repository;
 };
 
+$container['file_repository'] = function($container) {
+    $repository = new PWBox\Model\Implementation\DoctrineFileRepository(
+        $container->get('doctrine')
+    );
+    return $repository;
+};
+
 //Register user post service
 $container['post_user_use_case'] = function($container) {
   $useCase = new PWBox\Model\UseCase\RegisterUseCase($container->get('user_repository'),$container->get('folder_repository'));
@@ -78,6 +85,12 @@ $container['delete_user_use_case'] = function ($container) {
 //add folder service
 $container['add_folder_use_case'] = function ($container) {
     $useCase = new PWBox\Model\UseCase\AddFolderUseCase($container->get('folder_repository'));
+    return $useCase;
+};
+
+//add file use case
+$container['add_file_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\AddFileUseCase($container->get('file_repository'), $container->get('user_repository'));
     return $useCase;
 };
 

@@ -53,13 +53,12 @@ class DoctrineFolderRepository implements FolderRepository
         }
 
         // Afegim la relacio usuari-element
-
-        /*$sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
+        $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("user", $_SESSION["userID"], 'string');
+        $stmt->bindValue("user", $folder->getOwner(), 'string');
         $stmt->bindValue("element", $id_child, 'bigint');
-        $stmt->bindValue("role", null, 'string');
-        $stmt->execute(); */
+        $stmt->bindValue("role", "admin", 'string');
+        $stmt->execute();
     }
 
     public function remove(Folder $folder) {

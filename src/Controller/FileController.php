@@ -1,7 +1,9 @@
 <?php
 namespace PWBox\Controller;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -58,9 +60,13 @@ class FileController {
     }
 
     public function createFolderAction(string $curPath) {
-
         $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
         mkdir(__DIR__ . "/../../public/uploads/". $path);
+        //die(var_dump($_POST["folder"]));
+
+        //TODO: Registre folder a la bbdd (mes o menys implementat, falta solucionar que el parent a AddFolderUseCase sigui el id de la bbdd i no el name del parent
+        $service = $this->container->get('add_folder_use_case');
+        $service($curPath, $_POST["folder"]);//parent és curPath, name és $_POST["folder"]
     }
 
     /*public function showFormAction(Request $request, Response $response)
@@ -112,7 +118,20 @@ class FileController {
                     continue;
                 }
 
+                //Guardar file a carpeta
                 $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $fileName);
+
+                //TODO: Registre file a la bbdd (implementat però no funciona):
+                try {
+                    $service = $this->container->get('add_file_use_case');
+                    $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $directory);
+                } catch (\Exception $e) {
+                    return var_dump($e);
+                } catch (NotFoundExceptionInterface $e) {
+                    return var_dump($e);
+                } catch (ContainerExceptionInterface $e) {
+                    return var_dump($e);
+                }
             }
         }
 

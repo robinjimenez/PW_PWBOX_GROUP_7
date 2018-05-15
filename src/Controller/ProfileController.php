@@ -133,16 +133,17 @@ class ProfileController {
     public function deleteProfileAction(Request $request, Response $response) {
         $this->getProfileInfo();//Obtinc les dades del profile en els atributs de la classe, a partir de la sessió actual
 
-        //Delete account from DDBB
         $data = $this->username;//Com a dades només necessito username
 
         try {
+            //Delete account from DDBB and its folder
             $service = $this->container->get('delete_user_use_case');
-            $service($data);//s'executa servei d'actualitzar email bbdd
+            $service($data);
 
         } catch (\Exception $e) {
-            return $this->container->get('view')
-                ->render($response, 'profile.twig', ['error' => -7, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+            return var_dump($e);
+            //return $this->container->get('view')
+                //->render($response, 'profile.twig', ['error' => -7, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
         }
 
         //Delete session

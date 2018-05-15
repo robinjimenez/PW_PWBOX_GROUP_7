@@ -27,6 +27,7 @@ class UpdateEmailUseCase
             "",
             $rawData['old-email'],
             "",
+            "",
             ""
         );
         $newEmail = $rawData['new-data']['email'];

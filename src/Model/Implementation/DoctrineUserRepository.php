@@ -17,12 +17,13 @@ class DoctrineUserRepository implements UserRepository
 
     public function save(User $user)
     {
-        $sql = "INSERT INTO user(username, email, password, birthdate) VALUES(:username, :email, :password, :birthdate)";
+        $sql = "INSERT INTO user(username, email, password, birthdate, space) VALUES(:username, :email, :password, :birthdate, :space)";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->bindValue("email", $user->getEmail(), 'string');
         $stmt->bindValue("password", $user->getPassword(), 'string');
         $stmt->bindValue("birthdate", $user->getBirthdate(), 'string');
+        $stmt->bindValue("space", $user->getSpace(), 'float');
         $stmt->execute();
     }
 

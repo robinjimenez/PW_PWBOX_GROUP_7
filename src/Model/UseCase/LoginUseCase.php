@@ -21,6 +21,7 @@ class LoginUseCase
             "",
             $rawData['email'],
             $rawData['password'],
+            "",
             ""
         );
         $result = $this->repo->login($user);//6)Es crida a la funció de login i li passem la instància de user

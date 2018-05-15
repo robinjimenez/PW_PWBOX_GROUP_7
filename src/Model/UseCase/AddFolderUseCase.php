@@ -11,24 +11,29 @@ use PWBox\Model\User;
 class AddFolderUseCase {
 
     /** UserRepository */
-    private $repo;
+    private $folderRepo;
 
     public function __construct(FolderRepository $folderRepository)
     {
-        $this->repo = $folderRepository;
+        $this->folderRepo = $folderRepository;
     }
 
-    public function __invoke(array $rawData)
+    public function __invoke(string $parent, string $name)
     {
+        $parent_length = strlen($parent);
+        $parentOK = substr($parent, 1, $parent_length);//Trec el "/" del parent
+
+        //TODO: Parent ha de ser el ID de la bbdd del parent, no el seu nom
+
         $folder = new Folder(
-            $rawData['parent'],
-            $rawData['name'],
-            $rawData['owner']
+            $parentOK,
+            $name,
+            $_SESSION["userID"]
         );
 
-        #Creem l'usuari a la BBDD i la seva carpeta
-        $this->repo->add($folder);
-        mkdir(__DIR__. '/../../../public/uploads/'. $folder->getParent());
+        #Creem la carpeta a la bbdd
+        $this->folderRepo->add($folder);
+        //mkdir(__DIR__. '/../../../public/uploads/'. $folder->getParent());
     }
 
 }
