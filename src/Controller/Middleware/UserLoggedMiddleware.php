@@ -21,7 +21,6 @@ class UserLoggedMiddleware
         }else {
             return $this->container->get('view')
                 ->render($response->withStatus(403), 'error.twig', []);
-
         }
     }
 }

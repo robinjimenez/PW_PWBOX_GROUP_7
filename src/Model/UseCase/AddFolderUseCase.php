@@ -27,7 +27,7 @@ class AddFolderUseCase {
         );
 
         #Creem l'usuari a la BBDD i la seva carpeta
-        $this->folderRepo->add($folder);
+        $this->repo->add($folder);
         mkdir(__DIR__. '/../../../public/uploads/'. $folder->getParent());
     }
 

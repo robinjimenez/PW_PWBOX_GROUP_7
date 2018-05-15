@@ -40,15 +40,20 @@ $app->post(
     ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->get(
-    '/dashboard',
-    'PWBox\Controller\FileController')
+    '/dashboard[{params:.*}]',
+    'PWBox\Controller\FileController:loadAction')
     ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
+$app->post(
+    '/dashboard[{params:.*}]',
+    'PWBox\Controller\FileController')
+    ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
+/*
 $app->post(
     '/dashboard',
     'PWBox\Controller\FileController:uploadFileAction')
     ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
-
+*/
 $app->post('/',
     'PWBox\Controller\ProfileController:deleteProfileAction');
 

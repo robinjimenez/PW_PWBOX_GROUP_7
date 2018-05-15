@@ -59,7 +59,7 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->bindValue("user", $_SESSION["userID"], 'string');
         $stmt->bindValue("element", $id_child, 'bigint');
         $stmt->bindValue("role", null, 'string');
-        $stmt->execute();*/
+        $stmt->execute(); */
     }
 
     public function remove(Folder $folder) {

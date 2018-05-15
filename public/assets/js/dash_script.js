@@ -8,23 +8,20 @@ file.onchange = function(){
 };
 
 function close() {
-    alert('a');
-    //$(this).parent.removeClass("is-active");
+    $(this).parent.removeClass("is-active");
 }
 
 $(document).ready(function(){
-    /*$("#newFile").click(function(){
+    $("#newFile").click(function(){
         $("#newFileModal").addClass("is-active");
     });
     $("#newFolder").click(function(){
         $("#newFolderModal").addClass("is-active");
     });
     $(".modal-close").on('click', function(e){
-        alert("a");
-        $(this).parent.removeClass("is-active");
+        $(this).parent().removeClass("is-active");
     });
     $(".modal-background").on('click', function(e){
-        alert("a");
-        $(this).parent.removeClass("is-active");
-    });*/
+        $(this).parent().removeClass("is-active");
+    });
 });

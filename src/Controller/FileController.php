@@ -16,24 +16,62 @@ class FileController {
         $this->container = $container;
     }
 
-    //Opció 1 -- recommended
     public function __invoke(Request $request, Response $response, array $args)
     {
-       return $this->container->get('view')
-           ->render($response, 'dash.twig', [
-               'files' => null,
-               'logged' => isset($_SESSION["userID"])]);
+
+        if (!isset($args['params'])) {
+            $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
+        }
+
+        //var_dump($args['params']);
+        //$params = explode('/', $args['params']);
+
+        if (isset($_POST["newFile"])) {
+            $this->uploadFileAction($request,$response,$args['params']);
+        }
+
+        if (isset($_POST["newFolder"])) {
+            $this->createFolderAction($args['params']);
+        }
+
+        return $this->container->get('view')
+            ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
+                'files' => null,
+                'currentFolder' => $args['params'],
+                'logged' => isset($_SESSION["userID"])]);
     }
 
-    public function showFormAction(Request $request, Response $response)
+    public function loadAction(Request $request, Response $response, array $args) {
+        if (!isset($args['params'])) {
+            return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
+        } else {
+            //$this->container->get('get_folder_files_use_case');
+
+            return $this->container->get('view')
+                ->render($response,
+                    'dash.twig', [
+                        'files' => null,
+                        'currentFolder' =>  $args['params'],
+                        'logged' => isset($_SESSION["userID"])
+                    ]);
+        }
+    }
+
+    public function createFolderAction(string $curPath) {
+
+        $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
+        mkdir(__DIR__ . "/../../public/uploads/". $path);
+    }
+
+    /*public function showFormAction(Request $request, Response $response)
     {
         return $this->container->get('view')
             ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
-    }
+    }*/
 
-    public function uploadFileAction(Request $request, Response $response) {
+    public function uploadFileAction(Request $request, Response $response, string $path) {
 
-        $directory = __DIR__ . '/../../public/uploads/' . $_SESSION["userID"];
+        $directory = __DIR__ . '/../../public/uploads/' . $path;
 
         $uploadedFiles = $request->getUploadedFiles();
 

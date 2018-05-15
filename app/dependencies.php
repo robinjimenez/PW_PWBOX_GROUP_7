@@ -75,9 +75,15 @@ $container['delete_user_use_case'] = function ($container) {
     return $useCase;
 };
 
-//update email service
+//add folder service
 $container['add_folder_use_case'] = function ($container) {
     $useCase = new PWBox\Model\UseCase\AddFolderUseCase($container->get('folder_repository'));
+    return $useCase;
+};
+
+//get files from service
+$container['get_folder_files_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\GetFolderFilesUseCase($container->get('folder_repository'));
     return $useCase;
 };
 

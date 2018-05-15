@@ -53,7 +53,7 @@
                                     <p class="subtitle">add a new file</p>
                                 </header>
                                 <section class="modal-card-body">
-                                    <form action="/dashboard" enctype="multipart/form-data" method="POST">
+                                    <form action="/dashboard{{ currentFolder }}" enctype="multipart/form-data" method="POST">
                                         <div class="control">
                                             <div class="file has-name is-boxed is-primary">
                                                 <label class="file-label">
@@ -74,7 +74,7 @@
                                         </div>
                                         <br>
                                         <div class="control">
-                                            <input class="button is-primary" type="submit" value="Upload">
+                                            <input class="button is-primary" type="submit" name="newFile" value="Upload">
                                         </div>
                                     </form>
                                 </section>
@@ -91,13 +91,13 @@
                                     <p class="subtitle">add a new folder</p>
                                 </header>
                                 <section class="modal-card-body">
-                                    <form action="/dashboard" enctype="multipart/form-data" method="POST">
+                                    <form action="/dashboard{{ currentFolder }}" method="POST">
                                         <div class="control">
-                                            <input class="input is-primary" type="text" placeholder="New folder name">
+                                            <input class="input is-primary" type="text" name="folder" placeholder="New folder name">
                                         </div>
                                         <br>
                                         <div class="control">
-                                            <input class="button is-primary" type="submit" value="Upload">
+                                            <input class="button is-primary" type="submit" name="newFolder" value="Create">
                                         </div>
                                     </form>
                                 </section>
@@ -109,11 +109,11 @@
                     <div class="panel-block">
                         <div class="container">
                             <div class="box">
-                                <a class="subtitle"> file </a>
+                                <a class="subtitle is-vcentered" href="/dashboard{{ currentFolder }}"> shared folders </a>
                                 <div class="field is-grouped is-grouped-right is-pulled-right">
                                     <p class="control">
-                                        <a class="button is-success">
-                                            <span>download</span>
+                                        <a class="button is-success" href="/dashboard{{ currentFolder }}">
+                                            <span>open</span>
                                         </a>
                                     </p>
                                     <p class="control">
@@ -138,10 +138,10 @@
                         {% for folder in folders %}
                             <div class="container">
                                 <div class="box">
-                                    <a class="subtitle is-vcentered"> file </a>
+                                    <a class="subtitle is-vcentered" href="/dashboard{{ currentFolder }}"> {{ folder['name'] }} </a>
                                     <div class="field is-grouped is-grouped-right is-pulled-right">
                                         <p class="control">
-                                            <a class="button is-success">
+                                            <a class="button is-success" href="/dashboard{{ currentFolder }}">
                                                 <span>open</span>
                                             </a>
                                         </p>
@@ -168,7 +168,7 @@
                         {% for file in files %}
                             <div class="container">
                                 <div class="box">
-                                    <a class="subtitle is-vcentered"> file </a>
+                                    <a class="subtitle is-vcentered"> {{ file['name'] }} </a>
                                     <div class="field is-grouped is-grouped-right is-pulled-right">
                                         <p class="control">
                                             <a class="button is-success">
