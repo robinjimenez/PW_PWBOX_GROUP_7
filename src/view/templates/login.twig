@@ -1,16 +1,16 @@
 {% extends "base.twig" %}
-{% block title %}PWbox - Login{% endblock %}
+{% block title %}PWbox - login{% endblock %}
 {% block content %}
     <div class="hero is-medium is-light is-bold">
         <div class="hero-body">
             <div class="columns">
                 <div class="column is-three-fifths is-offset-one-fifth">
-                    <h2 class="title is-centered">Login</h2>
+                    <h2 class="title is-centered">login</h2>
                     <form action="/user" method="POST">
                         <div class="field">
-                            <label class="label">Email</label>
+                            <label class="label">email</label>
                             <div class="control has-icons-left">
-                                <input class="input" type="email" name="email" id="login-email" onblur="checkEmail(2);" placeholder="Email">
+                                <input class="input" type="email" name="email" id="login-email" onblur="checkEmail(2);" placeholder="email">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-envelope"></i>
                             </span>
@@ -18,30 +18,30 @@
                             <p class="help is-danger" id="l-email-inv" style="display: none;">Invalid email</p>
                         </div>
                         <div class="field">
-                            <label class="label">Password</label>
+                            <label class="label">password</label>
                             <div class="control has-icons-left">
-                                <input class="input" type="password" name= "password" id="login-password" onblur="checkPassword(2);" placeholder="Password">
+                                <input class="input" type="password" name= "password" id="login-password" onblur="checkPassword(2);" placeholder="password">
                                 <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
                             </div>
-                            <p class="help is-danger" id="l-password-inv" style="display: none;">Invalid password</p>
+                            <p class="help is-danger" id="l-password-inv" style="display: none;">invalid password</p>
                         </div>
 
                         <div class="field">
                             <div class="columns">
                                 <div class="column control">
-                                    <button class="button is-primary is-medium" type="submit" id="login-button" onclick="return checkLoginFrontEnd();">Log in</button>
+                                    <button class="button is-primary is-medium" type="submit" id="login-button" onclick="return checkLoginFrontEnd();">log in</button>
                                 </div>
                                 <div class="column control">
-                                    <a class="button is-primary is-outlined is-medium" href="/register">Sign Up</a>
+                                    <a class="button is-primary is-outlined is-medium" href="/register">sign up</a>
                                 </div>
                             </div>
                         </div>
-                        <label class="help is-info" id="l-message-inv" style="display: none;">Your email or password are not valid</label>
+                        <label class="help is-info" id="l-message-inv" style="display: none;">your email or password are not valid</label>
                         {% if error %}
                             <div class="field">
-                                <label class="help is-info">Your email or password are not valid</label>
+                                <label class="help is-info">your email or password are not valid</label>
                             </div>
                         {% endif %}
                     </form>
