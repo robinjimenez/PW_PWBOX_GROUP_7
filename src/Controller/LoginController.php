@@ -55,9 +55,8 @@ class LoginController {
                 $_SESSION["userID"] = $ddbbServiceResult[0]['username'];
 
                 try {
-                    //Un cop executades totes les accions de registre sense errors es renderitza la pàgina de dashboard
-                    //return "User Logged In" . "<br>" . "La sessió és de: " . $_SESSION["userID"] . "<br>";
-                    return $this->container->get('view')->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
+                    //Un cop executades totes les accions de registre sense errors es fa redirecció a routa "/dashboard" GET
+                    return $response->withRedirect("/dashboard");
                 } catch (NotFoundExceptionInterface $e) {
                 } catch (ContainerExceptionInterface $e) {
                 }
