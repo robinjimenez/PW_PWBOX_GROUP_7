@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS element (
   parent bigint,
   name varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   owner varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
+  type varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   CONSTRAINT parentFK FOREIGN KEY (parent) REFERENCES element(id),
   FOREIGN KEY (owner) REFERENCES user(username),
@@ -41,8 +42,6 @@ CREATE TABLE IF NOT EXISTS closure (
     child BIGINT,
     depth INT DEFAULT 0,
     PRIMARY KEY (parent , child),
-    FOREIGN KEY (parent)
-        REFERENCES element (id),
-    FOREIGN KEY (child)
-        REFERENCES element (id)
+    FOREIGN KEY (parent) REFERENCES element (id),
+    FOREIGN KEY (child) REFERENCES element (id)
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_BIN;

@@ -22,7 +22,7 @@ class DoctrineFileRepository implements FileRepository
     {
 
         // Afegim l'element
-        $sql = "INSERT INTO element(parent, name, owner) VALUES(:parent, :name, :owner)";
+        $sql = "INSERT INTO element(parent, name, owner, type) VALUES(:parent, :name, :owner, 'file')";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $file->getName(), 'string');
         $stmt->bindValue("owner", $file->getOwner(), 'string');

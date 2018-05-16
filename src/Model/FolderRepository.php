@@ -8,6 +8,6 @@ interface FolderRepository {
     public function share(Folder $folder,User $user);
     public function remove(Folder $folder);
     public function getIdByName(string $name);
-    public function getFiles(Folder $folder);
+    public function getFiles(string $folder, string $user);
 
 }

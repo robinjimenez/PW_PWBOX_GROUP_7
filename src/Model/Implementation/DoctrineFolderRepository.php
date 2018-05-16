@@ -19,7 +19,7 @@ class DoctrineFolderRepository implements FolderRepository
     public function add(Folder $folder)
     {
         // Afegim l'element
-        $sql = "INSERT INTO element(parent, name, owner) VALUES(:parent, :name, :owner);";
+        $sql = "INSERT INTO element(parent, name, owner, type) VALUES(:parent, :name, :owner, 'folder');";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $folder->getName(), 'string');
         $stmt->bindValue("owner", $folder->getOwner(), 'string');
@@ -72,17 +72,19 @@ class DoctrineFolderRepository implements FolderRepository
         return $result;
     }
 
-    public function getFiles(Folder $folder) {
-        $sql = "SELECT id FROM element WHERE name = :name ";
+    public function getFiles(string $folder, string $user) {
+        $sql = "SELECT id FROM element e,user_element ue WHERE e.name = :name AND ue.element = e.id AND e.owner = :user";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("name", $folder->getName(), 'string');
+        $stmt->bindValue("name", $folder, 'string');
+        $stmt->bindValue("user", $user, 'string');
         $stmt->execute();
 
         $id = $stmt->fetchColumn(0);
 
-        $sql = "SELECT * FROM element WHERE parent = :id";
+        $sql = "SELECT name, type FROM element e,closure c WHERE c.parent = :id AND depth = 1 AND e.id = c.child AND e.owner = :user";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("user", $user, 'string');
         $stmt->execute();
 
         $result = $stmt->fetchAll();

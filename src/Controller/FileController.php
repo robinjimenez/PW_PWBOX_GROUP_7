@@ -25,9 +25,6 @@ class FileController {
             $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
         }
 
-        //var_dump($args['params']);
-        //$params = explode('/', $args['params']);
-
         if (isset($_POST["newFile"])) {
             $this->uploadFileAction($request,$response,$args['params']);
         }
@@ -47,12 +44,22 @@ class FileController {
         if (!isset($args['params'])) {
             return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
         } else {
-            //$this->container->get('get_folder_files_use_case');
+
+            $params = explode('/', $args['params']);
+
+            if (strcmp($_SESSION["userID"],$params[1]) != 0) {
+                return $this->container->get('view')
+                    ->render($response->withStatus(403), 'error.twig', []);
+            }
+
+            $service = $this->container->get('get_folder_files_use_case');
+            $files = $service($args['params']);
 
             return $this->container->get('view')
                 ->render($response,
                     'dash.twig', [
-                        'files' => null,
+                        'files' => $files,
+                        'root' => $_SESSION["userID"],
                         'currentFolder' =>  $args['params'],
                         'logged' => isset($_SESSION["userID"])
                     ]);
@@ -62,7 +69,6 @@ class FileController {
     public function createFolderAction(string $curPath) {
         $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
         mkdir(__DIR__ . "/../../public/uploads/". $path);
-        //die(var_dump($_POST["folder"]));
 
         $path = explode('/', $curPath);
 
@@ -70,12 +76,6 @@ class FileController {
         $service = $this->container->get('add_folder_use_case');
         $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
     }
-
-    /*public function showFormAction(Request $request, Response $response)
-    {
-        return $this->container->get('view')
-            ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
-    }*/
 
     public function uploadFileAction(Request $request, Response $response, string $path) {
 
