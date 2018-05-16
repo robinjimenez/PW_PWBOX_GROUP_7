@@ -6,6 +6,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Validator as v;
 
 use Slim\Http\UploadedFile;
 
@@ -34,6 +35,61 @@ class FileController {
             $this->createFolderAction($args['params']);
         }
 
+        if (isset($_POST["share"])) {
+            $this->shareFolderAction($request,$response,$args['params']);
+        }
+
+        return $this->container->get('view')
+            ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
+                'files' => null,
+                'currentFolder' => $args['params'],
+                'logged' => isset($_SESSION["userID"])]);
+    }
+
+    public function shareFolderAction(Request $request, Response $response, $args) {
+        //Check email backend format
+        $data = $request->getParsedBody();
+        $errors = [];
+
+        //Format email
+        if (v::email()->validate($data["email"]) == false) {
+            $errors[] = sprintf('Invalid email');
+
+            //TODO: No mostra error
+            return $this->container->get('view')
+                ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
+        }else {
+            //Check if email exists in ddbb
+            $service = $this->container->get('login_user_use_case');
+            $result = $service($data);//Obtinc el user si existeix
+
+            if (isset($result[0])) {//user exists
+
+                //Check it is not himself
+                if ($result[0]['username'] == $_SESSION['userID']) {
+                    die("This is you. Can't share with yourself");
+                    //TODO: No mostra error
+                    $errors[] = sprintf("You cannot share a folder with yourself");
+                    return $this->container->get('view')
+                        ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
+
+                }else {
+                    die("User exists. OK");
+
+
+
+
+                }
+
+            }else {
+                die("Not in ddbb");
+
+                //TODO: No mostra error
+                $errors[] = sprintf('This user does not exists');
+                return $this->container->get('view')
+                    ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
+            }
+        }
         return $this->container->get('view')
             ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
                 'files' => null,
@@ -87,7 +143,7 @@ class FileController {
 
         $path = explode('/', $curPath);
 
-        //TODO: Registre folder a la bbdd (mes o menys implementat, falta solucionar que el parent a AddFolderUseCase sigui el id de la bbdd i no el name del parent
+        //Registre folder a la bbdd
         $service = $this->container->get('add_folder_use_case');
         $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
     }

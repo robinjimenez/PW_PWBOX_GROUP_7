@@ -34,13 +34,12 @@ class ProfileController {
         $data = $_SESSION;
         $service = $this->container->get('get_user_use_case');
         $ddbbServiceResult = $service($data);//Li passo l'array de session, que conten el mail de l'usuari de la sessió com a ID
-        //return var_dump($ddbbServiceResult);
 
-        $this->username = $ddbbServiceResult[0]['username'];
-        $this->email = $ddbbServiceResult[0]['email'];//Igual a $_SESSION["userID"]
+        $this->username = $ddbbServiceResult['username'];
+        $this->email = $ddbbServiceResult['email'];//Igual a $_SESSION["userID"]
 
         //format date
-        $temp = $ddbbServiceResult[0]['birthdate'];
+        $temp = $ddbbServiceResult['birthdate'];
         $format = "YmdHis";
         $date = date_parse_from_format($format, $temp);
         $birthdate = $date['day'] . "-" . $date['month'] . "-" . $date['year'];
@@ -48,7 +47,7 @@ class ProfileController {
 
         //decrypt password
         $encryptionService = $this->container->get('model_encryption_service');
-        $decryptedPassword = $encryptionService("decrypt", $ddbbServiceResult[0]['password']);
+        $decryptedPassword = $encryptionService("decrypt", $ddbbServiceResult['password']);
         $this->password = $decryptedPassword;
     }
 

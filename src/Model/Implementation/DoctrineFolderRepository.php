@@ -19,11 +19,12 @@ class DoctrineFolderRepository implements FolderRepository
     public function add(Folder $folder)
     {
         // Afegim l'element
-        $sql = "INSERT INTO element(parent, name, owner, type) VALUES(:parent, :name, :owner, 'folder');";
+        $sql = "INSERT INTO element(parent, name, owner, type) VALUES(:parent, :name, :owner, :type);";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $folder->getName(), 'string');
         $stmt->bindValue("owner", $folder->getOwner(), 'string');
         $stmt->bindValue("parent", $folder->getParent(), 'bigint');
+        $stmt->bindValue("type", $folder->getType(), 'string');
         $stmt->execute();
 
         // Obtenim l'identificador

@@ -20,7 +20,7 @@ class LoginUseCase
         $user = new User(//5)Creem una nova instància de user amb les dades rebudes del formulari
             "",
             $rawData['email'],
-            $rawData['password'],
+            "",
             "",
             ""
         );

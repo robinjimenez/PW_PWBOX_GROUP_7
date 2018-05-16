@@ -35,12 +35,27 @@ class RegisterUseCase {
         $root = new Folder(
             $user->getUsername(),
             $user->getUsername(),
-            null
+            null,
+            "folder"
         );
+
         #Creem l'usuari a la BBDD i la seva carpeta
         $this->userRepo->save($user);
         $this->folderRepo->add($root);
+
+        $shared = new Folder(
+            "shared",
+            $user->getUsername(),
+            $this->folderRepo->getIdByName($user->getUsername()),
+            "shared"
+        );
+
+        //Creem carpeta shared de l'usuari a la BBDD
+        $this->folderRepo->add($shared);
+
+        //Creem directoris
         mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername());//potser es podria moure al controller igual que fem quan creem altres carpetes despres (o posar tot en els user case)
+        mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername(). '/shared');//creació carpeta shared
     }
 
 }

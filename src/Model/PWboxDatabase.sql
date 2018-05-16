@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user (
   email varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   password char(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   birthdate datetime NOT NULL,
-  space bigint,
+  space float,
   PRIMARY KEY (username),
   UNIQUE KEY `UNIQUE_EMAIL` (email),
   UNIQUE KEY `UNIQUE_USER` (username)
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS element (
   type varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   CONSTRAINT parentFK FOREIGN KEY (parent) REFERENCES element(id),
-  FOREIGN KEY (owner) REFERENCES user(username),
-  UNIQUE KEY `UNIQUE_NAME` (name)
+  FOREIGN KEY (owner) REFERENCES user(username)
+  -- UNIQUE KEY `UNIQUE_NAME` (name)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE IF NOT EXISTS user_element (
@@ -38,10 +38,10 @@ CREATE TABLE IF NOT EXISTS user_element (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE IF NOT EXISTS closure (
-    parent BIGINT,
-    child BIGINT,
-    depth INT DEFAULT 0,
-    PRIMARY KEY (parent , child),
-    FOREIGN KEY (parent) REFERENCES element (id),
-    FOREIGN KEY (child) REFERENCES element (id)
+  parent BIGINT,
+  child BIGINT,
+  depth INT DEFAULT 0,
+  PRIMARY KEY (parent , child),
+  FOREIGN KEY (parent) REFERENCES element (id),
+  FOREIGN KEY (child) REFERENCES element (id)
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_BIN;

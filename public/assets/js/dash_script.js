@@ -18,6 +18,9 @@ $(document).ready(function(){
     $("#newFolder").click(function(){
         $("#newFolderModal").addClass("is-active");
     });
+    $("#share").click(function(){
+        $("#shareModal").addClass("is-active");
+    });
     $(".modal-close").on('click', function(e){
         $(this).parent().removeClass("is-active");
     });

@@ -7,11 +7,13 @@ class Folder {
     private $name;
     private $owner;
     private $parent;
+    private $type;
 
-    public function __construct($name, $user, $parent) {
+    public function __construct($name, $user, $parent, $type) {
         $this->name = $name;
         $this->owner = $user;
         $this->parent = $parent;
+        $this->type = $type;
     }
 
     /**
@@ -28,6 +30,22 @@ class Folder {
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type): void
+    {
+        $this->type = $type;
     }
 
     /**
