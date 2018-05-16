@@ -66,12 +66,40 @@ class DoctrineUserRepository implements UserRepository
     }
 
     public function deleteUser(User $user) {
-        $sql = "DELETE FROM user WHERE username LIKE :username;";
+
+        $sql = "delete
+                from closure
+                where child IN (select ue.element from user_element as ue
+                                where ue.user = :username)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+
+        $sql = "delete
+                from user_element
+                where user = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+
+        $sql = "ALTER TABLE element DROP FOREIGN KEY parentFK";
+        $stmt = $this->database->prepare($sql);
+        $stmt->execute();
+
+        $sql = "delete
+                from element where owner = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $user->getUsername(), 'string');
+        $stmt->execute();
+
+        $sql = "ALTER TABLE element
+                ADD FOREIGN KEY (parent) REFERENCES element(id)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->execute();
+
+        $sql = "DELETE FROM user WHERE username = :username";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->execute();
     }
-
-
-
 }
