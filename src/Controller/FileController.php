@@ -20,6 +20,7 @@ class FileController {
 
     public function __invoke(Request $request, Response $response, array $args)
     {
+        $params = explode('/', $args['params']);
 
         if (!isset($args['params'])) {
             $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
@@ -31,6 +32,20 @@ class FileController {
 
         if (isset($_POST["newFolder"])) {
             $this->createFolderAction($args['params']);
+        }
+
+        if (isset($_POST["back"])) {
+            unset($params[sizeof($params)-1]);
+
+            $params.implode('/');
+
+            var_dump($params);
+
+            return $this->container->get('view')
+                ->render($response->withRedirect('/dashboard'. $params), 'dash.twig', [
+                    'files' => null,
+                    'currentFolder' => $args['params'],
+                    'logged' => isset($_SESSION["userID"])]);
         }
 
         return $this->container->get('view')
@@ -55,12 +70,20 @@ class FileController {
             $service = $this->container->get('get_folder_files_use_case');
             $files = $service($args['params']);
 
+            $up = $params;
+
+            array_splice($up,sizeof($params)-1,1);
+
+            $upPath = '/dashboard' . implode('/',$up);
+
             return $this->container->get('view')
                 ->render($response,
                     'dash.twig', [
                         'files' => $files,
+                        'upPath' => $upPath,
                         'root' => $_SESSION["userID"],
-                        'currentFolder' =>  $args['params'],
+                        'folder' => $params[sizeof($params)-1],
+                        'path' =>  $args['params'],
                         'logged' => isset($_SESSION["userID"])
                     ]);
         }

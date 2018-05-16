@@ -1,13 +1,13 @@
 {% extends "base.twig" %}
 {% block title %}PWbox - profile{% endblock %}
 {% block content %}
-    <div class="hero is-medium is-light">
+    <div class="hero is-medium is-light is-bold">
         <div class="hero-body">
             <div class="container">
                 <h2 class="title is-centered">profile</h2>
-
-                <table class="table is-fullwidth">
-                    <tbody>
+                <div class="box">
+                    <table class="table is-fullwidth">
+                        <tbody>
                         <tr>
                             <th>username</th>
                             <td>{{ username }}</td>
@@ -24,16 +24,16 @@
                             <td>
                                 <form class="columns" action="/profile" method="POST">
 
-                                        <div class="column is-one-fifth is-1">
-                                            <label class="label">update Email:</label>
-                                        </div>
-                                        <div class="column">
-                                            <input class="input {% if error == -2%} is-danger {% endif %}" type="email" name="email" id="email" onblur="checkUpdateEmail()" placeholder="new Email">
-                                            <p class="help is-danger" id="email-inv" style="display: none;">invalid email</p>
-                                        </div>
-                                        <div class="column is-one-fifth">
-                                            <button class="button is-danger" type="submit" name="email-button" onclick="return updateEmail();">update Email</button>
-                                        </div>
+                                    <div class="column is-one-fifth">
+                                        <label class="label">update Email:</label>
+                                    </div>
+                                    <div class="column">
+                                        <input class="input {% if error == -2%} is-danger {% endif %}" type="email" name="email" id="email" onblur="checkUpdateEmail()" placeholder="new email">
+                                        <p class="help is-danger" id="email-inv" style="display: none;">invalid email</p>
+                                    </div>
+                                    <div class="column is-one-fifth">
+                                        <button class="button is-primary" type="submit" name="email-button" onclick="return updateEmail();">update email</button>
+                                    </div>
 
                                 </form>
                                 {% if error == -2 %}
@@ -51,7 +51,7 @@
                             <td>
                                 <form class="columns" action="/profile" method="POST">
 
-                                    <div class="column is-one-fifth is-1">
+                                    <div class="column is-one-fifth">
                                         <label class="label">update password:</label>
                                     </div>
                                     <div class="column">
@@ -63,7 +63,7 @@
                                         <p class="help is-danger" id="password-conf-inv" style="display: none;">invalid password confirmation</p>
                                     </div>
                                     <div class="column is-one-fifth">
-                                        <button class="button is-danger" type="submit" name="password-button" onclick="return updatePassword();">update password</button>
+                                        <button class="button is-primary" type="submit" name="password-button" onclick="return updatePassword();">update password</button>
                                     </div>
 
                                 </form>
@@ -83,14 +83,15 @@
                                 {% endif %}
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-                <form action="/" method="POST">
-                    <button class="button is-danger is-outlined" type="submit" name="delete-account-button">Delete account</button>
-                </form>
-                {% if error == -7%}
-                    <p class="help is-danger">An unexpected error ocurred</p>
-                {% endif %}
+                        </tbody>
+                    </table>
+                    <form action="/" method="POST">
+                        <button class="button is-danger is-outlined" type="submit" name="delete-account-button">Delete account</button>
+                    </form>
+                    {% if error == -7%}
+                        <p class="help is-danger">An unexpected error ocurred</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
