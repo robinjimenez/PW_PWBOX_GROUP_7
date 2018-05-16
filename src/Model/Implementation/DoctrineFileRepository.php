@@ -42,14 +42,12 @@ class DoctrineFileRepository implements FileRepository
         $stmt->execute();
 
         // Actualitzem l'arbre
-        //if ($file->getParent() != null) {
             $sql = "INSERT INTO closure(parent, child, depth) SELECT p.parent, c.child, p.depth+c.depth+1
                 FROM closure AS p, closure AS c WHERE p.child = :parent AND c.parent = :child;";
             $stmt = $this->database->prepare($sql);
             $stmt->bindValue("parent", $file->getParent(), 'bigint');
             $stmt->bindValue("child", $id_child, 'bigint');
             $stmt->execute();
-        //}
 
         // Afegim la relacio usuari-element
         $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
@@ -69,9 +67,9 @@ class DoctrineFileRepository implements FileRepository
 
         $newSpace = $userSpace - $file->getSize();
 
-        $sql = "UPDATE user SET space = :newSpace WHERE username = :username";
+        $sql = "UPDATE user SET space = space - :newSpace WHERE username = :username";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("space", $newSpace, 'string');
+        $stmt->bindValue("newSpace", $file->getSize(), 'bigint');
         $stmt->bindValue("username", $_SESSION["userID"], 'string');
         $stmt->execute();
     }
@@ -80,6 +78,12 @@ class DoctrineFileRepository implements FileRepository
         $sql = "DELETE FROM element WHERE name = :name";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $file->getName(), 'string');
+        $stmt->execute();
+
+        $sql = "UPDATE user SET space = space + :newSpace WHERE username = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("newSpace", $file->getSize(), 'bigint');
+        $stmt->bindValue("username", $_SESSION["userID"], 'string');
         $stmt->execute();
     }
 

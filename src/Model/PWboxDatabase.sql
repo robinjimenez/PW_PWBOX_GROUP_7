@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user (
   email varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   password char(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   birthdate datetime NOT NULL,
-  space float,
+  space bigint,
   PRIMARY KEY (username),
   UNIQUE KEY `UNIQUE_EMAIL` (email),
   UNIQUE KEY `UNIQUE_USER` (username)

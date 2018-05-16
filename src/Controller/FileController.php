@@ -34,20 +34,6 @@ class FileController {
             $this->createFolderAction($args['params']);
         }
 
-        if (isset($_POST["back"])) {
-            unset($params[sizeof($params)-1]);
-
-            $params.implode('/');
-
-            var_dump($params);
-
-            return $this->container->get('view')
-                ->render($response->withRedirect('/dashboard'. $params), 'dash.twig', [
-                    'files' => null,
-                    'currentFolder' => $args['params'],
-                    'logged' => isset($_SESSION["userID"])]);
-        }
-
         return $this->container->get('view')
             ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
                 'files' => null,
@@ -76,6 +62,10 @@ class FileController {
 
             $upPath = '/dashboard' . implode('/',$up);
 
+            $user =$this->container->get('get_user_use_case')($_SESSION);
+
+            $space = round($user['space']/1000000,2);
+
             return $this->container->get('view')
                 ->render($response,
                     'dash.twig', [
@@ -84,8 +74,10 @@ class FileController {
                         'root' => $_SESSION["userID"],
                         'folder' => $params[sizeof($params)-1],
                         'path' =>  $args['params'],
-                        'logged' => isset($_SESSION["userID"])
-                    ]);
+                        'logged' => isset($_SESSION["userID"]),
+                        'space' =>  $space
+
+            ]);
         }
     }
 
@@ -123,6 +115,16 @@ class FileController {
                 if ($uploadedFile->getSize() > 2000000) {
                     $errors[] = sprintf(
                         'The file %s is too large! Max file size is 2Mb.',
+                        $uploadedFile->getClientFilename()
+                    );
+                    continue;
+                }
+
+                $user = $this->container->get('get_user_use_case')($_SESSION);
+
+                if ($uploadedFile->getSize() > $user['space']) {
+                    $errors[] = sprintf(
+                        "You don't have enough available space to store %s!",
                         $uploadedFile->getClientFilename()
                     );
                     continue;

@@ -23,7 +23,7 @@ class DoctrineUserRepository implements UserRepository
         $stmt->bindValue("email", $user->getEmail(), 'string');
         $stmt->bindValue("password", $user->getPassword(), 'string');
         $stmt->bindValue("birthdate", $user->getBirthdate(), 'string');
-        $stmt->bindValue("space", $user->getSpace(), 'float');
+        $stmt->bindValue("space", $user->getSpace(), 'bigint');
         $stmt->execute();
     }
 
@@ -44,7 +44,7 @@ class DoctrineUserRepository implements UserRepository
         $stmt->bindValue("username", $user->getUsername(), 'string');
         $stmt->execute();
 
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAll()[0];
 
         return $result;
     }

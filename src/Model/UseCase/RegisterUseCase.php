@@ -29,7 +29,7 @@ class RegisterUseCase {
             $rawData['email'],
             $rawData['password'],
             $rawData['birthdate'],
-            1000000000//1 Gbyte
+            1000000000 //1 Gbyte
         );
 
         $root = new Folder(

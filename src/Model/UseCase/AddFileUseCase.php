@@ -17,7 +17,7 @@ class AddFileUseCase
         $this->userRepo = $userRepository;
     }
 
-    public function __invoke(string $fileName, float $fileSize, string $parent)
+    public function __invoke(string $fileName, int $fileSize, string $parent)
     {
 
         $file = new File(
