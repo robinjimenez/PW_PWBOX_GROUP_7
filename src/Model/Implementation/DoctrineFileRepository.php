@@ -18,7 +18,7 @@ class DoctrineFileRepository implements FileRepository
         $this->database = $database;
     }
 
-    public function add(File $file, float $fileSize)
+    public function add(File $file)
     {
 
         // Afegim l'element
@@ -26,7 +26,7 @@ class DoctrineFileRepository implements FileRepository
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $file->getName(), 'string');
         $stmt->bindValue("owner", $file->getOwner(), 'string');
-        $stmt->bindValue("parent", $file->getParent(), 'string');
+        $stmt->bindValue("parent", $file->getParent(), 'bigint');
         try {
             $stmt->execute();
         } catch (DBALException $e) {
@@ -34,28 +34,22 @@ class DoctrineFileRepository implements FileRepository
         }
 
         // Obtenim l'identificador
-        $sql = "SELECT id FROM element WHERE name = :name ";
+        $id_child = $this->getIdByName($file->getName());
+
+        $sql = "INSERT INTO closure(parent, child, depth) VALUES (:this, :this, 0)";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("name", $file->getName(), 'string');
+        $stmt->bindValue("this", $id_child, 'bigint');
         $stmt->execute();
 
-        $id_child = $stmt->fetchColumn(0);
-
         // Actualitzem l'arbre
-        if ($file->getParent() == null) {
-            $sql = "INSERT INTO closure(parent, child, depth) VALUES (:this, :this, 0)";
-            $stmt = $this->database->prepare($sql);
-            $stmt->bindValue("this", $id_child, 'bigint');
-            $stmt->execute();
-        } else {
-            $sql = "INSERT INTO closure(parent, child, depth) SELECT (p.parent, c.child, p.depth+c.depth+1) 
+        //if ($file->getParent() != null) {
+            $sql = "INSERT INTO closure(parent, child, depth) SELECT p.parent, c.child, p.depth+c.depth+1
                 FROM closure AS p, closure AS c WHERE p.child = :parent AND c.parent = :child;";
             $stmt = $this->database->prepare($sql);
             $stmt->bindValue("parent", $file->getParent(), 'bigint');
             $stmt->bindValue("child", $id_child, 'bigint');
-            $stmt->bindValue("child", $id_child, 'bigint');
             $stmt->execute();
-        }
+        //}
 
         // Afegim la relacio usuari-element
         $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
@@ -73,7 +67,7 @@ class DoctrineFileRepository implements FileRepository
 
         $userSpace = $stmt->fetchColumn(0);
 
-        $newSpace = $userSpace - $fileSize;
+        $newSpace = $userSpace - $file->getSize();
 
         $sql = "UPDATE user SET space = :newSpace WHERE username = :username";
         $stmt = $this->database->prepare($sql);
@@ -107,6 +101,18 @@ class DoctrineFileRepository implements FileRepository
         $stmt->execute();
 
         $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function getIdByName(string $name)
+    {
+        $sql = "SELECT id FROM element WHERE name = :name";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("name", $name, 'string');
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn(0);
 
         return $result;
     }

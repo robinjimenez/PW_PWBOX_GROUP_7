@@ -123,10 +123,13 @@ class FileController {
                 //Guardar file a carpeta
                 $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $fileName);
 
-                //TODO: Registre file a la bbdd (implementat però no funciona):
+                $dir = explode('/', $path);
+
+                $parent = $dir[sizeof($dir)-1];
+
                 try {
                     $service = $this->container->get('add_file_use_case');
-                    $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $directory);
+                    $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $parent);
                 } catch (\Exception $e) {
                     return var_dump($e);
                 } catch (NotFoundExceptionInterface $e) {

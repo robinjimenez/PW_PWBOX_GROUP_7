@@ -20,10 +20,6 @@ class AddFolderUseCase {
 
     public function __invoke(string $parent, string $name)
     {
-        //$parent_length = strlen($parent);
-        //$parentOK = substr($parent, 1, $parent_length); //Trec el "/" del parent
-
-        //TODO: Parent ha de ser el ID de la bbdd del parent, no el seu nom
 
         $folder = new Folder(
             $name,

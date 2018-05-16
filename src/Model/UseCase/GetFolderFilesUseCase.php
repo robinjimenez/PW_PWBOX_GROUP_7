@@ -1,13 +1,14 @@
 <?php
 
 namespace PWBox\Model\UseCase;
+
 use PWBox\Model\FolderRepository;
-use PWBox\Model\User;
+use PWBox\Model\Folder;
 
 
 class GetFolderFilesUseCase
 {
-    /** UserRepository */
+    /** FolderRepository */
     private $repo;
 
     public function __construct(FolderRepository $repo)
@@ -17,17 +18,14 @@ class GetFolderFilesUseCase
 
     public function __invoke(array $rawData)
     {
-        $username = $rawData['userID'];
 
-        $user = new User(
-            $username,
-            "",
+        $folder = new Folder(
             "",
             "",
             ""
         );
 
-        $result = $this->repo->getUser($user);//No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
+        $result = $this->repo->getFiles($folder,$owner); //No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
         return($result);
     }
 }

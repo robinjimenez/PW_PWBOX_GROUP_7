@@ -7,11 +7,13 @@ class File {
     private $name;
     private $owner;
     private $parent;
+    private $size;
 
-    public function __construct($name, $user, $folder) {
+    public function __construct($name, $user, $parent ,$size) {
         $this->name = $name;
         $this->owner = $user;
-        $this->parent = $folder;
+        $this->parent = $parent;
+        $this->size = $size;
     }
 
     /**
@@ -44,6 +46,22 @@ class File {
     public function setOwner($owner): void
     {
         $this->owner = $owner;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize($size): void
+    {
+        $this->size = $size;
     }
 
     /**

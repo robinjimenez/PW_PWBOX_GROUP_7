@@ -17,17 +17,18 @@ class AddFileUseCase
         $this->userRepo = $userRepository;
     }
 
-    public function __invoke(string $fileName, float $fileSize, string $directory)
+    public function __invoke(string $fileName, float $fileSize, string $parent)
     {
 
         $file = new File(
-            $directory,
             $fileName,
-            $_SESSION["userID"]
+            $_SESSION["userID"],
+            $this->fileRepo->getIdByName($parent),
+            $fileSize
         );
 
         #Creem el fitxer a la bbdd
-        $this->fileRepo->add($file, $fileSize);
+        $this->fileRepo->add($file);
         //mkdir(__DIR__. '/../../../public/uploads/'. $folder->getParent());
     }
 }

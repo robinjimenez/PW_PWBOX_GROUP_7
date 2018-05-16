@@ -25,7 +25,7 @@ class GetUserUseCase
             "",
             ""
         );
-        $result = $this->repo->getUser($user);//No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
+        $result = $this->repo->getUser($user); //No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
         return($result);
     }
 }
