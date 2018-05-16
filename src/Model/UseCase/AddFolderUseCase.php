@@ -10,7 +10,7 @@ use PWBox\Model\User;
 
 class AddFolderUseCase {
 
-    /** UserRepository */
+    /** FolderRepository */
     private $folderRepo;
 
     public function __construct(FolderRepository $folderRepository)
@@ -20,15 +20,15 @@ class AddFolderUseCase {
 
     public function __invoke(string $parent, string $name)
     {
-        $parent_length = strlen($parent);
-        $parentOK = substr($parent, 1, $parent_length);//Trec el "/" del parent
+        //$parent_length = strlen($parent);
+        //$parentOK = substr($parent, 1, $parent_length); //Trec el "/" del parent
 
         //TODO: Parent ha de ser el ID de la bbdd del parent, no el seu nom
 
         $folder = new Folder(
-            $parentOK,
             $name,
-            $_SESSION["userID"]
+            $_SESSION["userID"],
+            $this->folderRepo->getIdByName($parent)
         );
 
         #Creem la carpeta a la bbdd

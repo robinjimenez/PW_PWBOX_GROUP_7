@@ -64,9 +64,11 @@ class FileController {
         mkdir(__DIR__ . "/../../public/uploads/". $path);
         //die(var_dump($_POST["folder"]));
 
+        $path = explode('/', $curPath);
+
         //TODO: Registre folder a la bbdd (mes o menys implementat, falta solucionar que el parent a AddFolderUseCase sigui el id de la bbdd i no el name del parent
         $service = $this->container->get('add_folder_use_case');
-        $service($curPath, $_POST["folder"]);//parent és curPath, name és $_POST["folder"]
+        $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
     }
 
     /*public function showFormAction(Request $request, Response $response)

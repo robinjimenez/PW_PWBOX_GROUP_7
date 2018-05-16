@@ -8,10 +8,10 @@ class Folder {
     private $owner;
     private $parent;
 
-    public function __construct($name, $user, $folder) {
+    public function __construct($name, $user, $parent) {
         $this->name = $name;
         $this->owner = $user;
-        $this->parent = $folder;
+        $this->parent = $parent;
     }
 
     /**

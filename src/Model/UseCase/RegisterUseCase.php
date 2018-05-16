@@ -12,6 +12,8 @@ class RegisterUseCase {
 
     /** UserRepository */
     private $userRepo;
+
+    /** FolderRepository */
     private $folderRepo;
 
     public function __construct(UserRepository $userRepository,FolderRepository $folderRepository)

@@ -27,27 +27,20 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->execute();
 
         // Obtenim l'identificador
-
-        $sql = "SELECT id FROM element WHERE name = :name ";
-        $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("name", $folder->getName(), 'string');
-        $stmt->execute();
-
-        $id_child = $stmt->fetchColumn(0);
+        $id_child = $this->getIdByName($folder->getName());
 
         // Actualitzem l'arbre
 
-        if ($folder->getParent() == null) {
-            $sql = "INSERT INTO closure(parent, child, depth) VALUES (:this, :this, 0)";
-            $stmt = $this->database->prepare($sql);
-            $stmt->bindValue("this", $id_child, 'bigint');
-            $stmt->execute();
-        } else {
-            $sql = "INSERT INTO closure(parent, child, depth) SELECT (p.parent, c.child, p.depth+c.depth+1) 
-                FROM closure AS p, closure AS c WHERE p.child = :parent AND c.parent = :child;";
+        $sql = "INSERT INTO closure(parent, child, depth) VALUES (:this, :this, 0)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("this", $id_child, 'bigint');
+        $stmt->execute();
+
+        if ($folder->getParent() != null) {
+            $sql = "INSERT INTO closure(parent, child, depth) SELECT p.parent, c.child, p.depth+c.depth+1 
+                FROM closure p, closure c WHERE p.child = :parent AND c.parent = :child;";
             $stmt = $this->database->prepare($sql);
             $stmt->bindValue("parent", $folder->getParent(), 'bigint');
-            $stmt->bindValue("child", $id_child, 'bigint');
             $stmt->bindValue("child", $id_child, 'bigint');
             $stmt->execute();
         }
@@ -93,6 +86,18 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->execute();
 
         $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function getIdByName(string $name)
+    {
+        $sql = "SELECT id FROM element WHERE name = :name";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("name", $name, 'string');
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn(0);
 
         return $result;
     }

@@ -37,10 +37,12 @@ CREATE TABLE IF NOT EXISTS user_element (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE IF NOT EXISTS closure (
-  parent bigint,
-  child bigint,
-  depth int DEFAULT 0,
-  PRIMARY KEY (parent,child),
-  FOREIGN KEY (parent) REFERENCES element(id),
-  FOREIGN KEY (child) REFERENCES element(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+    parent BIGINT,
+    child BIGINT,
+    depth INT DEFAULT 0,
+    PRIMARY KEY (parent , child),
+    FOREIGN KEY (parent)
+        REFERENCES element (id),
+    FOREIGN KEY (child)
+        REFERENCES element (id)
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_BIN;
