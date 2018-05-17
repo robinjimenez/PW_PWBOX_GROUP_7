@@ -39,6 +39,18 @@ class FileController {
             $this->shareFolderAction($request,$response,$args['params']);
         }
 
+        if (isset($_POST["download"])) {
+            $this->downloadFileAction($response, $args['params']);
+        }
+
+        if (isset($_POST["rename"])) {
+            $this->renameFileAction($response,$args['params']);
+        }
+
+        if (isset($_POST["delete"])) {
+            $this->shareFolderAction($request,$response,$args['params']);
+        }
+
         return $this->container->get('view')
             ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
                 'files' => null,
@@ -75,10 +87,6 @@ class FileController {
 
                 }else {
                     die("User exists. OK");
-
-
-
-
                 }
 
             }else {
@@ -223,6 +231,39 @@ class FileController {
 
         return $this->container->get('view')
             ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
+    }
+
+    public function downloadFileAction(string $args) {
+
+        $args = __DIR__ . '/../../public/uploads/' . $args;
+
+        if (file_exists($args)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.basename($args).'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($args));
+            readfile($args);
+            exit;
+        }
+    }
+
+    public function renameFileAction(Response $response, string $args) {
+
+        if (file_exists($args)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.basename($args).'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($args));
+            readfile($args);
+            exit;
+        }
+
     }
 
     /**

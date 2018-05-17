@@ -55,10 +55,20 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->execute();
     }
 
-    public function remove(Folder $folder) {
-        $sql = "DELETE FROM element WHERE name = :name";
+    public function remove(Folder $folder, User $user) {
+        $sql = "DELETE FROM element WHERE name = :name AND owner := :user";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $folder->getName(), 'string');
+        $stmt->bindValue("user", $user->getUsername(), 'string');
+        $stmt->execute();
+    }
+
+    public function rename(string $name, Folder $folder) {
+        $sql = "UPDATE element SET name := :newName WHERE name = :name AND owner := :user";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("newName", $name, 'string');
+        $stmt->bindValue("name", $folder->getName(), 'string');
+        $stmt->bindValue("user", $_SESSION["userID"], 'string');
         $stmt->execute();
     }
 

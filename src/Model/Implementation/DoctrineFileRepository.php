@@ -87,6 +87,15 @@ class DoctrineFileRepository implements FileRepository
         $stmt->execute();
     }
 
+    public function rename(string $name, File $file) {
+        $sql = "UPDATE element SET name := :newName WHERE name = :name AND owner := :user";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("newName", $name, 'string');
+        $stmt->bindValue("name", $file->getName(), 'string');
+        $stmt->bindValue("user", $_SESSION["userID"], 'string');
+        $stmt->execute();
+    }
+
     public function share(File $file,User $user) {
         $sql = "SELECT * FROM user WHERE username = :username";
         $stmt = $this->database->prepare($sql);

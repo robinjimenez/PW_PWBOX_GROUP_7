@@ -21,10 +21,13 @@ $(document).ready(function(){
     $("#share").click(function(){
         $("#shareModal").addClass("is-active");
     });
-    $(".modal-close").on('click', function(e){
+    $("#rename").click(function(){
+        $("#renameFileModal").addClass("is-active");
+    });
+    $(".modal-close").on('click', function(){
         $(this).parent().removeClass("is-active");
     });
-    $(".modal-background").on('click', function(e){
+    $(".modal-background").on('click', function(){
         $(this).parent().removeClass("is-active");
     });
 });

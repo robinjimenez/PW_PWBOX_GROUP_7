@@ -44,7 +44,7 @@ class RegisterUseCase {
         $this->folderRepo->add($root);
 
         $shared = new Folder(
-            "shared",
+            "shared items",
             $user->getUsername(),
             $this->folderRepo->getIdByName($user->getUsername()),
             "shared"
