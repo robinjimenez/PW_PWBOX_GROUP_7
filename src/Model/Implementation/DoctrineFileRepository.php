@@ -49,13 +49,42 @@ class DoctrineFileRepository implements FileRepository
             $stmt->bindValue("child", $id_child, 'bigint');
             $stmt->execute();
 
-        // Afegim la relacio usuari-element
+        // Afegim la relacio usuari-element d'admin
         $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("user", $file->getOwner(), 'string');
         $stmt->bindValue("element", $id_child, 'bigint');
         $stmt->bindValue("role", "admin", 'string');
         $stmt->execute();
+
+        // afegir la relació usuari-element com a reader en cas que el fitxer s'afegeixi dins de carpeta ja compartida
+        $sql = "select user from user_element
+                where role = :role
+                and element IN (select parent from closure
+                                where child IN (select id from element where name = :subFileName and owner = :owner)
+                                and parent IN (select element from user_element where role = :role)
+                                and parent != child)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("role", "reader", 'string');
+        $stmt->bindValue("subFileName", $file->getName(), 'string');
+        $stmt->bindValue("owner", $file->getOwner(), 'string');
+        $stmt->execute();
+        $parentIsSharedWith = $stmt->fetchAll();
+        if (count($parentIsSharedWith) > 0) {
+            //Afegir a cada usuari a qui compartim la carpeta parent aquest nou fitxer
+            foreach ($parentIsSharedWith as $userArray) {
+                $sql = "insert into user_element(user, element, role)
+                        select :user, elements.id, :role
+                        from element as elements
+                        where elements.id IN (select id from element where name = :subFileName and owner = :owner)";
+                $stmt = $this->database->prepare($sql);
+                $stmt->bindValue("user", $userArray['user'], 'string');
+                $stmt->bindValue("role", "reader", 'string');
+                $stmt->bindValue("subFileName", $file->getName(), 'string');
+                $stmt->bindValue("owner", $file->getOwner(), 'string');
+                $stmt->execute();
+            }
+        }
 
         //Restar espai de l'usuari
         $sql = "SELECT space FROM user WHERE username = :username";
