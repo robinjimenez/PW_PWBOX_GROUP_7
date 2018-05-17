@@ -24,7 +24,7 @@ class AddFolderUseCase {
         $folder = new Folder(
             $name,
             $_SESSION["userID"],
-            $this->folderRepo->getIdByName($parent),
+            $this->folderRepo->getIdByName($parent, $_SESSION["userID"]),
             "folder"
         );
 

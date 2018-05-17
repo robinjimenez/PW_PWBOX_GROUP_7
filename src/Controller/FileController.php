@@ -21,7 +21,7 @@ class FileController {
 
     public function __invoke(Request $request, Response $response, array $args)
     {
-        $params = explode('/', $args['params']);
+        //$params = explode('/', $args['params']);
 
         if (!isset($args['params'])) {
             $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
@@ -86,8 +86,23 @@ class FileController {
                         ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
 
                 }else {
-                    die("User exists. OK");
+                    //die("User exists. OK");
+                    //Afegir la relació share a la bbdd
+                    try {
+                        $service = $this->container->get('share_folder_use_case');
+                        //TODO: Obtenir nom real de la carpeta
+                        $service("Test", $data["email"], $_SESSION['userID']);//Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió)
+
+                    } catch (\Exception $e) {
+                        die(var_dump($e));
+                    }
                 }
+
+
+
+
+
+
 
             }else {
                 die("Not in ddbb");

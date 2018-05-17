@@ -28,7 +28,7 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->execute();
 
         // Obtenim l'identificador
-        $id_child = $this->getIdByName($folder->getName());
+        $id_child = $this->getIdByName($folder->getName(), $folder->getOwner());
 
         // Actualitzem l'arbre
 
@@ -46,13 +46,43 @@ class DoctrineFolderRepository implements FolderRepository
             $stmt->execute();
         }
 
-        // Afegim la relacio usuari-element
+        // Afegim la relacio usuari-element de admin
         $sql = "INSERT INTO user_element(user, element, role) VALUES(:user, :element, :role);";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("user", $folder->getOwner(), 'string');
         $stmt->bindValue("element", $id_child, 'bigint');
         $stmt->bindValue("role", "admin", 'string');
         $stmt->execute();
+
+        //TODO: Afegir relacio usuari-element de reader (només per si estem afegint una carpeta a dins d'una carpeta que ja estava compartida)
+        $sql = "select user from user_element
+                where role = :role
+                and element IN (select parent from closure
+                                where child IN (select id from element where name = :subFolderName and owner = :owner)
+                                and parent IN (select element from user_element where role = :role)
+                                and parent != child)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("role", "reader", 'string');
+        $stmt->bindValue("subFolderName", $folder->getName(), 'string');
+        $stmt->bindValue("owner", $folder->getOwner(), 'string');
+        $stmt->execute();
+        $parentIsSharedWith = $stmt->fetchAll();
+
+        if (count($parentIsSharedWith) > 0) {
+            //Afegir a cada usuari a qui compartim la carpeta parent aquesta nova carpeta
+            foreach ($parentIsSharedWith as $userArray) {
+                $sql = "insert into user_element(user, element, role)
+                        select :user, elements.id, :role
+                        from element as elements
+                        where elements.id IN (select id from element where name = :subFolderName and owner = :owner)";
+                $stmt = $this->database->prepare($sql);
+                $stmt->bindValue("user", $userArray['user'], 'string');
+                $stmt->bindValue("role", "reader", 'string');
+                $stmt->bindValue("subFolderName", $folder->getName(), 'string');
+                $stmt->bindValue("owner", $folder->getOwner(), 'string');
+                $stmt->execute();
+            }
+        }
     }
 
     public function remove(Folder $folder, User $user) {
@@ -103,16 +133,46 @@ class DoctrineFolderRepository implements FolderRepository
         return $result;
     }
 
-    public function getIdByName(string $name)
+    public function getIdByName(string $name, string $owner)
     {
-        $sql = "SELECT id FROM element WHERE name = :name";
+        $sql = "SELECT id FROM element WHERE name = :name AND owner = :owner";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $name, 'string');
+        $stmt->bindValue("owner", $owner, 'string');
         $stmt->execute();
 
         $result = $stmt->fetchColumn(0);
 
         return $result;
+    }
+
+    public function shareFolder(string $folderName, string $emailToShare, string $folderOwner) {
+        //inserim nova relació a user_element
+        $sql = "insert into user_element(user, element, role)
+                select users.username, elements.id, :readerRole
+                from user as users, element as elements
+                where users.username IN (select username from user where email = :emailToShare)
+                and elements.id IN (select id from element where name = :folderName and owner = :folderOwner)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("readerRole", 'reader', 'string');
+        $stmt->bindValue("emailToShare", $emailToShare, 'string');
+        $stmt->bindValue("folderName", $folderName, 'string');
+        $stmt->bindValue("folderOwner", $folderOwner, 'string');
+        $stmt->execute();
+
+        //inserim nova relació a closure
+        $sql = "insert into closure(parent, child, depth)
+                select elementsP.id, elementsC.id, :depth
+                from element as elementsP, element as elementsC
+                where elementsP.id IN (select id from element where type = :sharedType and owner IN (select username from user where email = :emailToShare))
+                and elementsC.id IN (select id from element where name = :folderName and owner = :folderOwner)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("depth", 1, 'integer');
+        $stmt->bindValue("sharedType", 'shared', 'string');
+        $stmt->bindValue("emailToShare", $emailToShare, 'string');
+        $stmt->bindValue("folderName", $folderName, 'string');
+        $stmt->bindValue("folderOwner", $folderOwner, 'string');
+        $stmt->execute();
     }
 
 }

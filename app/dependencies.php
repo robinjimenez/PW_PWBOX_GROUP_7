@@ -100,6 +100,12 @@ $container['get_folder_files_use_case'] = function ($container) {
     return $useCase;
 };
 
+//share folder service
+$container['share_folder_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\ShareFolderUseCase($container->get('folder_repository'), $container->get('user_repository'));
+    return $useCase;
+};
+
 //encrypt service
 $container['model_encryption_service'] = function ($container) {
     $service = new PWBox\Model\Encryption();

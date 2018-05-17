@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS element (
   type varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   CONSTRAINT parentFK FOREIGN KEY (parent) REFERENCES element(id),
-  FOREIGN KEY (owner) REFERENCES user(username)
+  CONSTRAINT ownerFK FOREIGN KEY (owner) REFERENCES user(username)
   -- UNIQUE KEY `UNIQUE_NAME` (name)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 

@@ -8,7 +8,7 @@ interface FolderRepository {
     public function share(Folder $folder,User $user);
     public function remove(Folder $folder, User $user);
     public function rename(string $name, Folder $folder);
-    public function getIdByName(string $name);
+    public function getIdByName(string $name, string $owner);
     public function getFiles(string $folder, string $user);
 
 }
