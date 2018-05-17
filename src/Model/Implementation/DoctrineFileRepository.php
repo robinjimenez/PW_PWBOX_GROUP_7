@@ -57,7 +57,7 @@ class DoctrineFileRepository implements FileRepository
         $stmt->bindValue("role", "admin", 'string');
         $stmt->execute();
 
-        // afegir la relació usuari-element com a reader en cas que el fitxer s'afegeixi dins de carpeta ja compartida
+        // afegir la relació usuari-element com a reader en cas que el fitxer s'afegeixi dins de carpeta ja compartida.
         $sql = "select user from user_element
                 where role = :role
                 and element IN (select parent from closure
