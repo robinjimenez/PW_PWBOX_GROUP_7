@@ -23,6 +23,8 @@ $(document).ready(function(){
     });
     $("#rename").click(function(){
         $("#renameFileModal").addClass("is-active");
+        var filename = $(this).parent().parent().parent().parent().attr('id');
+        $("#renameFileModal > .filename").innerText(filename);
     });
     $(".modal-close").on('click', function(){
         $(this).parent().removeClass("is-active");

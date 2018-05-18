@@ -1,5 +1,5 @@
 {% extends "base.twig" %}
-{% block title %}PWbox - Dashboard{% endblock %}
+{% block title %}PWbox - dashboard{% endblock %}
 {% block content %}
     <div class="hero is-medium is-light is-bold" xmlns:>
         <div class="hero-body">
@@ -94,10 +94,10 @@
                     <div class="modal-card">
                         <div class="">
                             <header class="modal-card-head">
-                                <p class="subtitle">rename </p>
+                                <p class="subtitle">rename <span class="filename"></span></p>
                             </header>
                             <section class="modal-card-body">
-                                <form action="/dashboard{{ path }}" method="POST">
+                                <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
                                     <div class="control">
                                         <input class="input is-primary" type="text" name="newName" placeholder="new name">
                                     </div>
@@ -214,7 +214,7 @@
                         {% for file in files %}
                             <div class="level">
                                 <div class="container">
-                                    <div class="box">
+                                    <div id="{{ file["name"] }}" class="box">
                                         <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
                                             <span class="icon is-medium has-text-primary">
                                             {% if file["type"] == "file" %}
@@ -226,7 +226,7 @@
                                                 {% if file["type"] == "folder" %}
                                                     <i class="fas fa-folder fa-lg"></i>
                                                 {% endif %}
-                                        </span>
+                                            </span>
                                             <a class="subtitle" {% if file["type"] == "folder" or file["type"] == "shared"%}href="/dashboard{{ path }}" {% endif %}>{{ file['name'] }}</a>
                                             <div class="field is-grouped is-grouped-right is-pulled-right">
                                                 {% if file["type"] == "file" %}
