@@ -21,6 +21,7 @@ class FileController {
 
     public function __invoke(Request $request, Response $response, array $args)
     {
+        die(var_dump($request->getParsedBody()));
         //$params = explode('/', $args['params']);
 
         if (!isset($args['params'])) {

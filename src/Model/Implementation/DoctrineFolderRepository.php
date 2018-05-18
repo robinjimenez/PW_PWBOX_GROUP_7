@@ -173,6 +173,59 @@ class DoctrineFolderRepository implements FolderRepository
         $stmt->bindValue("folderName", $folderName, 'string');
         $stmt->bindValue("folderOwner", $folderOwner, 'string');
         $stmt->execute();
-    }
 
+        //TODO: Compartir totes els childs d'aquesta carpeta que es vol compartir
+        // Obtenir username a partir del email
+        $sql = "select username from user where email = :email";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("email", $emailToShare, 'string');
+        $stmt->execute();
+        $usernameEmail = $stmt->fetchColumn(0);
+
+        // Obtenir id de la carpeta shared de la persona del email
+        $sql = "select id from element where owner = :owner and type = :shared";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("owner", $usernameEmail, 'string');
+        $stmt->bindValue("shared", "shared", 'string');
+        $stmt->execute();
+        $idSharedFolder = $stmt->fetchColumn(0);
+
+        // Seleccionar tots els childs de la carpeta a afegir que no estiguin ja compartits amb la persona
+        $sql = "select * from closure as c
+                where c.parent in (select e.id from element as e where e.name = :folderName and e.owner = :folderOwner)
+                and c.parent != c.child
+                and c.child NOT IN (select ue.element from user_element as ue
+                                    where user = :usernameEmail and role = :reader)";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("folderName", $folderName, 'string');
+        $stmt->bindValue("folderOwner", $folderOwner, 'string');
+        $stmt->bindValue("usernameEmail", $usernameEmail, 'string');
+        $stmt->bindValue("reader", "reader", 'string');
+        $stmt->execute();
+        $childsToShare = $stmt->fetchAll();
+
+        if (count($childsToShare) > 0) {
+            // Afegir nova relació a closure per cada row retornada a la query anterior
+            foreach ($childsToShare as $child) {
+                $sql = "INSERT INTO closure(parent, child, depth)
+                    VALUES (:newParentID, :childID, :newDepth)";
+                $stmt = $this->database->prepare($sql);
+                $stmt->bindValue("newParentID", $idSharedFolder, 'bigint');
+                $stmt->bindValue("childID", $child['child'], 'bigint');
+                $stmt->bindValue("newDepth", $child['depth'] + 1, 'integer');
+                $stmt->execute();
+            }
+
+            // Afegir nova relació a user_element per cada row retornada a la query anterior
+            foreach ($childsToShare as $child) {
+                $sql = "insert into user_element(user, element,role)
+                    values (:usernameEmail, :childID, :reader)";
+                $stmt = $this->database->prepare($sql);
+                $stmt->bindValue("usernameEmail", $usernameEmail, 'string');
+                $stmt->bindValue("childID", $child['child'], 'bigint');
+                $stmt->bindValue("reader", "reader", 'string');
+                $stmt->execute();
+            }
+        }
+    }
 }

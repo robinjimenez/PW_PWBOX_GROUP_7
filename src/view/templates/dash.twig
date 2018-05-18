@@ -65,7 +65,7 @@
                     </div>
                     <button class="modal-close is-large" aria-label="close" onclick="close()"></button>
                 </div>
-
+<!--
                 <div id="shareModal" class="modal">
                     <div class="modal-background" onclick="close()"></div>
                     <div class="modal-card">
@@ -75,6 +75,10 @@
                             </header>
                             <section class="modal-card-body">
                                 <form action="/dashboard{{ path }}" method="POST">
+                                    <div class="control">
+                                        <input id="file-name" type="hidden" name="fileName" value="FolderName">
+                                    </div>
+                                    <br>
                                     <div class="control">
                                         <input class="input is-primary" type="email" name="email" placeholder="Email of the user to share this folder with">
                                     </div>
@@ -88,7 +92,7 @@
                     </div>
                     <button class="modal-close is-large" aria-label="close" onclick="close()"></button>
                 </div>
-
+-->
                 <div id="renameFileModal" class="modal">
                     <div class="modal-background" onclick="close()"></div>
                     <div class="modal-card">
@@ -162,59 +166,49 @@
                                     </a>
                                 </p>
                             {% endif %}
+
                         </div>
                     </div>
 
                     <!-- FILES DE CARPETES -->
                     <div class="box">
-                        {#{% if path == root %}#}
-                        <!--
-                            <div class="level">
-                                <div class="container">
-                                    <div class="box">
-                                        <a class="subtitle is-vcentered" href="/dashboard{{ path }}"> shared folders </a>
-                                        <div class="field is-grouped is-grouped-right is-pulled-right">
-                                            <p class="control">
-                                                <a class="button is-success" href="/dashboard{{ path }}">
-                                                    <span>open</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-primary">
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-edit"></i>
-                                                    </span>
-                                                    <span>rename</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-primary">
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-edit"></i>
-                                                    </span>
-                                                    <span>share</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-danger">
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-times"></i>
-                                                    </span>
-                                                    <span>delete</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
-                        {#{% endif %}#}
                         {% if files is empty %}
                             <p class="has-text-centered has-text-weight-bold"> there are no files in this folder </p>
                         {% endif %}
                         {% for file in files %}
+
+                            <div id="shareModal" class="modal" hidden>
+                                <div class="modal-background" onclick="close()"></div>
+                                <div class="modal-card">
+                                    <div class="">
+                                        <header class="modal-card-head">
+                                            <p class="subtitle">share this folder with the following email account</p>
+                                        </header>
+                                        <section class="modal-card-body">
+                                            <form action="/dashboard{{ path }}" method="POST">
+                                                <div class="control">
+                                                    <input id="file-name" type="hidden" name="fileName" value="{{ file['name'] }}">
+                                                </div>
+                                                <br>
+                                                <div class="control">
+                                                    <input class="input is-primary" type="email" name="email" placeholder="Email of the user to share this foldeeeechr ({{ file['name'] }})with">
+                                                </div>
+                                                <br>
+                                                <div class="control">
+                                                    <input class="button is-primary" type="submit" name="share" value="share">
+                                                </div>
+                                            </form>
+                                        </section>
+                                    </div>
+                                </div>
+                                <button class="modal-close is-large" aria-label="close" onclick="close()"></button>
+                            </div>
+
                             <div class="level">
                                 <div class="container">
                                     <div id="{{ file["name"] }}" class="box">
+                                        <p id="num">{{ loop.index }}</p>
+                                        <p id="name">{{ file['name'] }}</p>
                                         <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
                                             <span class="icon is-medium has-text-primary">
                                             {% if file["type"] == "file" %}
@@ -274,8 +268,8 @@
                                                 </p>
                                                 {% endif %}
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}

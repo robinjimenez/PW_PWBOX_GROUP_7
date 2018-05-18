@@ -20,6 +20,8 @@ $(document).ready(function(){
     });
     $("#share").click(function(){
         $("#shareModal").addClass("is-active");
+        var file = $("#name").text();
+        $("#file-name").val(file);
     });
     $("#rename").click(function(){
         $("#renameFileModal").addClass("is-active");

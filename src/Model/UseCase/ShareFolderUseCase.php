@@ -16,7 +16,9 @@ class ShareFolderUseCase
 
     public function __invoke(string $folderName, string $emailToShare, string $folderOwner)
     {
+        //Afegir noves relacions a la bbdd
         $this->folderRepo->shareFolder($folderName, $emailToShare, $folderOwner);
+
         //TODO: Crear directori real de la carpeta
         //$this->recurse_copy(__DIR__. '/../../../public/uploads/'. $folder->getParent())
     }
