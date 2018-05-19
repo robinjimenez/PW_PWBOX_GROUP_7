@@ -24,39 +24,87 @@ class FileController {
         //die(var_dump($request->getParsedBody()));
         //$params = explode('/', $args['params']);
 
+/*        if (!isset($args['params'])) {
+            //$args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
+            return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
+        }*/
+
         if (!isset($args['params'])) {
             $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
-        }
+            return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
 
-        if (isset($_POST["newFile"])) {
-            $this->uploadFileAction($request,$response,$args['params']);
-        }
+        } else {
+            $result['errors'] = [];
 
-        if (isset($_POST["newFolder"])) {
-            $this->createFolderAction($args['params']);
-        }
+            if (isset($_POST["newFile"])) {
+                $result = $this->uploadFileAction($request,$response,$args['params']);
+            }
 
-        if (isset($_POST["share"])) {
-            $this->shareFolderAction($request,$response,$args['params']);
-        }
+            if (isset($_POST["newFolder"])) {
+                $this->createFolderAction($args['params']);
+            }
 
-        if (isset($_POST["download"])) {
-            $this->downloadFileAction($response, $args['params']);
-        }
+            if (isset($_POST["share"])) {
+                $this->shareFolderAction($request,$response,$args['params']);
+            }
 
-        if (isset($_POST["rename"])) {
-            $this->renameFileAction($response,$args['params']);
-        }
+            if (isset($_POST["download"])) {
+                $this->downloadFileAction($response, $args['params']);
+            }
 
-        if (isset($_POST["delete_file"])) {
-            return $this->deleteFileAction($request,$response,$args['params']);
-        }
+            if (isset($_POST["rename"])) {
+                $this->renameFileAction($response,$args['params']);
+            }
 
-        return $this->container->get('view')
-            ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
-                'files' => null,
-                'currentFolder' => $args['params'],
-                'logged' => isset($_SESSION["userID"])]);
+            if (isset($_POST["delete_file"])) {
+                $result = $this->deleteFileAction($request,$response,$args['params']);
+            }
+
+            if (isset($_POST["delete_folder"])) {
+                $result = $this->deleteFolderAction($request,$response,$args['params']);
+            }
+
+            /*return $this->container->get('view')
+                ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
+                    'files' => null,
+                    'currentFolder' => $args['params'],
+                    'logged' => isset($_SESSION["userID"])]);*/
+
+            $params = explode('/', $args['params']);
+
+            if (strcmp($_SESSION["userID"],$params[1]) != 0) {
+                return $this->container->get('view')
+                    ->render($response->withStatus(403), 'error.twig', []);
+            }
+
+            $service = $this->container->get('get_folder_files_use_case');
+            $files = $service($args['params']);
+
+            $up = $params;
+
+            array_splice($up,sizeof($params)-1,1);
+
+            $upPath = '/dashboard' . implode('/',$up);
+
+            $user =$this->container->get('get_user_use_case')($_SESSION);
+
+            $space = round($user['space']/1000000,2);
+
+            return $this->container->get('view')
+                ->render($response,
+                    'dash.twig', [
+                        'errors' => $result['errors'],
+                        'isPost' => isset($result['posted']),
+                        'files' => $files,
+                        'upPath' => $upPath,
+                        'root' => $_SESSION["userID"],
+                        'folder' => $params[sizeof($params)-1],
+                        'path' =>  $args['params'],
+                        'logged' => isset($_SESSION["userID"]),
+                        'space' =>  $space
+
+                    ]);
+        }
     }
 
     public function shareFolderAction(Request $request, Response $response, $args) {
@@ -115,7 +163,7 @@ class FileController {
                 'logged' => isset($_SESSION["userID"])]);
     }
 
-    public function loadAction(Request $request, Response $response, array $args) {
+    /*public function loadAction(Request $request, Response $response, array $args) {
         if (!isset($args['params'])) {
             return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
         } else {
@@ -153,7 +201,7 @@ class FileController {
 
             ]);
         }
-    }
+    }*/
 
     public function createFolderAction(string $curPath) {
         $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
@@ -172,14 +220,14 @@ class FileController {
 
         $uploadedFiles = $request->getUploadedFiles();
 
-        $errors = [];
+        $result = [];
 
         foreach ($uploadedFiles['files'] as $uploadedFile) {
 
             if (isset($uploadedFile) && $uploadedFile instanceof UploadedFile) {
 
                 if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
-                    $errors[] = sprintf(
+                    $result['errors'] = sprintf(
                         'An unexpected error ocurred uploading the file %s',
                         $uploadedFile->getClientFilename()
                     );
@@ -187,7 +235,7 @@ class FileController {
                 }
 
                 if ($uploadedFile->getSize() > 2000000) {
-                    $errors[] = sprintf(
+                    $result['errors'] = sprintf(
                         'The file %s is too large! Max file size is 2Mb.',
                         $uploadedFile->getClientFilename()
                     );
@@ -197,7 +245,7 @@ class FileController {
                 $user = $this->container->get('get_user_use_case')($_SESSION);
 
                 if ($uploadedFile->getSize() > $user['space']) {
-                    $errors[] = sprintf(
+                    $result['errors'] = sprintf(
                         "You don't have enough available space to store %s!",
                         $uploadedFile->getClientFilename()
                     );
@@ -211,7 +259,7 @@ class FileController {
                 $extension = $fileInfo['extension'];
 
                 if (!$this->isValidExtension($extension)) {
-                    $errors[] = sprintf(
+                    $result['errors'] = sprintf(
                         'Unable to upload the file %s, the extension %s is not valid',
                         $fileName,
                         $extension
@@ -229,6 +277,7 @@ class FileController {
                 try {
                     $service = $this->container->get('add_file_use_case');
                     $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $parent);
+                    $result['posted'] = true;
                 } catch (\Exception $e) {
                     return var_dump($e);
                 } catch (NotFoundExceptionInterface $e) {
@@ -239,11 +288,8 @@ class FileController {
             }
         }
 
-        return $this->container->get('view')
-            ->render($response,'dash.twig',[
-                'errors' => $errors,
-                'isPost' => true,
-                'logged' => isset($_SESSION["userID"])]);
+
+        return $result;
     }
 
     public function downloadFileAction(string $args) {
@@ -282,6 +328,37 @@ class FileController {
                 'logged' => isset($_SESSION["userID"])]);
 
     }
+
+    public function deleteFolderAction(Request $request, Response $response, string $path) {
+
+        $files = $this->container->get('get_folder_files_use_case')($path);
+
+        if (sizeof($files) == 0) {
+
+            $directory = __DIR__ . '/../../public/uploads/' . $path;
+
+            $route = explode('/', $path);
+
+            $this->container->get('delete_folder_use_case')($route[sizeof($route)-1],$route[sizeof($route)-2]);
+
+            array_splice($route,sizeof($route)-1,1);
+
+            rmdir($directory);
+
+            return $this->container->get('view')
+                ->render($response->withRedirect('/dashboard'. implode("/",$route)), 'dash.twig', [
+                    'files' => null,
+                    'currentFolder' => $route,
+                    'logged' => isset($_SESSION["userID"])]);
+        } else {
+            $result = [];
+            $result['errors'] = sprintf(
+                "Can't delete folder, still has files in it!"
+            );
+            return $result;
+        }
+    }
+
 
     public function renameFileAction(Response $response, string $args) {
 

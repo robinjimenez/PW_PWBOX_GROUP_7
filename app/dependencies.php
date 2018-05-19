@@ -112,6 +112,12 @@ $container['delete_file_use_case'] = function ($container) {
     return $useCase;
 };
 
+// delete folder service
+$container['delete_folder_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\DeleteFolderUseCase($container->get('folder_repository'), $container->get('user_repository'));
+    return $useCase;
+};
+
 //encrypt service
 $container['model_encryption_service'] = function ($container) {
     $service = new PWBox\Model\Encryption();

@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS element (
   name varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   owner varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   type varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
+  size bigint,
   PRIMARY KEY (id),
   CONSTRAINT parentFK FOREIGN KEY (parent) REFERENCES element(id),
   CONSTRAINT ownerFK FOREIGN KEY (owner) REFERENCES user(username)

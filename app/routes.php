@@ -41,7 +41,7 @@ $app->post(
 
 $app->get(
     '/dashboard[{params:.*}]',
-    'PWBox\Controller\FileController:loadAction')
+    'PWBox\Controller\FileController')
     ->add('PWBox\Controller\Middleware\UserLoggedMiddleware');
 
 $app->post(

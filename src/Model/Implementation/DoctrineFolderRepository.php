@@ -85,11 +85,29 @@ class DoctrineFolderRepository implements FolderRepository
         }
     }
 
-    public function remove(Folder $folder, User $user) {
-        $sql = "DELETE FROM element WHERE name = :name AND owner := :user";
+    public function remove(Folder $folder) {
+        $id = $this->getIdByName($folder->getName(),$_SESSION['userID']);
+
+        $sql = "delete link
+                from closure p, closure link, closure c, closure to_delete
+                where p.parent = link.parent and c.child = link.child
+                and p.child  = to_delete.parent and c.parent= to_delete.child
+                and (to_delete.parent= :id or to_delete.child= :id)
+                and to_delete.depth<2";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("name", $folder->getName(), 'string');
-        $stmt->bindValue("user", $user->getUsername(), 'string');
+        $stmt->bindValue("id", $id, 'string');
+        $stmt->execute();
+
+        $sql = "delete
+                from user_element
+                where element = :id";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("id", $id, 'string');
+        $stmt->execute();
+
+        $sql = "delete from element where id = :id";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("id", $id, 'string');
         $stmt->execute();
     }
 
