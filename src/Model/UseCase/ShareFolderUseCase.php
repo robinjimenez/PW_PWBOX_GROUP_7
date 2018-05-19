@@ -14,42 +14,67 @@ class ShareFolderUseCase
         $this->folderRepo = $folderRepository;
     }
 
-    public function __invoke(string $folderName, string $emailToShare, string $folderOwner)
+    public function __invoke(string $folderName, string $emailToShare, string $folderOwner, string $folderPath)
     {
         //Afegir noves relacions a la bbdd
         $this->folderRepo->shareFolder($folderName, $emailToShare, $folderOwner);
 
         //TODO: Crear directori real de la carpeta
 
+        //__DIR__.
         //SOURCE FILE
-        //$src = __DIR__. "/../../../public/uploads/$_SESSION[userID]". ;
-        //$src = $folderName->getParent();
-
-
-
-        //DESTINATION
-        //$dst = __DIR__. "/../../../public/uploads/$_SESSION[userID]". ;
+        $src = '/../../../public/uploads'. $folderPath . "/$folderName";
         //die(var_dump($src));
 
+        //DESTINATION
+        $dst = '/../../../public/uploads/anna/shared';
 
         //COPY
-        //$this->recurse_copy($src, $dst);
+        //$this->xcopy($src, $dst);
     }
 
     //Funció per a copiar tot un directori i tot el que inclogui en un altre lloc
-    function recurse_copy($src,$dst) {
-        $dir = opendir($src);
-        @mkdir($dst);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    recurse_copy($src . '/' . $file,$dst . '/' . $file);
-                }
-                else {
-                    copy($src . '/' . $file,$dst . '/' . $file);
-                }
-            }
+    /**
+     * Copy a file, or recursively copy a folder and its contents
+     * @author      Aidan Lister <aidan@php.net>
+     * @version     1.0.1
+     * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
+     * @param       string   $source    Source path
+     * @param       string   $dest      Destination path
+     * @param       int      $permissions New folder creation permissions
+     * @return      bool     Returns true on success, false on failure
+     */
+    function xcopy($source, $dest, $permissions = 0755)
+    {
+        // Check for symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
         }
-        closedir($dir);
+
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest, $permissions);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            xcopy("$source/$entry", "$dest/$entry", $permissions);
+        }
+
+        // Clean up
+        $dir->close();
+        return true;
     }
 }

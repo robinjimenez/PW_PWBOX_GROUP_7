@@ -102,7 +102,7 @@ $container['get_folder_files_use_case'] = function ($container) {
 
 //share folder service
 $container['share_folder_use_case'] = function ($container) {
-    $useCase = new PWBox\Model\UseCase\ShareFolderUseCase($container->get('folder_repository'), $container->get('user_repository'));
+    $useCase = new PWBox\Model\UseCase\ShareFolderUseCase($container->get('folder_repository'));
     return $useCase;
 };
 

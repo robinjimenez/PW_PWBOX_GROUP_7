@@ -134,33 +134,27 @@ class FileController {
         if (v::email()->validate($data["email"]) == false) {
             $result['errors'][] = sprintf('Invalid email');
 
-            //TODO: No mostra error
-            //return $result;
-            /*return $this->container->get('view')
-                ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-      */} else {
+        } else {
             //Check if email exists in ddbb
             $service = $this->container->get('login_user_use_case');
             $queryResult = $service($data);//Obtinc el user si existeix
 
-            if (isset($result[0])) {//user exists
+            if (!isset($result[0])) {//user exists
 
                 //Check it is not himself
                 if ($queryResult[0]['username'] == $_SESSION['userID']) {
                     die("This is you. Can't share with yourself");
                     //TODO: No mostra error
                     $result['errors'][] = sprintf("You cannot share a folder with yourself");
-                    //return $result;
-                    /*return $this->container->get('view')
-                        ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-*/
+
                 }else {
-                    //die("User exists. OK");
-                    //Afegir la relació share a la bbdd
+
+                    //Afegir la relació share a la bbdd i copiar els directoris (tot en el service del model)
                     try {
+
                         $service = $this->container->get('share_folder_use_case');
-                        //TODO: Obtenir nom real de la carpeta
-                        $service($data['fileName'], $data['email'], $_SESSION['userID']);//Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió)
+                        //Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió). També args que conté el path fins la carpeta
+                        $service($data['fileName'], $data['email'], $_SESSION['userID'], $args);
 
                     } catch (\Exception $e) {
                         die(var_dump($e));
@@ -169,22 +163,11 @@ class FileController {
 
             } else {
                 die("Not in ddbb");
-
-                //TODO: No mostra error
                 $result['errors'][] = sprintf('This user does not exists');
-                //return $result;
-                /*return $this->container->get('view')
-                    ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-            */}
+            }
         }
 
         return $result;
-
-        /*return $this->container->get('view')
-            ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
-                'files' => null,
-                'currentFolder' => $args['params'],
-                'logged' => isset($_SESSION["userID"])]);*/
     }
 
     /*public function loadAction(Request $request, Response $response, array $args) {
