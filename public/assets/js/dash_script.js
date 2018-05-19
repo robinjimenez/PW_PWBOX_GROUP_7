@@ -34,4 +34,7 @@ $(document).ready(function(){
     $(".modal-background").on('click', function(){
         $(this).parent().removeClass("is-active");
     });
+    $("button.delete").on('click', function(){
+        $(this).parent().addClass("is-hidden");
+    });
 });
