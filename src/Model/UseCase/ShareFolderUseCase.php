@@ -16,21 +16,23 @@ class ShareFolderUseCase
 
     public function __invoke(string $folderName, string $emailToShare, string $folderOwner, string $folderPath)
     {
+        $copyFolderName = $folderName;
         //Afegir noves relacions a la bbdd
         $this->folderRepo->shareFolder($folderName, $emailToShare, $folderOwner);
 
-        //TODO: Crear directori real de la carpeta
+        //Copiar carpeta a l'altre persona
 
-        //__DIR__.
+        //CREO DIRECTORI BUIT
+        mkdir(__DIR__ . '/../../../public/uploads/anna/shared/'. $copyFolderName);
+
         //SOURCE FILE
-        $src = '/../../../public/uploads'. $folderPath . "/$folderName";
-        //die(var_dump($src));
+        $src = __DIR__ . "/../../../public/uploads". $folderPath. "/$copyFolderName";
 
         //DESTINATION
-        $dst = '/../../../public/uploads/anna/shared';
+        $dst = __DIR__ . '/../../../public/uploads/anna/shared/'. $copyFolderName;
 
         //COPY
-        //$this->xcopy($src, $dst);
+        $this->xcopy($src, $dst);
     }
 
     //Funció per a copiar tot un directori i tot el que inclogui en un altre lloc
@@ -70,7 +72,7 @@ class ShareFolderUseCase
             }
 
             // Deep copy directories
-            xcopy("$source/$entry", "$dest/$entry", $permissions);
+            $this->xcopy("$source/$entry", "$dest/$entry", $permissions);
         }
 
         // Clean up

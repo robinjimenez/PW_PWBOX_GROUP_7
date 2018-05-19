@@ -151,7 +151,7 @@ class FileController {
 
                     //Afegir la relació share a la bbdd i copiar els directoris (tot en el service del model)
                     try {
-
+                        echo "data filename". $data['fileName'];
                         $service = $this->container->get('share_folder_use_case');
                         //Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió). També args que conté el path fins la carpeta
                         $service($data['fileName'], $data['email'], $_SESSION['userID'], $args);

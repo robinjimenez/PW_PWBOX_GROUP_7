@@ -38,7 +38,6 @@ $(document).ready(function(){
 
 //Button share
 function shareModalData(file) {
-    //console.log(file.id);
     $("#shareModal").addClass("is-active");
     $("#file-name").val(file.id);
 }
