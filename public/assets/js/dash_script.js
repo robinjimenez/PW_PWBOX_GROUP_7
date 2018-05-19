@@ -18,16 +18,13 @@ $(document).ready(function(){
     $("#newFolder").click(function(){
         $("#newFolderModal").addClass("is-active");
     });
-    $("#share").click(function(){
-        $("#shareModal").addClass("is-active");
-        var file = $("#name").text();
-        $("#file-name").val(file);
-    });
+/*
     $("#rename").click(function(){
         $("#renameFileModal").addClass("is-active");
         var filename = $(this).parent().parent().parent().parent().attr('id');
         $("#renameFileModal > .filename").innerText(filename);
     });
+    */
     $(".modal-close").on('click', function(){
         $(this).parent().removeClass("is-active");
     });
@@ -38,3 +35,12 @@ $(document).ready(function(){
         $(this).parent().addClass("is-hidden");
     });
 });
+
+//Button share
+function shareModalData(file) {
+    //console.log(file.id);
+    $("#shareModal").addClass("is-active");
+    $("#file-name").val(file.id);
+}
+
+//Button rename

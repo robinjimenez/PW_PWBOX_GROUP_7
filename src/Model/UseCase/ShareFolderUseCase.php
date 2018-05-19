@@ -20,7 +20,20 @@ class ShareFolderUseCase
         $this->folderRepo->shareFolder($folderName, $emailToShare, $folderOwner);
 
         //TODO: Crear directori real de la carpeta
-        //$this->recurse_copy(__DIR__. '/../../../public/uploads/'. $folder->getParent())
+
+        //SOURCE FILE
+        //$src = __DIR__. "/../../../public/uploads/$_SESSION[userID]". ;
+        //$src = $folderName->getParent();
+
+
+
+        //DESTINATION
+        //$dst = __DIR__. "/../../../public/uploads/$_SESSION[userID]". ;
+        //die(var_dump($src));
+
+
+        //COPY
+        //$this->recurse_copy($src, $dst);
     }
 
     //Funció per a copiar tot un directori i tot el que inclogui en un altre lloc
