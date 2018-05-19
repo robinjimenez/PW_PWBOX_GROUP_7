@@ -75,6 +75,7 @@
                             </header>
                             <section class="modal-card-body">
                                 <form action="/dashboard{{ path }}" method="POST">
+                                    <!-- Input hidden qe conté el nom del fitxer seleccionat (se li passa per js) -->
                                     <div class="control">
                                         <input id="file-name" type="hidden" name="fileName" value="FolderName">
                                     </div>
@@ -102,6 +103,9 @@
                             </header>
                             <section class="modal-card-body">
                                 <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
+                                    <div class="control">
+                                        <input id="file-name-for-rename" type="hidden" name="fileName" value="FolderName">
+                                    </div>
                                     <div class="control">
                                         <input class="input is-primary" type="text" name="newName" placeholder="new name">
                                     </div>
@@ -209,7 +213,7 @@
                                                 {% endif %}
                                                 {% if file["type"] != "shared" %}
                                                 <p class="control">
-                                                    <button id="rename" name="rename" class="button is-primary">
+                                                    <button id="rename" name="rename" class="button is-primary" onclick="renameModalData({{ file['name'] }})">
                                                         <span class="icon is-small">
                                                             <i class="fas fa-edit"></i>
                                                         </span>

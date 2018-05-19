@@ -36,10 +36,17 @@ $(document).ready(function(){
     });
 });
 
-//Button share
+//Al fer onclick al button de share
 function shareModalData(file) {
     $("#shareModal").addClass("is-active");
+    //Assignem valor al input que està hidden del modal de share de dash.twig, per enviar-lo a bbdd després
     $("#file-name").val(file.id);
 }
 
-//Button rename
+//Al fer onclick al button de rename
+function renameModalData(file) {
+    //TODO: Rename action
+    $("#renameFileModal").addClass("is-active");
+    //Assignem valor al input que està hidden del modal de rename de dash.twig, per enviar-lo a bbdd després
+    $("#file-name-for-rename").val(file.id);
+}
