@@ -22,11 +22,12 @@ class DoctrineFileRepository implements FileRepository
     {
 
         // Afegim l'element
-        $sql = "INSERT INTO element(parent, name, owner, type) VALUES(:parent, :name, :owner, 'file')";
+        $sql = "INSERT INTO element(parent, name, owner, type, size) VALUES(:parent, :name, :owner, 'file', :size)";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $file->getName(), 'string');
         $stmt->bindValue("owner", $file->getOwner(), 'string');
         $stmt->bindValue("parent", $file->getParent(), 'bigint');
+        $stmt->bindValue("size", $file->getSize(), 'bigint');
         try {
             $stmt->execute();
         } catch (DBALException $e) {
@@ -104,16 +105,45 @@ class DoctrineFileRepository implements FileRepository
     }
 
     public function remove(File $file) {
-        $sql = "DELETE FROM element WHERE name = :name";
+
+        $id = $this->getIdByName($file->getName());
+
+        $sql = "delete link
+                from closure p, closure link, closure c, closure to_delete
+                where p.parent = link.parent and c.child = link.child
+                and p.child  = to_delete.parent and c.parent= to_delete.child
+                and (to_delete.parent= :id or to_delete.child= :id)
+                and to_delete.depth<2";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("name", $file->getName(), 'string');
+        $stmt->bindValue("id", $id, 'string');
         $stmt->execute();
 
-        $sql = "UPDATE user SET space = space + :newSpace WHERE username = :username";
+        $sql = "select size from element where id = :id and owner = :owner";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("newSpace", $file->getSize(), 'bigint');
-        $stmt->bindValue("username", $_SESSION["userID"], 'string');
+        $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("owner", $_SESSION['userID'], 'string');
         $stmt->execute();
+
+        $space = $stmt->fetchColumn(0);
+
+        $sql = "update user set space := space + :newSpace  where username = :username";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("username", $_SESSION['userID'], 'string');
+        $stmt->bindValue("newSpace", $space, 'string');
+        $stmt->execute();
+
+        $sql = "delete
+                from user_element
+                where element = :id";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("id", $id, 'string');
+        $stmt->execute();
+
+        $sql = "delete from element where id = :id";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("id", $id, 'string');
+        $stmt->execute();
+
     }
 
     public function rename(string $name, File $file) {

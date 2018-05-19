@@ -21,7 +21,7 @@ class FileController {
 
     public function __invoke(Request $request, Response $response, array $args)
     {
-        die(var_dump($request->getParsedBody()));
+        //die(var_dump($request->getParsedBody()));
         //$params = explode('/', $args['params']);
 
         if (!isset($args['params'])) {
@@ -48,8 +48,8 @@ class FileController {
             $this->renameFileAction($response,$args['params']);
         }
 
-        if (isset($_POST["delete"])) {
-            $this->shareFolderAction($request,$response,$args['params']);
+        if (isset($_POST["delete_file"])) {
+            return $this->deleteFileAction($request,$response,$args['params']);
         }
 
         return $this->container->get('view')
@@ -99,13 +99,7 @@ class FileController {
                     }
                 }
 
-
-
-
-
-
-
-            }else {
+            } else {
                 die("Not in ddbb");
 
                 //TODO: No mostra error
@@ -246,7 +240,10 @@ class FileController {
         }
 
         return $this->container->get('view')
-            ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
+            ->render($response,'dash.twig',[
+                'errors' => $errors,
+                'isPost' => true,
+                'logged' => isset($_SESSION["userID"])]);
     }
 
     public function downloadFileAction(string $args) {
@@ -264,6 +261,26 @@ class FileController {
             readfile($args);
             exit;
         }
+    }
+
+    public function deleteFileAction(Request $request, Response $response, string $path) {
+
+        $directory = __DIR__ . '/../../public/uploads/' . $path;
+
+        $route = explode('/', $path);
+
+        $this->container->get('delete_file_use_case')($route[sizeof($route)-1],0,$route[sizeof($route)-2]);
+
+        array_splice($route,sizeof($route)-1,1);
+
+        unlink($directory);
+
+        return $this->container->get('view')
+            ->render($response->withRedirect('/dashboard'. implode("/",$route)), 'dash.twig', [
+                'files' => null,
+                'currentFolder' => $route,
+                'logged' => isset($_SESSION["userID"])]);
+
     }
 
     public function renameFileAction(Response $response, string $args) {
