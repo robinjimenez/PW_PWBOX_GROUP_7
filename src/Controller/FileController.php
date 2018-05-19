@@ -128,30 +128,32 @@ class FileController {
     public function shareFolderAction(Request $request, Response $response, $args) {
         //Check email backend format
         $data = $request->getParsedBody();
-        $errors = [];
+        $result = [];
 
         //Format email
         if (v::email()->validate($data["email"]) == false) {
-            $errors[] = sprintf('Invalid email');
+            $result['errors'][] = sprintf('Invalid email');
 
             //TODO: No mostra error
-            return $this->container->get('view')
+            //return $result;
+            /*return $this->container->get('view')
                 ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-        }else {
+      */} else {
             //Check if email exists in ddbb
             $service = $this->container->get('login_user_use_case');
-            $result = $service($data);//Obtinc el user si existeix
+            $queryResult = $service($data);//Obtinc el user si existeix
 
             if (isset($result[0])) {//user exists
 
                 //Check it is not himself
-                if ($result[0]['username'] == $_SESSION['userID']) {
+                if ($queryResult[0]['username'] == $_SESSION['userID']) {
                     die("This is you. Can't share with yourself");
                     //TODO: No mostra error
-                    $errors[] = sprintf("You cannot share a folder with yourself");
-                    return $this->container->get('view')
+                    $result['errors'][] = sprintf("You cannot share a folder with yourself");
+                    //return $result;
+                    /*return $this->container->get('view')
                         ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-
+*/
                 }else {
                     //die("User exists. OK");
                     //Afegir la relació share a la bbdd
@@ -169,16 +171,20 @@ class FileController {
                 die("Not in ddbb");
 
                 //TODO: No mostra error
-                $errors[] = sprintf('This user does not exists');
-                return $this->container->get('view')
+                $result['errors'][] = sprintf('This user does not exists');
+                //return $result;
+                /*return $this->container->get('view')
                     ->render($response,'dash.twig',['errors' => $errors, 'isPost' => true, 'logged' => isset($_SESSION["userID"])]);
-            }
+            */}
         }
-        return $this->container->get('view')
+
+        return $result;
+
+        /*return $this->container->get('view')
             ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
                 'files' => null,
                 'currentFolder' => $args['params'],
-                'logged' => isset($_SESSION["userID"])]);
+                'logged' => isset($_SESSION["userID"])]);*/
     }
 
     /*public function loadAction(Request $request, Response $response, array $args) {
