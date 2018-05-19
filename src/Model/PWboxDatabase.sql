@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS element (
   size bigint,
   PRIMARY KEY (id),
   CONSTRAINT parentFK FOREIGN KEY (parent) REFERENCES element(id),
-  CONSTRAINT ownerFK FOREIGN KEY (owner) REFERENCES user(username)
-  -- UNIQUE KEY `UNIQUE_NAME` (name)
+  CONSTRAINT ownerFK FOREIGN KEY (owner) REFERENCES user(username),
+  UNIQUE KEY `UNIQUE_NAME` (name, owner)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE IF NOT EXISTS user_element (

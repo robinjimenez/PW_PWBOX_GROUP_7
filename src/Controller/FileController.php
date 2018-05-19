@@ -151,7 +151,7 @@ class FileController {
 
                     //Afegir la relació share a la bbdd i copiar els directoris (tot en el service del model)
                     try {
-                        echo "data filename". $data['fileName'];
+
                         $service = $this->container->get('share_folder_use_case');
                         //Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió). També args que conté el path fins la carpeta
                         $service($data['fileName'], $data['email'], $_SESSION['userID'], $args);
@@ -169,46 +169,6 @@ class FileController {
 
         return $result;
     }
-
-    /*public function loadAction(Request $request, Response $response, array $args) {
-        if (!isset($args['params'])) {
-            return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
-        } else {
-
-            $params = explode('/', $args['params']);
-
-            if (strcmp($_SESSION["userID"],$params[1]) != 0) {
-                return $this->container->get('view')
-                    ->render($response->withStatus(403), 'error.twig', []);
-            }
-
-            $service = $this->container->get('get_folder_files_use_case');
-            $files = $service($args['params']);
-
-            $up = $params;
-
-            array_splice($up,sizeof($params)-1,1);
-
-            $upPath = '/dashboard' . implode('/',$up);
-
-            $user =$this->container->get('get_user_use_case')($_SESSION);
-
-            $space = round($user['space']/1000000,2);
-
-            return $this->container->get('view')
-                ->render($response,
-                    'dash.twig', [
-                        'files' => $files,
-                        'upPath' => $upPath,
-                        'root' => $_SESSION["userID"],
-                        'folder' => $params[sizeof($params)-1],
-                        'path' =>  $args['params'],
-                        'logged' => isset($_SESSION["userID"]),
-                        'space' =>  $space
-
-            ]);
-        }
-    }*/
 
     public function createFolderAction(string $curPath) {
         $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
