@@ -160,7 +160,6 @@ class FileController {
                         die(var_dump($e));
                     }
                 }
-
             } else {
                 die("Not in ddbb");
                 $result['errors'][] = sprintf('This user does not exists');
