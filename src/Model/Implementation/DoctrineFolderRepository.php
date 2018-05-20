@@ -132,18 +132,18 @@ class DoctrineFolderRepository implements FolderRepository
     }
 
     public function getFiles(string $folder, string $user) {
-        $sql = "SELECT id FROM element e,user_element ue WHERE e.name = :name AND ue.element = e.id AND e.owner = :user";
+        $sql = "SELECT id FROM element e,user_element ue WHERE e.name = :name AND ue.element = e.id; --AND e.owner = :user";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $folder, 'string');
-        $stmt->bindValue("user", $user, 'string');
+        //$stmt->bindValue("user", $user, 'string');
         $stmt->execute();
 
         $id = $stmt->fetchColumn(0);
 
-        $sql = "SELECT name, type FROM element e,closure c WHERE c.parent = :id AND depth = 1 AND e.id = c.child AND e.owner = :user";
+        $sql = "SELECT name, type FROM element e,closure c WHERE c.parent = :id AND depth = 1 AND e.id = c.child; -- AND e.owner = :user";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("id", $id, 'string');
-        $stmt->bindValue("user", $user, 'string');
+        //$stmt->bindValue("user", $user, 'string');
         $stmt->execute();
 
         $result = $stmt->fetchAll();

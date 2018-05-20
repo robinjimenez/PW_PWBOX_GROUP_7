@@ -176,95 +176,117 @@ class FileController {
 
     public function createFolderAction(string $curPath) {
 
-        //Registre folder a la bbdd
-        try {
-            $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
-            if (!file_exists(__DIR__ . "/../../public/uploads/". $path)) {
-                mkdir(__DIR__ . "/../../public/uploads/". $path);
+        $route = explode('/', $curPath);
+
+        $result = [];
+
+        $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
+
+        if ($role == "admin") {
+            try {
+                $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
+                if (!file_exists(__DIR__ . "/../../public/uploads/". $path)) {
+                    mkdir(__DIR__ . "/../../public/uploads/". $path);
+                }
+                $path = explode('/', $curPath);
+
+                $service = $this->container->get('add_folder_use_case');
+                $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
+
+            } catch (\Exception $e) {
+                $result['errors'][] = sprintf("File already exists");
             }
-            $path = explode('/', $curPath);
-
-            $service = $this->container->get('add_folder_use_case');
-            $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
-
-        } catch (\Exception $e) {
-            //file already exists
+        } else {
+            $result['errors'][] = sprintf("Can't create folders from reader role.");
         }
+
+        return $result;
     }
 
     public function uploadFileAction(Request $request, Response $response, string $path) {
 
         $directory = __DIR__ . '/../../public/uploads/' . $path;
 
-        $uploadedFiles = $request->getUploadedFiles();
+        $route = explode('/', $path);
 
-        $result['errors'] = [];
+        $result = [];
 
-        foreach ($uploadedFiles['files'] as $uploadedFile) {
+        $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
 
-            if (isset($uploadedFile) && $uploadedFile instanceof UploadedFile) {
+        if ($role == "admin") {
 
-                if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
-                    $result['errors'][] = sprintf(
-                        'An unexpected error ocurred uploading the file %s',
-                        $uploadedFile->getClientFilename()
-                    );
-                    continue;
-                }
+            $uploadedFiles = $request->getUploadedFiles();
 
-                if ($uploadedFile->getSize() > 2000000) {
-                    $result['errors'][] = sprintf(
-                        'The file %s is too large! Max file size is 2Mb.',
-                        $uploadedFile->getClientFilename()
-                    );
-                    continue;
-                }
+            $result['errors'] = [];
 
-                $user = $this->container->get('get_user_use_case')($_SESSION);
+            foreach ($uploadedFiles['files'] as $uploadedFile) {
 
-                if ($uploadedFile->getSize() > $user['space']) {
-                    $result['errors'][] = sprintf(
-                        "You don't have enough available space to store %s!",
-                        $uploadedFile->getClientFilename()
-                    );
-                    continue;
-                }
+                if (isset($uploadedFile) && $uploadedFile instanceof UploadedFile) {
 
-                $fileName = $uploadedFile->getClientFilename();
+                    if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+                        $result['errors'][] = sprintf(
+                            'An unexpected error ocurred uploading the file %s',
+                            $uploadedFile->getClientFilename()
+                        );
+                        continue;
+                    }
 
-                $fileInfo = pathinfo($fileName);
+                    if ($uploadedFile->getSize() > 2000000) {
+                        $result['errors'][] = sprintf(
+                            'The file %s is too large! Max file size is 2Mb.',
+                            $uploadedFile->getClientFilename()
+                        );
+                        continue;
+                    }
 
-                $extension = $fileInfo['extension'];
+                    $user = $this->container->get('get_user_use_case')($_SESSION);
 
-                if (!$this->isValidExtension($extension)) {
-                    $result['errors'][] = sprintf(
-                        'Unable to upload the file %s, the extension %s is not valid',
-                        $fileName,
-                        $extension
-                    );
-                    continue;
-                }
+                    if ($uploadedFile->getSize() > $user['space']) {
+                        $result['errors'][] = sprintf(
+                            "You don't have enough available space to store %s!",
+                            $uploadedFile->getClientFilename()
+                        );
+                        continue;
+                    }
 
-                //Guardar file a carpeta
-                $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $fileName);
+                    $fileName = $uploadedFile->getClientFilename();
 
-                $dir = explode('/', $path);
+                    $fileInfo = pathinfo($fileName);
 
-                $parent = $dir[sizeof($dir)-1];
+                    $extension = $fileInfo['extension'];
 
-                try {
-                    $service = $this->container->get('add_file_use_case');
-                    $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $parent);
-                    $result['posted'] = true;
-                } catch (\Exception $e) {
-                    $result['errors'][] = sprintf(
-                        'You have already uploaded this file: %s',
-                        $uploadedFile->getClientFilename()
-                    );
-                } catch (NotFoundExceptionInterface $e) {
-                } catch (ContainerExceptionInterface $e) {
+                    if (!$this->isValidExtension($extension)) {
+                        $result['errors'][] = sprintf(
+                            'Unable to upload the file %s, the extension %s is not valid',
+                            $fileName,
+                            $extension
+                        );
+                        continue;
+                    }
+
+                    //Guardar file a carpeta
+                    $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $fileName);
+
+                    $dir = explode('/', $path);
+
+                    $parent = $dir[sizeof($dir) - 1];
+
+                    try {
+                        $service = $this->container->get('add_file_use_case');
+                        $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $parent);
+                        $result['posted'] = true;
+                    } catch (\Exception $e) {
+                        $result['errors'][] = sprintf(
+                            'You have already uploaded this file: %s',
+                            $uploadedFile->getClientFilename()
+                        );
+                    } catch (NotFoundExceptionInterface $e) {
+                    } catch (ContainerExceptionInterface $e) {
+                    }
                 }
             }
+        } else {
+            $result['errors'] = sprintf("Can't upload files from reader role.");
         }
 
         return $result;
