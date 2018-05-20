@@ -16,9 +16,9 @@
                                         <i class="fas fa-user"></i>
                                     </span>
                                 </div>
-                                <p class="help is-danger" id="r-username-inv" style="display: none;">invalid username</p>
+                                <p class="help is-danger has-text-weight-bold" id="r-username-inv" style="display: none;">invalid username</p>
                                 {% if error == -1%}
-                                    <p class="help is-danger">invalid username</p>
+                                    <p class="help is-danger has-text-weight-bold">invalid username</p>
                                 {% endif %}
                             </div>
                             <div class="field">
@@ -29,9 +29,9 @@
                                         <i class="fas fa-envelope"></i>
                                     </span>
                                 </div>
-                                <p class="help is-danger" id="r-email-inv" style="display: none;">invalid email</p>
+                                <p class="help is-danger has-text-weight-bold" id="r-email-inv" style="display: none;">invalid email</p>
                                 {% if error == -2 %}
-                                    <p class="help is-danger">invalid email</p>
+                                    <p class="help is-danger has-text-weight-bold">invalid email</p>
                                 {% endif %}
                             </div>
                             <div class="field">
@@ -42,9 +42,9 @@
                                         <i class="fas fa-calendar-alt"></i>
                                     </span>
                                 </div>
-                                <p class="help is-danger" id="r-date-inv" style="display: none;">invalid date</p>
+                                <p class="help is-danger has-text-weight-bold" id="r-date-inv" style="display: none;">invalid date</p>
                                 {% if error == -3%}
-                                    <p class="help is-danger">invalid date</p>
+                                    <p class="help is-danger has-text-weight-bold">invalid date</p>
                                 {% endif %}
                             </div>
                             <div class="field">
@@ -55,9 +55,9 @@
                                         <i class="fas fa-lock"></i>
                                     </span>
                                 </div>
-                                <p class="help is-danger" id="r-password-inv" style="display: none;">invalid password</p>
+                                <p class="help is-danger has-text-weight-bold" id="r-password-inv" style="display: none;">invalid password</p>
                                 {% if error == -4%}
-                                    <p class="help is-danger">invalid password</p>
+                                    <p class="help is-danger has-text-weight-bold">invalid password</p>
                                 {% endif %}
                             </div>
                             <div class="field">
@@ -70,7 +70,7 @@
                                 </div>
                                 <p class="help is-danger" id="r-confpass-inv" style="display: none;">invalid password confirmation</p>
                                 {% if error == -5%}
-                                    <p class="help is-danger">invalid password confirmation</p>
+                                    <p class="help is-danger has-text-weight-bold">invalid password confirmation</p>
                                 {% endif %}
                             </div>
                             <div class="field">
@@ -78,9 +78,9 @@
                                     <button class="button is-primary is-medium" id="register-button" type="submit" onclick="return checkRegisterFrontEnd();">submit</button>
                                 </div>
                             </div>
-                            <p class="help is-info" id="r-message-inv" style="display: none;">check Invalid Fields</p>
+                            <p class="help is-info has-text-weight-bold" id="r-message-inv" style="display: none;">check Invalid Fields</p>
                             {% if error == -6%}
-                                <p class="help is-danger">error registering your account</p>
+                                <p class="help is-danger has-text-weight-bold">error registering your account</p>
                             {% endif %}
                         </form>
                     </div>

@@ -48,7 +48,7 @@ class FileController {
             }
 
             if (isset($_POST["download"])) {
-                $this->downloadFileAction($response, $args['params']);
+                $this->downloadFileAction($args['params']);
             }
 
             if (isset($_POST["rename"])) {
@@ -331,17 +331,6 @@ class FileController {
 
     public function renameFileAction(Response $response, string $args) {
 
-        if (file_exists($args)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="'.basename($args).'"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($args));
-            readfile($args);
-            exit;
-        }
 
     }
 

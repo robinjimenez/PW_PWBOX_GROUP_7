@@ -29,7 +29,7 @@
                                     </div>
                                     <div class="column">
                                         <input class="input {% if error == -2%} is-danger {% endif %}" type="email" name="email" id="email" onblur="checkUpdateEmail()" placeholder="new email">
-                                        <p class="help is-danger" id="email-inv" style="display: none;">invalid email</p>
+                                        <p class="help is-danger has-text-weight-bold" id="email-inv" style="display: none;">invalid email</p>
                                     </div>
                                     <div class="column is-one-fifth">
                                         <button class="button is-primary" type="submit" name="email-button" onclick="return updateEmail();">update email</button>
@@ -39,7 +39,7 @@
                                 {% if error == -2 %}
                                     <div class="columns">
                                         <div class="column">
-                                            <p class="help is-danger">invalid email</p>
+                                            <p class="help is-danger has-text-weight-bold">invalid email</p>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -70,14 +70,14 @@
                                 {% if error == -4%}
                                     <div class="columns">
                                         <div class="column">
-                                            <p class="help is-danger">invalid password</p>
+                                            <p class="help is-danger has-text-weight-bold">invalid password</p>
                                         </div>
                                     </div>
                                 {% endif %}
                                 {% if error == -5%}
                                     <div class="columns">
                                         <div class="column">
-                                            <p class="help is-danger">invalid password confirmation</p>
+                                            <p class="help is-danger has-text-weight-bold">invalid password confirmation</p>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -89,7 +89,7 @@
                         <button class="button is-danger is-outlined" type="submit" name="delete-account-button">Delete account</button>
                     </form>
                     {% if error == -7%}
-                        <p class="help is-danger">An unexpected error ocurred</p>
+                        <p class="help is-danger has-text-weight-bold">An unexpected error ocurred</p>
                     {% endif %}
                 </div>
             </div>
