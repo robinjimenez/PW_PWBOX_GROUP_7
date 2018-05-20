@@ -32,7 +32,7 @@ class FileController {
 
             if (strcmp($_SESSION["userID"],$params[1]) != 0) {
                 return $this->container->get('view')
-                    ->render($response->withStatus(403), 'error.twig', []);
+                    ->render($response->withStatus(403), 'error.twig', ['forbidden' => true]);
             }
 
             $up = $params;
@@ -92,19 +92,29 @@ class FileController {
                 $files = $service($args['params']);
 
                 if (isset($result['path'])) {
-                    return $this->container->get('view')
-                        ->render($response->withRedirect($result['path']),
-                            'dash.twig', [
-                                'errors' => $errors,
-                                'isPost' => isset($result['posted']),
-                                'files' => $files,
-                                'upPath' => $upPath,
-                                'root' => $_SESSION["userID"],
-                                'folder' => $params[sizeof($params)-1],
-                                'path' =>  $args['params'],
-                                'logged' => isset($_SESSION["userID"]),
-                                'space' =>  $space
-                            ]);
+                    if (isset($result['errors'])) {
+                        return $this->container->get('view')
+                            ->render($response,
+                                'error.twig', [
+                                    'errors' => $errors,
+                                    'backPath' => $result['path'],
+                                    'forbidden' => false
+                                ]);
+                    } else {
+                        return $this->container->get('view')
+                            ->render($response->withRedirect($result['path']),
+                                'dash.twig', [
+                                    'errors' => $errors,
+                                    'isPost' => isset($result['posted']),
+                                    'files' => $files,
+                                    'upPath' => $upPath,
+                                    'root' => $_SESSION["userID"],
+                                    'folder' => $params[sizeof($params)-1],
+                                    'path' =>  $args['params'],
+                                    'logged' => isset($_SESSION["userID"]),
+                                    'space' =>  $space
+                                ]);
+                    }
                 } else {
                     return $this->container->get('view')
                         ->render($response,
@@ -136,9 +146,9 @@ class FileController {
         } else {
             //Check if email exists in ddbb
             $service = $this->container->get('login_user_use_case');
-            $queryResult = $service($data);//Obtinc el user si existeix
+            $queryResult = $service($data); //Obtinc el user si existeix
 
-            if (!isset($result[0])) {//user exists
+            if (isset($queryResult[0])) {//user exists
 
                 //Check it is not himself
                 if ($queryResult[0]['username'] == $_SESSION['userID']) {
@@ -158,8 +168,7 @@ class FileController {
                     }
                 }
             } else {
-                //die("Not in ddbb");
-                $result['errors'][] = sprintf('This user does not exists');
+                $result['errors'][] = sprintf('This user does not exist');
             }
         }
 

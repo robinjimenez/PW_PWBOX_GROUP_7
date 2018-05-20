@@ -3,10 +3,19 @@
 {% block content %}
     <div class="hero is-medium is-light is-bold">
         <div class="hero-body has-text-centered">
-            <h2 class="title is-small">
-                forbidden page.
-            </h2>
-            <p class="subtitle">you have to <span class="has-text-weight-bold">log in </span>first to access this page.</p>
+            {% for error in errors %}
+                <div class="notification is-danger">
+                    <p>{{ error }}</p>
+                    <br>
+                    <a class="button is-inverted is-danger" href="{{ backPath }}"> Back </a>
+                </div>
+            {% endfor %}
+            {% if forbidden == true %}
+                <h2 class="title is-small">
+                    forbidden page.
+                </h2>
+                <p class="subtitle">you have to <span class="has-text-weight-bold">log in </span>first to access this page.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

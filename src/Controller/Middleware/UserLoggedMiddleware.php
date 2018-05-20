@@ -20,7 +20,7 @@ class UserLoggedMiddleware
             return $next($request, $response);
         }else {
             return $this->container->get('view')
-                ->render($response->withStatus(403), 'error.twig', []);
+                ->render($response->withStatus(403), 'error.twig', ['forbidden' => true]);
         }
     }
 }

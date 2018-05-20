@@ -19,38 +19,9 @@ class HelloController {
 
     //Per la crida GET
     public function __invoke(Request $request, Response $response, array $args) {
-        /*
-        if(isset($_SESSION['counter'])) {
-            $_SESSION['counter']+= 1;
-        } else {
-            $_SESSION['counter'] = 1;
-        }
-        $cookie = FigRequestCookies::get($request, 'advice', 0);
-        if (empty($cookie->getValue())) {
-            $response = FigResponseCookies::set($response, SetCookie::create('advice')
-                ->withValue(1)
-                ->withDomain('pwbox.test')
-                ->withPath('/')
-            );
-        }
-        $name = $args['name'];
-
-       return $this->container->get('view')
-           ->render($response, 'hello.twig', [
-               'name' => $name,
-               'counter' => $_SESSION['counter'],
-               'advice' => $cookie->getValue(),
-        ]);*/
-        //return var_dump(isset($_SESSION["userID"]));
 
         return $this->container->get('view')
             ->render($response, 'hello.twig', ['logged' => isset($_SESSION["userID"])]);
 
-        /*if (isset($_SESSION["userID"])) {
-            return $this->container->get('view')
-                ->render($response, 'dash.twig', ['logged' => isset($_SESSION["userID"])]);
-        }else {
-
-        }*/
     }
 }
