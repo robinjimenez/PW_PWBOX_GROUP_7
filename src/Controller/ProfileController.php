@@ -145,9 +145,8 @@ class ProfileController {
             $service($data);
 
         } catch (\Exception $e) {
-            return var_dump($e);
-            //return $this->container->get('view')
-                //->render($response, 'profile.twig', ['error' => -7, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
+            return $this->container->get('view')
+                ->render($response, 'profile.twig', ['error' => -7, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
         }
 
         //Delete session
