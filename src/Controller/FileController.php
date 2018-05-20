@@ -35,9 +35,6 @@ class FileController {
                     ->render($response->withStatus(403), 'error.twig', []);
             }
 
-            $service = $this->container->get('get_folder_files_use_case');
-            $files = $service($args['params']);
-
             $up = $params;
 
             array_splice($up,sizeof($params)-1,1);
@@ -50,9 +47,11 @@ class FileController {
 
             $directory = __DIR__ . '/../../public/uploads' . implode('/',$params);
 
-            if (!is_dir($directory) && sizeof($params) > 2) {
+
+            if (!file_exists($directory) && !is_dir($directory) && sizeof($params) > 1) {
                 return $response->withRedirect($upPath);
             } else {
+
                 $result = [];
                 $errors = [];
 
@@ -86,8 +85,11 @@ class FileController {
 
                 if (isset($result['errors'])) {
                     $errors = $result['errors'];
-                    //die(var_dump($errors));
                 }
+
+                $service = $this->container->get('get_folder_files_use_case');
+
+                $files = $service($args['params']);
 
                 if (isset($result['path'])) {
                     return $this->container->get('view')
@@ -119,71 +121,6 @@ class FileController {
                             ]);
                 }
             }
-            /*$result = [];
-            $errors = [];
-
-            if (isset($_POST["newFile"])) {
-                $result = $this->uploadFileAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["newFolder"])) {
-                $result = $this->createFolderAction($args['params']);
-            }
-
-            if (isset($_POST["share"])) {
-                $result = $this->shareFolderAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["download"])) {
-                $this->downloadFileAction($args['params']);
-            }
-
-            if (isset($_POST["rename"])) {
-                $this->renameFileAction($_POST['newName'],$_POST['fileName']);
-            }
-
-            if (isset($_POST["delete_file"])) {
-                $result = $this->deleteFileAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["delete_folder"])) {
-                $result = $this->deleteFolderAction($request,$response,$args['params']);
-            }
-
-            if (isset($result['errors'])) {
-                $errors = $result['errors'];
-                //die(var_dump($errors));
-            }
-
-            if (isset($result['path'])) {
-                return $this->container->get('view')
-                    ->render($response->withRedirect($result['path']),
-                        'dash.twig', [
-                            'errors' => $errors,
-                            'isPost' => isset($result['posted']),
-                            'files' => $files,
-                            'upPath' => $upPath,
-                            'root' => $_SESSION["userID"],
-                            'folder' => $params[sizeof($params)-1],
-                            'path' =>  $args['params'],
-                            'logged' => isset($_SESSION["userID"]),
-                            'space' =>  $space
-                        ]);
-            } else {
-                return $this->container->get('view')
-                    ->render($response,
-                        'dash.twig', [
-                            'errors' => $errors,
-                            'isPost' => isset($result['posted']),
-                            'files' => $files,
-                            'upPath' => $upPath,
-                            'root' => $_SESSION["userID"],
-                            'folder' => $params[sizeof($params)-1],
-                            'path' =>  $args['params'],
-                            'logged' => isset($_SESSION["userID"]),
-                            'space' =>  $space
-                        ]);
-            }*/
         }
     }
 
@@ -440,6 +377,12 @@ class FileController {
     public function renameFileAction(string $path, string $newName, string $fileName) {
 
         $result = [];
+
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        if ($extension != "") {
+            $newName = $newName . "." . $extension;
+        }
 
         try {
             $this->container->get('rename_file_use_case')($newName,$fileName);
