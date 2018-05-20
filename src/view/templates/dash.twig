@@ -199,13 +199,13 @@
                                         <div class="field is-grouped is-grouped-right is-pulled-right">
 
                                             {% if file["type"] == "file" %}
-                                                <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
-                                                    <p class="control">
+                                                <div class="control">
+                                                    <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
                                                         <button type="submit" name="download" class="button is-success">
                                                             <span>download</span>
                                                         </button>
-                                                    </p>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             {% endif %}
 
                                             {% if file["type"] == "folder" or file["type"] == "shared"%}
@@ -217,19 +217,19 @@
                                             {% endif %}
 
                                             {% if file["type"] != "shared" %}
-                                            <p class="control">
-                                                <button id="rename" class="button is-primary" onclick="renameModalData({{ file['name'] }})">
+                                            <div class="control">
+                                                <button id="rename" class="button is-primary" onclick="renameModalData('{{ file['name'] }}');">
                                                     <span class="icon is-small">
                                                         <i class="fas fa-edit"></i>
                                                     </span>
                                                     <span>rename</span>
                                                 </button>
-                                            </p>
+                                            </div>
                                             {% endif %}
 
                                             {% if file["type"] == "folder" %}
                                             <p class="control">
-                                                <a id="share" class="button is-primary" onclick="shareModalData({{ file['name'] }})">
+                                                <a id="share" class="button is-primary" onclick="shareModalData('{{ file['name'] }}')">
                                                     <span class="icon is-small">
                                                         <i class="fas fa-share-alt"></i>
                                                     </span>
@@ -239,16 +239,16 @@
                                             {% endif %}
 
                                             {% if file["type"] != "shared" %}
-                                            <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
-                                                <p class="control">
+                                            <div class="control">
+                                                <form action="/dashboard{{ path }}/{{ file['name'] }}" method="POST">
                                                     <button type="submit" name="delete_{{ file["type"] }}" class="button is-danger">
                                                         <span class="icon is-small">
                                                             <i class="fas fa-times"></i>
                                                         </span>
                                                         <span>delete</span>
                                                     </button>
-                                                </p>
-                                            </form>
+                                                </form>
+                                            </div>
                                             {% endif %}
                                         </div>
                                     </div>

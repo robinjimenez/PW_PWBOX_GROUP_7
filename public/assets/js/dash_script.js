@@ -18,13 +18,6 @@ $(document).ready(function(){
     $("#newFolder").click(function(){
         $("#newFolderModal").addClass("is-active");
     });
-/*
-    $("#rename").click(function(){
-        $("#renameFileModal").addClass("is-active");
-        var filename = $(this).parent().parent().parent().parent().attr('id');
-        $("#renameFileModal > .filename").innerText(filename);
-    });
-    */
     $(".modal-close").on('click', function(){
         $(this).parent().removeClass("is-active");
     });
@@ -40,13 +33,13 @@ $(document).ready(function(){
 function shareModalData(file) {
     $("#shareModal").addClass("is-active");
     //Assignem valor al input que està hidden del modal de share de dash.twig, per enviar-lo a bbdd després
-    $("#file-name").val(file.id);
+    $("#file-name").val(file);
 }
 
 //Al fer onclick al button de rename
 function renameModalData(file) {
-    //TODO: Rename action
+    console.log(file);
     $("#renameFileModal").addClass("is-active");
     //Assignem valor al input que està hidden del modal de rename de dash.twig, per enviar-lo a bbdd després
-    $("#file-name-for-rename").val(file.id);
+    $("#file-name-for-rename").val(file);
 }
