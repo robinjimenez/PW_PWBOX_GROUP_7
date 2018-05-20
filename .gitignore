@@ -1,4 +1,4 @@
 var/
 vendor/
-public/uploads/
+public/uploads/*
 .idea/
