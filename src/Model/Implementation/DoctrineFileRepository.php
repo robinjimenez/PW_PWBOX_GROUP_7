@@ -115,18 +115,18 @@ class DoctrineFileRepository implements FileRepository
                 and (to_delete.parent= :id or to_delete.child= :id)
                 and to_delete.depth<2";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("id", $id, 'bigint');
         $stmt->execute();
 
         $sql = "select size from element where id = :id and owner = :owner";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("id", $id, 'bigint');
         $stmt->bindValue("owner", $_SESSION['userID'], 'string');
         $stmt->execute();
 
         $space = $stmt->fetchColumn(0);
 
-        $sql = "update user set space := space + :newSpace  where username = :username";
+        $sql = "update user set space := space + :newSpace where username = :username";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("username", $_SESSION['userID'], 'string');
         $stmt->bindValue("newSpace", $space, 'string');
@@ -136,18 +136,18 @@ class DoctrineFileRepository implements FileRepository
                 from user_element
                 where element = :id";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("id", $id, 'bigint');
         $stmt->execute();
 
         $sql = "delete from element where id = :id";
         $stmt = $this->database->prepare($sql);
-        $stmt->bindValue("id", $id, 'string');
+        $stmt->bindValue("id", $id, 'bigint');
         $stmt->execute();
 
     }
 
     public function rename(string $name, File $file) {
-        $sql = "UPDATE element SET name := :newName WHERE name = :name AND owner := :user";
+        $sql = "UPDATE element SET name = :newName WHERE name = :name AND owner = :user";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("newName", $name, 'string');
         $stmt->bindValue("name", $file->getName(), 'string');
@@ -182,6 +182,20 @@ class DoctrineFileRepository implements FileRepository
         $sql = "SELECT id FROM element WHERE name = :name";
         $stmt = $this->database->prepare($sql);
         $stmt->bindValue("name", $name, 'string');
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn(0);
+
+        return $result;
+    }
+
+    public function getRoleByName(File $file)
+    {
+        $id = $this->getIdByName($file->getName());
+
+        $sql = "SELECT role FROM user_element WHERE element = :id";
+        $stmt = $this->database->prepare($sql);
+        $stmt->bindValue("id", $id, 'string');
         $stmt->execute();
 
         $result = $stmt->fetchColumn(0);

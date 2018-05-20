@@ -6,6 +6,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Exceptions\SubdivisionCode\EcSubdivisionCodeException;
 use Respect\Validation\Validator as v;
 
 use Slim\Http\UploadedFile;
@@ -21,53 +22,11 @@ class FileController {
 
     public function __invoke(Request $request, Response $response, array $args)
     {
-
-/*        if (!isset($args['params'])) {
-            //$args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
-            return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
-        }*/
-
         if (!isset($args['params'])) {
             $args['params'] = DIRECTORY_SEPARATOR . $_SESSION["userID"];
             return $response->withRedirect('/dashboard'. DIRECTORY_SEPARATOR . $_SESSION["userID"]);
 
         } else {
-            $result = [];
-            $errors = [];
-
-            if (isset($_POST["newFile"])) {
-                $result = $this->uploadFileAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["newFolder"])) {
-                $result = $this->createFolderAction($args['params']);
-            }
-
-            if (isset($_POST["share"])) {
-                $this->shareFolderAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["download"])) {
-                $this->downloadFileAction($args['params']);
-            }
-
-            if (isset($_POST["rename"])) {
-                $this->renameFileAction($request, $response,$args['params']);
-            }
-
-            if (isset($_POST["delete_file"])) {
-                $result = $this->deleteFileAction($request,$response,$args['params']);
-            }
-
-            if (isset($_POST["delete_folder"])) {
-                $result = $this->deleteFolderAction($request,$response,$args['params']);
-            }
-
-            /*return $this->container->get('view')
-                ->render($response->withRedirect('/dashboard'. $args['params']), 'dash.twig', [
-                    'files' => null,
-                    'currentFolder' => $args['params'],
-                    'logged' => isset($_SESSION["userID"])]);*/
 
             $params = explode('/', $args['params']);
 
@@ -85,12 +44,115 @@ class FileController {
 
             $upPath = '/dashboard' . implode('/',$up);
 
-            $user =$this->container->get('get_user_use_case')($_SESSION);
+            $user = $this->container->get('get_user_use_case')($_SESSION);
 
             $space = round($user['space']/1000000,2);
 
+            $directory = __DIR__ . '/../../public/uploads' . implode('/',$params);
+
+            if (!is_dir($directory) && sizeof($params) > 2) {
+                return $response->withRedirect($upPath);
+            } else {
+                $result = [];
+                $errors = [];
+
+                if (isset($_POST["newFile"])) {
+                    $result = $this->uploadFileAction($request,$response,$args['params']);
+                }
+
+                if (isset($_POST["newFolder"])) {
+                    $result = $this->createFolderAction($args['params']);
+                }
+
+                if (isset($_POST["share"])) {
+                    $result = $this->shareFolderAction($request,$response,$args['params']);
+                }
+
+                if (isset($_POST["download"])) {
+                    $this->downloadFileAction($args['params']);
+                }
+
+                if (isset($_POST["rename"])) {
+                    $this->renameFileAction($directory, $_POST['newName'],$_POST['fileName']);
+                }
+
+                if (isset($_POST["delete_file"])) {
+                    $result = $this->deleteFileAction($request,$response,$args['params']);
+                }
+
+                if (isset($_POST["delete_folder"])) {
+                    $result = $this->deleteFolderAction($request,$response,$args['params']);
+                }
+
+                if (isset($result['errors'])) {
+                    $errors = $result['errors'];
+                    //die(var_dump($errors));
+                }
+
+                if (isset($result['path'])) {
+                    return $this->container->get('view')
+                        ->render($response->withRedirect($result['path']),
+                            'dash.twig', [
+                                'errors' => $errors,
+                                'isPost' => isset($result['posted']),
+                                'files' => $files,
+                                'upPath' => $upPath,
+                                'root' => $_SESSION["userID"],
+                                'folder' => $params[sizeof($params)-1],
+                                'path' =>  $args['params'],
+                                'logged' => isset($_SESSION["userID"]),
+                                'space' =>  $space
+                            ]);
+                } else {
+                    return $this->container->get('view')
+                        ->render($response,
+                            'dash.twig', [
+                                'errors' => $errors,
+                                'isPost' => isset($result['posted']),
+                                'files' => $files,
+                                'upPath' => $upPath,
+                                'root' => $_SESSION["userID"],
+                                'folder' => $params[sizeof($params)-1],
+                                'path' =>  $args['params'],
+                                'logged' => isset($_SESSION["userID"]),
+                                'space' =>  $space
+                            ]);
+                }
+            }
+            /*$result = [];
+            $errors = [];
+
+            if (isset($_POST["newFile"])) {
+                $result = $this->uploadFileAction($request,$response,$args['params']);
+            }
+
+            if (isset($_POST["newFolder"])) {
+                $result = $this->createFolderAction($args['params']);
+            }
+
+            if (isset($_POST["share"])) {
+                $result = $this->shareFolderAction($request,$response,$args['params']);
+            }
+
+            if (isset($_POST["download"])) {
+                $this->downloadFileAction($args['params']);
+            }
+
+            if (isset($_POST["rename"])) {
+                $this->renameFileAction($_POST['newName'],$_POST['fileName']);
+            }
+
+            if (isset($_POST["delete_file"])) {
+                $result = $this->deleteFileAction($request,$response,$args['params']);
+            }
+
+            if (isset($_POST["delete_folder"])) {
+                $result = $this->deleteFolderAction($request,$response,$args['params']);
+            }
+
             if (isset($result['errors'])) {
                 $errors = $result['errors'];
+                //die(var_dump($errors));
             }
 
             if (isset($result['path'])) {
@@ -121,7 +183,7 @@ class FileController {
                             'logged' => isset($_SESSION["userID"]),
                             'space' =>  $space
                         ]);
-            }
+            }*/
         }
     }
 
@@ -143,8 +205,6 @@ class FileController {
 
                 //Check it is not himself
                 if ($queryResult[0]['username'] == $_SESSION['userID']) {
-                    die("This is you. Can't share with yourself");
-                    //TODO: No mostra error
                     $result['errors'][] = sprintf("You cannot share a folder with yourself");
 
                 }else {
@@ -157,11 +217,11 @@ class FileController {
                         $service($data['fileName'], $data['email'], $_SESSION['userID'], $args);
 
                     } catch (\Exception $e) {
-                        die(var_dump($e));
+                        $result['errors'][] = sprintf('Unable to share.');
                     }
                 }
             } else {
-                die("Not in ddbb");
+                //die("Not in ddbb");
                 $result['errors'][] = sprintf('This user does not exists');
             }
         }
@@ -259,19 +319,33 @@ class FileController {
 
     public function downloadFileAction(string $args) {
 
-        $args = __DIR__ . '/../../public/uploads/' . $args;
+        $directory = __DIR__ . '/../../public/uploads' . $args;
 
-        if (file_exists($args)) {
+        $route = explode('/', $args);
+
+        $result = [];
+
+        if (file_exists($directory)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="'.basename($args).'"');
+            header('Content-Disposition: attachment; filename="'.basename($directory).'"');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($args));
-            readfile($args);
+            header('Content-Length: ' . filesize($directory));
+            readfile($directory);
             exit;
+        } else {
+            $result['errors'][] = sprintf("Can't get file.");
         }
+
+        array_splice($route,sizeof($route)-1,1);
+
+        unlink($directory);
+
+        $result['path'] = '/dashboard'. implode("/",$route);
+
+        return $result;
     }
 
     public function deleteFileAction(Request $request, Response $response, string $path) {
@@ -280,13 +354,32 @@ class FileController {
 
         $route = explode('/', $path);
 
-        $this->container->get('delete_file_use_case')($route[sizeof($route)-1],0,$route[sizeof($route)-2]);
+        $result = [];
 
-        array_splice($route,sizeof($route)-1,1);
+        $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
 
-        unlink($directory);
+        if ($role == "reader") {
+            try {
+                $this->container->get('delete_file_use_case')($route[sizeof($route)-1],0,$route[sizeof($route)-2]);
 
-        $result['path'] = '/dashboard'. implode("/",$route);
+                array_splice($route,sizeof($route)-1,1);
+
+                unlink($directory);
+
+                $result['path'] = '/dashboard'. implode("/",$route);
+
+            } catch (\Exception $e) {
+                $result['errors'][] = sprintf("Couldn't delete file");
+                return $result['errors'];
+            }
+        } else {
+
+            array_splice($route,sizeof($route)-1,1);
+
+            $result['path'] = '/dashboard'. implode("/",$route);
+
+            $result['errors'][] = sprintf("You're not an admin, cannot delete from reader role.");
+        }
 
         return $result;
 
@@ -302,26 +395,41 @@ class FileController {
 
         $route = explode('/', $path);
 
-        if (sizeof($files) == 0) {
+        $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
 
-            $this->container->get('delete_folder_use_case')($route[sizeof($route)-1],$route[sizeof($route)-2]);
+        if ($role == "reader") {
 
-            array_splice($route,sizeof($route)-1,1);
+            if (sizeof($files) == 0) {
 
-            rmdir($directory);
+                $this->container->get('delete_folder_use_case')($route[sizeof($route) - 1], $route[sizeof($route) - 2]);
 
-            $result['path'] = '/dashboard'. implode("/",$route);
+                array_splice($route, sizeof($route) - 1, 1);
 
-            return $result;
+                rmdir($directory);
 
+                $result['path'] = '/dashboard' . implode("/", $route);
+
+                return $result;
+
+            } else {
+
+                array_splice($route, sizeof($route) - 1, 1);
+
+                $result['path'] = '/dashboard' . implode("/", $route);
+
+                $result['errors'][] = sprintf(
+                    "Can't delete folder, still has files in it!"
+                );
+
+                return $result;
+            }
         } else {
+            array_splice($route, sizeof($route) - 1, 1);
 
-            array_splice($route,sizeof($route)-1,1);
-
-            $result['path'] = '/dashboard'. implode("/",$route);
+            $result['path'] = '/dashboard' . implode("/", $route);
 
             $result['errors'][] = sprintf(
-                "Can't delete folder, still has files in it!"
+                "Can't delete folder, you're not an admin!"
             );
 
             return $result;
@@ -329,11 +437,20 @@ class FileController {
     }
 
 
-    public function renameFileAction(Request $request, Response $response, string $args) {
+    public function renameFileAction(string $path, string $newName, string $fileName) {
 
-        die(var_dump($request->getParsedBody()));
+        $result = [];
 
+        try {
+            $this->container->get('rename_file_use_case')($newName,$fileName);
 
+            rename($path . "/" .$fileName , $path . "/" .$newName);
+
+        } catch (\Exception $e) {
+            $result['errors'][] = sprintf("Couldn't rename file");
+            return $result;
+        }
+        return $result;
     }
 
     /**

@@ -118,6 +118,18 @@ $container['delete_folder_use_case'] = function ($container) {
     return $useCase;
 };
 
+// rename file service
+$container['rename_file_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\RenameFileUseCase($container->get('file_repository'), $container->get('user_repository'));
+    return $useCase;
+};
+
+// get user role file service
+$container['file_role_use_case'] = function ($container) {
+    $useCase = new PWBox\Model\UseCase\FileRoleUseCase($container->get('file_repository'));
+    return $useCase;
+};
+
 //encrypt service
 $container['model_encryption_service'] = function ($container) {
     $service = new PWBox\Model\Encryption();

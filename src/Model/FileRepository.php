@@ -10,5 +10,6 @@ interface FileRepository {
     public function rename(string $name, File $file);
     public function getFilesFrom(Folder $folder);
     public function getIdByName(string $name);
+    public function getRoleByName(File $file);
 
 }

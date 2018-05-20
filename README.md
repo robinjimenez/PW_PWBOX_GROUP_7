@@ -8,21 +8,17 @@ Compartir amb `profespw`
 
 ## Explicació
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Per accedir a la landing page, cal entrar a **pwbox.test**.
+
+El funcionament és bastant intuïtiu, remarquem però que un cop
+registrat un nou usuari, no es loggeja automàticament. S'ha de fer
+mitjançant la pàgina de *log in*.
+
+Al dashboard, no hem arribat a implementar un menú de navegació,
+tot i això es pot accedir a la carpeta superior mitjançant el botó
+*back*.
 
 ## Hores dedicades
 
-
-## Estils
-
-### Tipografia
-Rajdhani
-
-### Colors
-Principal - #59C9EB
-- Degradat a #00A4D4
-
-Secundari - #FFC042
-- Degradat a #FFAA00
-
-
+Aproximadament, calculem que hem dedicat unes **50 hores** cadascú 
+a la realització de la pràctica.
