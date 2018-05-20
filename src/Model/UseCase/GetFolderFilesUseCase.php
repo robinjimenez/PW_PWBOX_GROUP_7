@@ -22,7 +22,7 @@ class GetFolderFilesUseCase
 
         $folder = $dir[sizeof($dir)-1];
 
-        $result = $this->repo->getFiles($folder,$_SESSION["userID"]); //No ens serveix la funció de login perquè retorna el user segons email, ara necessitem segons username
+        $result = $this->repo->getFiles($folder,$_SESSION["userID"]);
 
         return($result);
     }

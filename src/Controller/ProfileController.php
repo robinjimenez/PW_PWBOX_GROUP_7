@@ -32,23 +32,27 @@ class ProfileController {
     public function getProfileInfo() {
         //Obtenir de BBDD dades de l'usuari de la sessió actual ($_SESSION["userID"] em dóna el seu username)
         $data = $_SESSION;
-        $service = $this->container->get('get_user_use_case');
-        $ddbbServiceResult = $service($data);//Li passo l'array de session, que conten el mail de l'usuari de la sessió com a ID
+        try {
+            $service = $this->container->get('get_user_use_case');
+            $ddbbServiceResult = $service($data);//Li passo l'array de session, que conten el mail de l'usuari de la sessió com a ID
 
-        $this->username = $ddbbServiceResult['username'];
-        $this->email = $ddbbServiceResult['email'];//Igual a $_SESSION["userID"]
+            $this->username = $ddbbServiceResult['username'];
+            $this->email = $ddbbServiceResult['email'];//Igual a $_SESSION["userID"]
 
-        //format date
-        $temp = $ddbbServiceResult['birthdate'];
-        $format = "YmdHis";
-        $date = date_parse_from_format($format, $temp);
-        $birthdate = $date['day'] . "-" . $date['month'] . "-" . $date['year'];
-        $this->birthdate = $birthdate;
+            //format date
+            $temp = $ddbbServiceResult['birthdate'];
+            $format = "YmdHis";
+            $date = date_parse_from_format($format, $temp);
+            $birthdate = $date['day'] . "-" . $date['month'] . "-" . $date['year'];
+            $this->birthdate = $birthdate;
 
-        //decrypt password
-        $encryptionService = $this->container->get('model_encryption_service');
-        $decryptedPassword = $encryptionService("decrypt", $ddbbServiceResult['password']);
-        $this->password = $decryptedPassword;
+            //decrypt password
+            $encryptionService = $this->container->get('model_encryption_service');
+            $decryptedPassword = $encryptionService("decrypt", $ddbbServiceResult['password']);
+            $this->password = $decryptedPassword;
+        } catch (NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface $e) {
+        }
     }
 
     //Mètode per la crida POST de profile
@@ -76,6 +80,7 @@ class ProfileController {
                     //Actualitzo email pel nou
                     $this->email = $data['email'];
                 } catch (\Exception $e) {
+                    //error email ja utilitzat
                     return $this->container->get('view')
                         ->render($response, 'profile.twig', ['error' => -2, 'username' => $this->username, 'birthdate' => $this->birthdate, 'email' => $this->email, 'password' => $this->password, 'logged' => isset($_SESSION["userID"])]);
                 }

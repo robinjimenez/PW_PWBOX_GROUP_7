@@ -47,7 +47,7 @@ class RegisterController {
             $service($data);
 
         } catch (\Exception $e) {
-            die(var_dump($e));
+            //die(var_dump($e));
             try {
                 $response = $this->container->get('view')
                     ->render($response, 'register.twig', ['error' => -6, 'logged' => isset($_SESSION["userID"])]);
@@ -56,6 +56,8 @@ class RegisterController {
             }
 
             return $response;
+        } catch (NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface $e) {
         }
 
         try {

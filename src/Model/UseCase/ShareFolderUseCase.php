@@ -14,7 +14,7 @@ class ShareFolderUseCase
         $this->folderRepo = $folderRepository;
     }
 
-    public function __invoke(string $folderName, string $emailToShare, string $folderOwner, string $folderPath)
+    public function __invoke(string $folderName, string $emailToShare, string $folderOwner, string $folderPath, string $usernameToShare)
     {
         $copyFolderName = $folderName;
         //Afegir noves relacions a la bbdd
@@ -23,13 +23,13 @@ class ShareFolderUseCase
         //Copiar carpeta a l'altre persona
 
         //CREO DIRECTORI BUIT
-        mkdir(__DIR__ . '/../../../public/uploads/anna/shared/'. $copyFolderName);
+        mkdir(__DIR__ . "/../../../public/uploads/$usernameToShare/shared items/". $copyFolderName);
 
         //SOURCE FILE
         $src = __DIR__ . "/../../../public/uploads". $folderPath. "/$copyFolderName";
 
         //DESTINATION
-        $dst = __DIR__ . '/../../../public/uploads/anna/shared/'. $copyFolderName;
+        $dst = __DIR__ . "/../../../public/uploads/$usernameToShare/shared items/". $copyFolderName;
 
         //COPY
         $this->xcopy($src, $dst);

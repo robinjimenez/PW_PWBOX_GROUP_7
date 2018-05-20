@@ -55,7 +55,7 @@ class RegisterUseCase {
 
         //Creem directoris
         mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername());//potser es podria moure al controller igual que fem quan creem altres carpetes despres (o posar tot en els user case)
-        mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername(). '/shared');//creació carpeta shared
+        mkdir(__DIR__. '/../../../public/uploads/'. $user->getUsername(). '/shared items');//creació carpeta shared
     }
 
 }

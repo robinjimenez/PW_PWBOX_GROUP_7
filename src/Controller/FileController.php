@@ -148,8 +148,7 @@ class FileController {
             $service = $this->container->get('login_user_use_case');
             $queryResult = $service($data); //Obtinc el user si existeix
 
-            if (isset($queryResult[0])) {//user exists
-
+            if (isset($queryResult[0]['username'])) {//user exists
                 //Check it is not himself
                 if ($queryResult[0]['username'] == $_SESSION['userID']) {
                     $result['errors'][] = sprintf("You cannot share a folder with yourself");
@@ -160,8 +159,8 @@ class FileController {
                     try {
 
                         $service = $this->container->get('share_folder_use_case');
-                        //Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió). També args que conté el path fins la carpeta
-                        $service($data['fileName'], $data['email'], $_SESSION['userID'], $args);
+                        //Li passo el nom de la carpeta a compartir, el email amb qui compartir i el owner (userID sessió). També args que conté el path fins la carpeta. queryResult es el username relacionat amb el email per fer share
+                        $service($data['fileName'], $data['email'], $_SESSION['userID'], $args, $queryResult[0]['username']);
 
                     } catch (\Exception $e) {
                         $result['errors'][] = sprintf('Unable to share.');
@@ -176,14 +175,21 @@ class FileController {
     }
 
     public function createFolderAction(string $curPath) {
-        $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
-        mkdir(__DIR__ . "/../../public/uploads/". $path);
-
-        $path = explode('/', $curPath);
 
         //Registre folder a la bbdd
-        $service = $this->container->get('add_folder_use_case');
-        $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
+        try {
+            $path = $curPath . DIRECTORY_SEPARATOR . $_POST["folder"];
+            if (!file_exists(__DIR__ . "/../../public/uploads/". $path)) {
+                mkdir(__DIR__ . "/../../public/uploads/". $path);
+            }
+            $path = explode('/', $curPath);
+
+            $service = $this->container->get('add_folder_use_case');
+            $service($path[sizeof($path)-1], $_POST["folder"]); //parent és curPath, name és $_POST["folder"]
+
+        } catch (\Exception $e) {
+            //file already exists
+        }
     }
 
     public function uploadFileAction(Request $request, Response $response, string $path) {
@@ -251,11 +257,12 @@ class FileController {
                     $service($uploadedFile->getClientFilename(), $uploadedFile->getSize(), $parent);
                     $result['posted'] = true;
                 } catch (\Exception $e) {
-                    return var_dump($e);
+                    $result['errors'][] = sprintf(
+                        'You have already uploaded this file: %s',
+                        $uploadedFile->getClientFilename()
+                    );
                 } catch (NotFoundExceptionInterface $e) {
-                    return var_dump($e);
                 } catch (ContainerExceptionInterface $e) {
-                    return var_dump($e);
                 }
             }
         }
@@ -304,7 +311,7 @@ class FileController {
 
         $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
 
-        if ($role == "reader") {
+        if ($role == "admin") {
             try {
                 $this->container->get('delete_file_use_case')($route[sizeof($route)-1],0,$route[sizeof($route)-2]);
 
@@ -343,7 +350,7 @@ class FileController {
 
         $role = $this->container->get('file_role_use_case')($route[sizeof($route)-1]);
 
-        if ($role == "reader") {
+        if ($role == "admin") {
 
             if (sizeof($files) == 0) {
 
