@@ -52,7 +52,7 @@ class FileController {
             }
 
             if (isset($_POST["rename"])) {
-                $this->renameFileAction($response,$args['params']);
+                $this->renameFileAction($request, $response,$args['params']);
             }
 
             if (isset($_POST["delete_file"])) {
@@ -329,7 +329,9 @@ class FileController {
     }
 
 
-    public function renameFileAction(Response $response, string $args) {
+    public function renameFileAction(Request $request, Response $response, string $args) {
+
+        die(var_dump($request->getParsedBody()));
 
 
     }
