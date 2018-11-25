@@ -1,10 +1,8 @@
 # PWBox - Grup 7
 
 Autors:
-Jordi Alonso (jordi.alonso.2015)
-Robin Jiménez (robin.jimenez.2015)
-
-Compartir amb `profespw`
+Jordi Alonso
+Robin Jiménez
 
 ## Explicació
 
